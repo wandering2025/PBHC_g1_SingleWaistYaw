@@ -1,5 +1,38 @@
 import os
 import sys
+from pathlib import Path
+
+paths_to_remove = [
+    '/home/bbw/ASAPx1',
+    '/home/bbw/ASAPx1/isaac_utils',
+    # 移除任何不必要的或重复的 PBHC 相关路径，避免混淆
+    '/home/bbw/PBHC/humanoidverse/isaac_utils/isaac_utils/__init__.py', # 文件路径
+    '/home/bbw/PBHC/humanoidverse/isaac_utils', # 这是 isaac_utils 的直接父目录，但如果 PBHC_ROOT 包含了它，就不需要单独添加
+    # '/home/bbw', # 如果之前有这个，也要移除，因为它太宽泛
+    '/home/bbw/PBHC/humanoidverse' # 移除脚本所在的目录，避免它作为顶层路径被优先查找
+]
+
+# 倒序遍历 sys.path 以安全地移除元素
+for p in reversed(sys.path):
+    if p in paths_to_remove:
+        sys.path.remove(p)
+
+pbhc_project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+isaac_utils_actual_parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'isaac_utils'))
+#isaac_utils_parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'isaac_utils'))
+#pbhc_root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+if pbhc_project_root not in sys.path:
+    sys.path.insert(0, pbhc_project_root)
+if isaac_utils_actual_parent_path not in sys.path:
+    # 插入到 pbhc_project_root 之后
+    sys.path.insert(1 if len(sys.path) > 0 and sys.path[0] == pbhc_project_root else 0, isaac_utils_actual_parent_path)
+
+print(f"DEBUG: PBHC project root added to sys.path: {pbhc_project_root}")
+print(f"DEBUG: sys.path after modification and cleanup: {sys.path}")
+
+import os
+import sys
 import time
 import argparse
 import pdb
@@ -110,7 +143,8 @@ def main(cfg : DictConfig) -> None:
     resave = False
 
 
-    humanoid_xml = "./description/robots/g1/g1_23dof_lock_wrist.xml"
+    #humanoid_xml = "./description/robots/g1/g1_23dof_lock_wrist.xml"
+    humanoid_xml = "./description/robots/g1/g1_23dof.xml"
     print(humanoid_xml)
     
     vis_smpl = False if 'vis_smpl' not in cfg else cfg.vis_smpl
@@ -123,7 +157,7 @@ def main(cfg : DictConfig) -> None:
     if vis_contact: assert 'contact_mask' in curr_motion and not vis_tau
 
     if not vis_smpl:
-        cfg_robot = OmegaConf.load("description/robots/g1/phc_g1_23dof.yaml")
+        cfg_robot = OmegaConf.load("description/robots/g1/g1_23dof_fitting.yaml")
         humanoid_fk = Humanoid_Batch(cfg_robot)  # load forward kinematics model
         pose_aa = torch.from_numpy(curr_motion['pose_aa']).unsqueeze(0)
         root_trans = torch.from_numpy(curr_motion['root_trans_offset']).unsqueeze(0)

@@ -79,8 +79,8 @@ _G1_KEYPOINT_TO_JOINT = {
     # Arms.
     "L_Elbow": {"name": "left_elbow_link", "weight": 1.0},
     "R_Elbow": {"name": "right_elbow_link", "weight": 1.0},
-    "L_Wrist": {"name": "left_wrist_yaw_link", "weight": 1.0},
-    "R_Wrist": {"name": "right_wrist_yaw_link", "weight": 1.0},
+    "L_Wrist": {"name": "left_wrist_roll_rubber_hand", "weight": 1.0},
+    "R_Wrist": {"name": "right_wrist_roll_rubber_hand", "weight": 1.0},
     "L_Shoulder": {"name": "left_shoulder_pitch_link", "weight": 3.0},
     "R_Shoulder": {"name": "right_shoulder_pitch_link", "weight": 3.0},
 
@@ -225,7 +225,7 @@ def construct_model(robot_name: str, keypoint_names: Sequence[str]):
     if robot_name == "h1":
         humanoid_mjcf = mjcf.from_path("../description/robots/g1/h1.xml")
     elif robot_name == "g1":
-        humanoid_mjcf = mjcf.from_path("../description/robots/g1/g1_29dof_rev_1_0_with_toe.xml")
+        humanoid_mjcf = mjcf.from_path("../description/robots/g1/g1_23dof_with_toe.xml")
         # humanoid_mjcf = mjcf.from_path("protomotions/data/assets/mjcf/g1.xml")
     else:
         raise ValueError(f"Unknown robot name: {robot_name}")

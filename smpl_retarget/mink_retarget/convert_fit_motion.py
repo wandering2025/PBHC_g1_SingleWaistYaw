@@ -48,10 +48,11 @@ def foot_detect(positions, thres=0.002):
 def count_pose_aa(motion):
     dof = motion['dof']
     root_qua = motion['root_rot']
-    dof_new = np.concatenate((dof[:, :19], dof[:, 22:26]), axis=1)
+    #dof_new = np.concatenate((dof[:, :19], dof[:, 22:26]), axis=1)
+    dof_new = dof
     root_aa = sRot.from_quat(root_qua).as_rotvec()
 
-    dof_axis = np.load('../description/robots/g1/dof_axis.npy', allow_pickle=True)
+    dof_axis = np.load('../description/robots/g1/g1_23dof_dof_axis.npy', allow_pickle=True)
     dof_axis = dof_axis.astype(np.float32)
 
     pose_aa = np.concatenate(
@@ -101,9 +102,13 @@ def main(
 
     if humanoid_type == "smpl":
         mujoco_joint_names = SMPL_MUJOCO_NAMES
+        print('SMPL_MUJOCO_NAMES')
+        print(SMPL_MUJOCO_NAMES)
         joint_names = SMPL_BONE_ORDER_NAMES
     elif humanoid_type == "smplx" or humanoid_type == "smplh":
         mujoco_joint_names = SMPLH_MUJOCO_NAMES
+        print('SMPL_MUJOCO_NAMES')
+        print(SMPL_MUJOCO_NAMES)
         joint_names = SMPLH_BONE_ORDER_NAMES
     else:
         raise NotImplementedError

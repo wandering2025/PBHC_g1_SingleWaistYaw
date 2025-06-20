@@ -1,0 +1,11 @@
+nohup: ignoring input
+2025-06-20 20:47:35,136 - INFO - logger - logger initialized
+SMPL_MUJOCO_NAMES
+['Pelvis', 'L_Hip', 'L_Knee', 'L_Ankle', 'L_Toe', 'R_Hip', 'R_Knee', 'R_Ankle', 'R_Toe', 'Torso', 'Spine', 'Chest', 'Neck', 'Head', 'L_Thorax', 'L_Shoulder', 'L_Elbow', 'L_Wrist', 'L_Hand', 'R_Thorax', 'R_Shoulder', 'R_Elbow', 'R_Wrist', 'R_Hand']
+skeleton_tree_parents:  tensor([-1,  0,  1,  2,  3,  0,  5,  6,  7,  0,  9, 10, 11, 12, 11, 14, 15, 16,
+        17, 11, 19, 20, 21, 22])
+Processing 0/1 files in s001
+Total files to process: 0/1
+Processing subset s001
+Processing 1 files
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 23696.63it/s]
