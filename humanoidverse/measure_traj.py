@@ -47,7 +47,8 @@ def get_appendix_motion_data(pol_motion_file_path):
 def get_motionlib_data(motion_file_path, robot_cfg_path):
     robot_cfg = omegaconf.OmegaConf.load(robot_cfg_path)
     robot_cfg.robot.motion.motion_file = motion_file_path
-    robot_cfg.robot.motion.asset.assetFileName = "g1_23dof_lock_wrist_fitmotionONLY.xml"
+    #robot_cfg.robot.motion.asset.assetFileName = "g1_23dof_lock_wrist_fitmotionONLY.xml"
+    robot_cfg.robot.motion.asset.assetFileName = "g1_23dof.xml"
     robot_cfg.robot.motion.asset.assetRoot = Root_Path / "description/robots/g1/"
     
     from humanoidverse.utils.motion_lib.motion_lib_robot_WJX import MotionLibRobotWJX
