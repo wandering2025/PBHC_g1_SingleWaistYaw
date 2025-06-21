@@ -246,7 +246,8 @@ def main(override_config: OmegaConf):
     print("Motion Sampled")
 
     ref_motion_preblend = env._motion_lib.load_motions(random_sample=False)[0]
-    robot_cfg_path = "./humanoidverse/config/robot/g1/g1_23dof_lock_wrist.yaml"
+    #robot_cfg_path = "./humanoidverse/config/robot/g1/g1_23dof_lock_wrist.yaml"
+    robot_cfg_path = "./humanoidverse/config/robot/g1/g1_23dof.yaml"
     resdict = eval_batch_traj(saved_motion, ref_motion_preblend, env._motion_episode_length, 
                                 tmp_path=str(metric_path.parent / "tmp.pkl"),
                                 robot_cfg_path=robot_cfg_path)

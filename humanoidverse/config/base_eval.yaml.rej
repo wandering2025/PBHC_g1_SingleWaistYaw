@@ -1,0 +1,11 @@
+diff a/humanoidverse/config/base_eval.yaml b/humanoidverse/config/base_eval.yaml	(rejected hunks)
+@@ -6,3 +6,9 @@ eval_log_dir: logs_eval/${eval_name}/${eval_timestamp}
+ hydra:
+   run:
+     dir: ${eval_log_dir}
++
++#robot:
++#  randomize_link_body_names : [
++#      'pelvis', 'left_hip_yaw_link', 'left_hip_roll_link', 'left_hip_pitch_link', 'left_knee_link',
++#      'right_hip_yaw_link', 'right_hip_roll_link', 'right_hip_pitch_link', 'right_knee_link',
++#  ]

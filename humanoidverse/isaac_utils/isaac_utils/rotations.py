@@ -1,7 +1,7 @@
 import torch
 from torch import Tensor
 import torch.nn.functional as F
-from isaac_utils.maths import (
+from humanoidverse.isaac_utils.isaac_utils.maths import (
     normalize,
     copysign,
 )

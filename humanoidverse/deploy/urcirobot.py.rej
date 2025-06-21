@@ -1,0 +1,23 @@
+diff a/humanoidverse/deploy/urcirobot.py b/humanoidverse/deploy/urcirobot.py	(rejected hunks)
+@@ -398,15 +398,21 @@ class URCIRobot:
+         self.kp = np.zeros(self.num_dofs)
+         self.kd = np.zeros(self.num_dofs)
+         
++        print(f'all_num_dof:{self.num_dofs}')
+         
+         for i in range(self.num_dofs):
+             name = self.dof_names[i]
++        
+             found = False
+             for dof_name in self.cfg.robot.control.stiffness.keys():
+                 if dof_name in name:
+                     self.kp[i] = self.cfg.robot.control.stiffness[dof_name]
+                     self.kd[i] = self.cfg.robot.control.damping[dof_name]
+                     found = True
++                    print(f'{i}')
++                    print(f'dof_name:{dof_name} kp:{self.kp[i]} kd:{self.kd[i]}')
++                    print('------------------------------------')
++
+                     logger.debug(f"PD gain of joint {name} were defined, setting them to {self.kp[i]} and {self.kd[i]}")
+             if not found:
+                 raise ValueError(f"PD gain of joint {name} were not defined. Should be defined in the yaml file.")

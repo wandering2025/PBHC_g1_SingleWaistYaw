@@ -1,0 +1,1606 @@
+nohup: ignoring input
+DEBUG: PBHC project root added to sys.path: /home/bbw/PBHC
+DEBUG: sys.path after modification and cleanup: ['/home/bbw/PBHC', '/home/bbw/PBHC/humanoidverse/isaac_utils', '/home/michael/cjy/3d_diffuser_actor', '/home/michael/cjy/DexGraspNet', '/home/michael/.local/share/ov/pkg/isaac-sim-4.1.0/exts', '/home/michael/cjy/VIHE/VIHE/lib/YARR', '/home/michael/anaconda3/envs/pbhc/lib/python38.zip', '/home/michael/anaconda3/envs/pbhc/lib/python3.8', '/home/michael/anaconda3/envs/pbhc/lib/python3.8/lib-dynload', '/home/michael/.local/lib/python3.8/site-packages', '/home/michael/anaconda3/envs/pbhc/lib/python3.8/site-packages', '/home/bbw/isaacgym/python', '/home/michael/anaconda3/envs/pbhc/lib/python3.8/site-packages/rerun_sdk']
+Importing module 'gym_38' (/home/bbw/isaacgym/python/isaacgym/_bindings/linux-x86_64/gym_38.so)
+Setting GYM_USD_PLUG_INFO_PATH to /home/bbw/isaacgym/python/isaacgym/_bindings/linux-x86_64/usd/plugInfo.json
+[32m2025-06-18 19:42:22.432[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m58[0m - [1mobs_dims: {'base_lin_vel': 3, 'base_ang_vel': 3, 'projected_gravity': 3, 'dof_pos': 23, 'dof_vel': 23, 'actions': 23, 'dif_local_rigid_body_pos': 81, 'local_ref_rigid_body_pos': 81, 'ref_motion_phase': 1, 'dr_base_com': 3, 'dr_link_mass': 22, 'dr_kp': 23, 'dr_kd': 23, 'dr_friction': 1, 'dr_ctrl_delay': 1}[0m
+[32m2025-06-18 19:42:22.438[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m65[0m - [1mauxiliary_obs_dims: {'history_actor': 304, 'history_critic': 316}[0m
+[32m2025-06-18 19:42:22.438[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mactor_obs: base_ang_vel has dim: 3[0m
+[32m2025-06-18 19:42:22.439[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mactor_obs: projected_gravity has dim: 3[0m
+[32m2025-06-18 19:42:22.440[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mactor_obs: dof_pos has dim: 23[0m
+[32m2025-06-18 19:42:22.441[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mactor_obs: dof_vel has dim: 23[0m
+[32m2025-06-18 19:42:22.441[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mactor_obs: actions has dim: 23[0m
+[32m2025-06-18 19:42:22.442[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mactor_obs: ref_motion_phase has dim: 1[0m
+[32m2025-06-18 19:42:22.442[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m75[0m - [1mactor_obs: history_actor has dim: 304[0m
+[32m2025-06-18 19:42:22.443[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: base_lin_vel has dim: 3[0m
+[32m2025-06-18 19:42:22.444[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: base_ang_vel has dim: 3[0m
+[32m2025-06-18 19:42:22.445[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: projected_gravity has dim: 3[0m
+[32m2025-06-18 19:42:22.445[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dof_pos has dim: 23[0m
+[32m2025-06-18 19:42:22.446[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dof_vel has dim: 23[0m
+[32m2025-06-18 19:42:22.447[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: actions has dim: 23[0m
+[32m2025-06-18 19:42:22.448[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: ref_motion_phase has dim: 1[0m
+[32m2025-06-18 19:42:22.448[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dif_local_rigid_body_pos has dim: 81[0m
+[32m2025-06-18 19:42:22.449[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: local_ref_rigid_body_pos has dim: 81[0m
+[32m2025-06-18 19:42:22.450[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dr_base_com has dim: 3[0m
+[32m2025-06-18 19:42:22.451[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dr_link_mass has dim: 22[0m
+[32m2025-06-18 19:42:22.451[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dr_kp has dim: 23[0m
+[32m2025-06-18 19:42:22.451[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dr_kd has dim: 23[0m
+[32m2025-06-18 19:42:22.452[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dr_friction has dim: 1[0m
+[32m2025-06-18 19:42:22.452[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m72[0m - [1mcritic_obs: dr_ctrl_delay has dim: 1[0m
+[32m2025-06-18 19:42:22.453[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m75[0m - [1mcritic_obs: history_critic has dim: 316[0m
+[32m2025-06-18 19:42:22.453[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mdetermine_obs_dim[0m:[36m79[0m - [1malgo_obs_dim_dict: {'actor_obs': 380, 'critic_obs': 630}[0m
+obs_slices: {'actor_obs': {'actions': (0, 23), 'base_ang_vel': (23, 26), 'dof_pos': (26, 49), 'dof_vel': (49, 72), 'history_actor': (72, 376), 'projected_gravity': (376, 379), 'ref_motion_phase': (379, 380)}, 'critic_obs': {'actions': (0, 23), 'base_ang_vel': (23, 26), 'base_lin_vel': (26, 29), 'dif_local_rigid_body_pos': (29, 110), 'dof_pos': (110, 133), 'dof_vel': (133, 156), 'dr_base_com': (156, 159), 'dr_ctrl_delay': (159, 160), 'dr_friction': (160, 161), 'dr_kd': (161, 184), 'dr_kp': (184, 207), 'dr_link_mass': (207, 229), 'history_critic': (229, 545), 'local_ref_rigid_body_pos': (545, 626), 'projected_gravity': (626, 629), 'ref_motion_phase': (629, 630)}}
+[32m2025-06-18 19:42:22.456[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mpre_process_config[0m:[36m112[0m - [1mmotion_len: 7.0[0m
+[32m2025-06-18 19:42:22.456[0m | [1mINFO    [0m | [36mhumanoidverse.utils.helpers[0m:[36mpre_process_config[0m:[36m113[0m - [1mmotion_file: example/motion_data/Horse-stance_pose.pkl[0m
+PyTorch version 2.4.1+cu121
+Device count 1
+/home/bbw/isaacgym/python/isaacgym/_bindings/src/gymtorch
+Using /home/michael/.cache/torch_extensions/py38_cu121 as PyTorch extensions root...
+Emitting ninja build file /home/michael/.cache/torch_extensions/py38_cu121/gymtorch/build.ninja...
+Building extension module gymtorch...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+ninja: no work to do.
+Not connected to PVD
++++ Using GPU PhysX
+Physics Engine: PhysX
+Physics Device: cuda:0
+GPU Pipeline: enabled
+[32m2025-06-18 19:42:23.668[0m | [1mINFO    [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36msetup[0m:[36m61[0m - [1mCreating Sim...[0m
+[32m2025-06-18 19:42:23.669[0m | [1mINFO    [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_create_ground_plane[0m:[36m104[0m - [1mCreating plane terrain[0m
+[32m2025-06-18 19:42:23.669[0m | [1mINFO    [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_create_ground_plane[0m:[36m111[0m - [1mCreated plane terrain 	| static_friction: 1.00 	| dynamic_friction: 1.00 	| restitution: 0.00[0m
+[32m2025-06-18 19:42:26.108[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m307[0m - [33m[1mNumber of rigid shapes does not match number of bodies[0m
+[32m2025-06-18 19:42:26.108[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m308[0m - [33m[1mlen(RigidShapeProperties): 30[0m
+[32m2025-06-18 19:42:26.108[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m309[0m - [33m[1mself.num_bodies: 24[0m
+[32m2025-06-18 19:42:26.128[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m307[0m - [33m[1mNumber of rigid shapes does not match number of bodies[0m
+[32m2025-06-18 19:42:26.128[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m308[0m - [33m[1mlen(RigidShapeProperties): 30[0m
+[32m2025-06-18 19:42:26.128[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m309[0m - [33m[1mself.num_bodies: 24[0m
+[32m2025-06-18 19:42:26.136[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m307[0m - [33m[1mNumber of rigid shapes does not match number of bodies[0m
+[32m2025-06-18 19:42:26.136[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m308[0m - [33m[1mlen(RigidShapeProperties): 30[0m
+[32m2025-06-18 19:42:26.136[0m | [33m[1mWARNING [0m | [36mhumanoidverse.simulator.isaacgym.isaacgym[0m:[36m_process_rigid_shape_props[0m:[36m309[0m - [33m[1mself.num_bodies: 24[0m
+[32m2025-06-18 19:42:40.321[0m | [1mINFO    [0m | [36mhumanoidverse.envs.motion_tracking.motion_tracking[0m:[36m_init_adaptive_sigma[0m:[36m1023[0m - [1mAdaptive tracking sigma Enabled[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m152[0m - [1mWeiji set reward on 20250417[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_contact_mask = 0.5[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_max_joint_position = 1.0[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_body_position_extend = 1.0[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_vr_3point = 1.6[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_body_position_feet = 1.5[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_body_rotation_extend = 0.5[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_body_ang_velocity_extend = 0.5[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_body_velocity_extend = 0.5[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_joint_position = 1.0[0m
+[32m2025-06-18 19:42:40.322[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: teleop_joint_velocity = 1.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: penalty_torques = -1e-06[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: penalty_action_rate = -0.5[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: feet_air_time = 1.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: penalty_feet_contact_forces = -0.01[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: penalty_stumble = -2.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: penalty_slippage = -1.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: limits_dof_pos = -10.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: limits_dof_vel = -5.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: limits_torque = -5.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: termination = -200.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m157[0m - [1mScale: collision = -30.0[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m168[0m - [1mUse Reward Penalty: True[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m170[0m - [1mPenalty Reward Names: ['penalty_torques', 'penalty_dof_acc', 'penalty_dof_vel', 'penalty_action_rate', 'limits_dof_pos', 'limits_dof_vel', 'limits_torque', 'feet_heading_alignment', 'penalty_feet_ori', 'penalty_slippage', 'collision'][0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m171[0m - [1mPenalty Reward Initial Scale: 0.1[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m178[0m - [1mUse Reward Limits DOF Curriculum: True[0m
+[32m2025-06-18 19:42:40.323[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m179[0m - [1mReward Limits DOF Curriculum Initial Limit: 0.95[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m180[0m - [1mReward Limits DOF Curriculum Max Limit: 0.95[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m181[0m - [1mReward Limits DOF Curriculum Min Limit: 0.95[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m185[0m - [1mUse Reward Limits DOF Vel Curriculum: True[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m186[0m - [1mReward Limits DOF Vel Curriculum Initial Limit: 0.95[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m187[0m - [1mReward Limits DOF Vel Curriculum Max Limit: 0.95[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m188[0m - [1mReward Limits DOF Vel Curriculum Min Limit: 0.95[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m192[0m - [1mUse Reward Limits Torque Curriculum: True[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m193[0m - [1mReward Limits Torque Curriculum Initial Limit: 0.85[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m194[0m - [1mReward Limits Torque Curriculum Max Limit: 0.85[0m
+[32m2025-06-18 19:42:40.324[0m | [1mINFO    [0m | [36mhumanoidverse.envs.legged_base_task.legged_robot_base[0m:[36m_prepare_reward_function[0m:[36m195[0m - [1mReward Limits Torque Curriculum Min Limit: 0.85[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m29[0m - [1mHistory Handler Initialized[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m31[0m - [1mKey: base_ang_vel, Value: 4[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m31[0m - [1mKey: projected_gravity, Value: 4[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m31[0m - [1mKey: dof_pos, Value: 4[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m31[0m - [1mKey: dof_vel, Value: 4[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m31[0m - [1mKey: actions, Value: 4[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m31[0m - [1mKey: ref_motion_phase, Value: 4[0m
+[32m2025-06-18 19:42:40.326[0m | [1mINFO    [0m | [36mhumanoidverse.envs.env_utils.history_handler[0m:[36m__init__[0m:[36m31[0m - [1mKey: base_lin_vel, Value: 4[0m
+[32m2025-06-18 19:42:41.134[0m | [1mINFO    [0m | [36mhumanoidverse.utils.motion_lib.torch_humanoid_batch[0m:[36m<module>[0m:[36m41[0m - [1mUsing Humanoid Batch[0m
+[32m2025-06-18 19:42:41.135[0m | [1mINFO    [0m | [36mhumanoidverse.utils.motion_lib.motion_lib_robot_WJX[0m:[36m__init__[0m:[36m107[0m - [1mLoaded skeleton from description/robots/g1/g1_23dof_lock_wrist_fitmotionONLY.xml[0m
+[32m2025-06-18 19:42:41.135[0m | [1mINFO    [0m | [36mhumanoidverse.utils.motion_lib.motion_lib_robot_WJX[0m:[36m__init__[0m:[36m108[0m - [1mLoading motion data from example/motion_data/Horse-stance_pose.pkl...[0m
+[32m2025-06-18 19:42:41.136[0m | [1mINFO    [0m | [36mhumanoidverse.utils.motion_lib.motion_lib_robot_WJX[0m:[36mload_data[0m:[36m143[0m - [1mLoaded 1 motions[0m
+Loading Meshes ... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Loading Geoms... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+[32m2025-06-18 19:42:41.373[0m | [1mINFO    [0m | [36mhumanoidverse.utils.motion_lib.motion_lib_robot_WJX[0m:[36mload_motions[0m:[36m198[0m - [1mLoading 4096 motions...[0m
+[32m2025-06-18 19:42:41.374[0m | [1mINFO    [0m | [36mhumanoidverse.utils.motion_lib.motion_lib_robot_WJX[0m:[36mload_motions[0m:[36m199[0m - [1mSampling motion: tensor([0, 0, 0, 0, 0], device='cuda:0'), ....[0m
+Loading motions... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Loading motions... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+[32m2025-06-18 19:42:41.517[0m | [1mINFO    [0m | [36mhumanoidverse.utils.motion_lib.motion_lib_robot_WJX[0m:[36mload_motions[0m:[36m292[0m - [1mLoaded 4096 motions with a total length of 28535.891s and 860160 frames.[0m
+[32m2025-06-18 19:42:41.833[0m | [1mINFO    [0m | [36mhumanoidverse.envs.motion_tracking.motion_tracking[0m:[36m__init__[0m:[36m122[0m - [1mTerminate when motion far threshold: 1.5[0m
+[32m2025-06-18 19:42:41.834[0m | [1mINFO    [0m | [36m__main__[0m:[36mmain[0m:[36m131[0m - [1mSaving config file to logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wrist[0m
+[32m2025-06-18 19:42:42.576[0m | [1mINFO    [0m | [36mhumanoidverse.agents.mh_ppo.mh_ppo[0m:[36msetup[0m:[36m102[0m - [1mSetting up PPO[0m
+PPOActor(
+  (actor_module): BaseModule(
+    (module): Sequential(
+      (0): Linear(in_features=380, out_features=512, bias=True)
+      (1): ELU(alpha=1.0)
+      (2): Linear(in_features=512, out_features=256, bias=True)
+      (3): ELU(alpha=1.0)
+      (4): Linear(in_features=256, out_features=128, bias=True)
+      (5): ELU(alpha=1.0)
+      (6): Linear(in_features=128, out_features=23, bias=True)
+    )
+  )
+)
+PPOCritic(
+  (critic_module): BaseModule(
+    (module): Sequential(
+      (0): Linear(in_features=630, out_features=768, bias=True)
+      (1): ELU(alpha=1.0)
+      (2): Linear(in_features=768, out_features=512, bias=True)
+      (3): ELU(alpha=1.0)
+      (4): Linear(in_features=512, out_features=128, bias=True)
+      (5): ELU(alpha=1.0)
+      (6): Linear(in_features=128, out_features=21, bias=True)
+    )
+  )
+)
+[32m2025-06-18 19:42:42.980[0m | [1mINFO    [0m | [36mhumanoidverse.agents.mh_ppo.mh_ppo[0m:[36msetup[0m:[36m104[0m - [1mSetting up Storage[0m
+╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                      [1m Learning iteration 0/1000000 [0m                    │
+│                                                                              │
+│                             Computation: 58632 steps/s                       │
+│                   Mean action noise std:     0.8012                          │
+│                             Mean reward:    -0.4666                          │
+│                     Mean episode length:    21.1900                          │
+│                          end_time_ratio:     0.5154                          │
+│                      end_time_ratio_std:     0.2984                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.1746                          │
+│                    lower_body_diff_norm:     0.1548                          │
+│                     vr_3point_diff_norm:     0.2167                          │
+│                     joint_pos_diff_norm:     2.3830                          │
+│          error_ema_teleop_max_joint_pos:     0.9996                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0149                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0149                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0150                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0100                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.1001                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.9997                          │
+│               adp_sigma_teleop_body_vel:     0.9994                          │
+│           error_ema_teleop_body_ang_vel:    15.2762                          │
+│           adp_sigma_teleop_body_ang_vel:    15.0000                          │
+│              error_ema_teleop_joint_pos:     0.2991                          │
+│              adp_sigma_teleop_joint_pos:     0.2990                          │
+│              error_ema_teleop_joint_vel:    30.3193                          │
+│              adp_sigma_teleop_joint_vel:    30.0000                          │
+│     terminate_when_motion_far_threshold:     1.5006                          │
+│                    terminate_by_gravity:     0.0556                          │
+│                 terminate_by_motion_far:     0.0000                          │
+│                   terminate_by_time_out:     0.9444                          │
+│                 terminate_by_motion_end:     0.9444                          │
+│                           penalty_scale:     0.1000                          │
+│                  average_episode_length:     0.5373                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.2529                          │
+│           rew_teleop_max_joint_position:     0.7440                          │
+│         rew_teleop_body_position_extend:     1.7923                          │
+│                    rew_teleop_vr_3point:     1.3424                          │
+│           rew_teleop_body_position_feet:     1.2396                          │
+│         rew_teleop_body_rotation_extend:     0.1878                          │
+│     rew_teleop_body_ang_velocity_extend:     0.1472                          │
+│         rew_teleop_body_velocity_extend:     0.3272                          │
+│               rew_teleop_joint_position:     0.8993                          │
+│               rew_teleop_joint_velocity:     0.3375                          │
+│                     rew_penalty_torques:    -0.0009                          │
+│                 rew_penalty_action_rate:    -1.2533                          │
+│                       rew_feet_air_time:    -0.0488                          │
+│         rew_penalty_feet_contact_forces:    -0.5655                          │
+│                     rew_penalty_stumble:    -0.0027                          │
+│                    rew_penalty_slippage:    -0.0471                          │
+│                      rew_limits_dof_pos:    -0.0005                          │
+│                      rew_limits_dof_vel:    -0.0022                          │
+│                       rew_limits_torque:    -1.3761                          │
+│                         rew_termination:    -0.7130                          │
+│                           rew_collision:    -0.5524                          │
+│                               rew_total:     2.7079                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 98304                               │
+│                         Collection time:     1.3835s                         │
+│                           Learning time:     0.2931s                         │
+│                          Iteration time:     1.6766s                         │
+│                              Total time:     1.6766s                         │
+│                                     ETA: 1676601.6483s                       │
+│                                Time Now: 2025-06-18 19:42:44                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯[32m2025-06-18 19:42:44.766[0m | [1mINFO    [0m | [36mhumanoidverse.agents.mh_ppo.mh_ppo[0m:[36msave[0m:[36m196[0m - [1mSaving checkpoint to logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wrist/model_0.pt[0m
+╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 25/1000000 [0m                    │
+│                                                                              │
+│                             Computation: 64829 steps/s                       │
+│                   Mean action noise std:     0.8212                          │
+│                             Mean reward:    -4.1161                          │
+│                     Mean episode length:    46.7900                          │
+│                          end_time_ratio:     0.6202                          │
+│                      end_time_ratio_std:     0.2813                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2522                          │
+│                    lower_body_diff_norm:     0.1972                          │
+│                     vr_3point_diff_norm:     0.2846                          │
+│                     joint_pos_diff_norm:     2.4537                          │
+│          error_ema_teleop_max_joint_pos:     1.0402                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0190                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0161                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0207                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0144                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.1157                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.9782                          │
+│               adp_sigma_teleop_body_vel:     0.9782                          │
+│           error_ema_teleop_body_ang_vel:    20.1086                          │
+│           adp_sigma_teleop_body_ang_vel:    15.0000                          │
+│              error_ema_teleop_joint_pos:     0.3011                          │
+│              adp_sigma_teleop_joint_pos:     0.2989                          │
+│              error_ema_teleop_joint_vel:    35.4542                          │
+│              adp_sigma_teleop_joint_vel:    30.0000                          │
+│     terminate_when_motion_far_threshold:     1.5078                          │
+│                    terminate_by_gravity:     0.8547                          │
+│                 terminate_by_motion_far:     0.0000                          │
+│                   terminate_by_time_out:     0.1477                          │
+│                 terminate_by_motion_end:     0.1477                          │
+│                           penalty_scale:     0.0998                          │
+│                  average_episode_length:    35.8535                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3124                          │
+│           rew_teleop_max_joint_position:     0.3849                          │
+│         rew_teleop_body_position_extend:     0.9061                          │
+│                    rew_teleop_vr_3point:     0.5284                          │
+│           rew_teleop_body_position_feet:     0.6073                          │
+│         rew_teleop_body_rotation_extend:     0.1836                          │
+│     rew_teleop_body_ang_velocity_extend:     0.0963                          │
+│         rew_teleop_body_velocity_extend:     0.2368                          │
+│               rew_teleop_joint_position:     0.4898                          │
+│               rew_teleop_joint_velocity:     0.2810                          │
+│                     rew_penalty_torques:    -0.0011                          │
+│                 rew_penalty_action_rate:    -1.5241                          │
+│                       rew_feet_air_time:    -0.0306                          │
+│         rew_penalty_feet_contact_forces:    -0.5733                          │
+│                     rew_penalty_stumble:    -0.0071                          │
+│                    rew_penalty_slippage:    -0.0654                          │
+│                      rew_limits_dof_pos:    -0.0021                          │
+│                      rew_limits_dof_vel:    -0.0036                          │
+│                       rew_limits_torque:    -1.4937                          │
+│                         rew_termination:    -3.5241                          │
+│                           rew_collision:    -0.3870                          │
+│                               rew_total:    -3.5857                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 2555904                             │
+│                         Collection time:     1.2747s                         │
+│                           Learning time:     0.2417s                         │
+│                          Iteration time:     1.5163s                         │
+│                              Total time:    42.4993s                         │
+│                                     ETA: 1634547.2302s                       │
+│                                Time Now: 2025-06-18 19:43:25                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 50/1000000 [0m                    │
+│                                                                              │
+│                             Computation: 67337 steps/s                       │
+│                   Mean action noise std:     0.7930                          │
+│                             Mean reward:    -2.4432                          │
+│                     Mean episode length:    58.0200                          │
+│                          end_time_ratio:     0.6447                          │
+│                      end_time_ratio_std:     0.2761                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2442                          │
+│                    lower_body_diff_norm:     0.1798                          │
+│                     vr_3point_diff_norm:     0.2788                          │
+│                     joint_pos_diff_norm:     2.3946                          │
+│          error_ema_teleop_max_joint_pos:     1.0881                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0243                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0168                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0281                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0172                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.1380                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.8983                          │
+│               adp_sigma_teleop_body_vel:     0.8983                          │
+│           error_ema_teleop_body_ang_vel:    24.8722                          │
+│           adp_sigma_teleop_body_ang_vel:    15.0000                          │
+│              error_ema_teleop_joint_pos:     0.2988                          │
+│              adp_sigma_teleop_joint_pos:     0.2980                          │
+│              error_ema_teleop_joint_vel:    39.6444                          │
+│              adp_sigma_teleop_joint_vel:    30.0000                          │
+│     terminate_when_motion_far_threshold:     1.4925                          │
+│                    terminate_by_gravity:     0.8315                          │
+│                 terminate_by_motion_far:     0.0000                          │
+│                   terminate_by_time_out:     0.1714                          │
+│                 terminate_by_motion_end:     0.1714                          │
+│                           penalty_scale:     0.1002                          │
+│                  average_episode_length:    48.8860                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3432                          │
+│           rew_teleop_max_joint_position:     0.3853                          │
+│         rew_teleop_body_position_extend:     1.0004                          │
+│                    rew_teleop_vr_3point:     0.5592                          │
+│           rew_teleop_body_position_feet:     0.7904                          │
+│         rew_teleop_body_rotation_extend:     0.1914                          │
+│     rew_teleop_body_ang_velocity_extend:     0.1323                          │
+│         rew_teleop_body_velocity_extend:     0.2609                          │
+│               rew_teleop_joint_position:     0.5010                          │
+│               rew_teleop_joint_velocity:     0.3666                          │
+│                     rew_penalty_torques:    -0.0010                          │
+│                 rew_penalty_action_rate:    -1.4076                          │
+│                       rew_feet_air_time:    -0.0267                          │
+│         rew_penalty_feet_contact_forces:    -0.4075                          │
+│                     rew_penalty_stumble:    -0.0024                          │
+│                    rew_penalty_slippage:    -0.0692                          │
+│                      rew_limits_dof_pos:    -0.0021                          │
+│                      rew_limits_dof_vel:    -0.0022                          │
+│                       rew_limits_torque:    -1.1586                          │
+│                         rew_termination:    -2.9535                          │
+│                           rew_collision:    -0.2257                          │
+│                               rew_total:    -1.7260                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 5013504                             │
+│                         Collection time:     1.2196s                         │
+│                           Learning time:     0.2403s                         │
+│                          Iteration time:     1.4599s                         │
+│                              Total time:    80.9142s                         │
+│                                     ETA: 1586474.0496s                       │
+│                                Time Now: 2025-06-18 19:44:04                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 75/1000000 [0m                    │
+│                                                                              │
+│                             Computation: 65187 steps/s                       │
+│                   Mean action noise std:     0.7560                          │
+│                             Mean reward:    -0.6363                          │
+│                     Mean episode length:    61.5100                          │
+│                          end_time_ratio:     0.6694                          │
+│                      end_time_ratio_std:     0.2664                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2389                          │
+│                    lower_body_diff_norm:     0.1664                          │
+│                     vr_3point_diff_norm:     0.2763                          │
+│                     joint_pos_diff_norm:     2.3411                          │
+│          error_ema_teleop_max_joint_pos:     1.1109                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0267                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0161                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0319                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0153                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.1541                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.7786                          │
+│               adp_sigma_teleop_body_vel:     0.7786                          │
+│           error_ema_teleop_body_ang_vel:    24.7350                          │
+│           adp_sigma_teleop_body_ang_vel:    15.0000                          │
+│              error_ema_teleop_joint_pos:     0.2896                          │
+│              adp_sigma_teleop_joint_pos:     0.2896                          │
+│              error_ema_teleop_joint_vel:    37.7537                          │
+│              adp_sigma_teleop_joint_vel:    30.0000                          │
+│     terminate_when_motion_far_threshold:     1.4703                          │
+│                    terminate_by_gravity:     0.8024                          │
+│                 terminate_by_motion_far:     0.0001                          │
+│                   terminate_by_time_out:     0.2003                          │
+│                 terminate_by_motion_end:     0.2003                          │
+│                           penalty_scale:     0.1008                          │
+│                  average_episode_length:    56.9171                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3526                          │
+│           rew_teleop_max_joint_position:     0.3892                          │
+│         rew_teleop_body_position_extend:     1.0461                          │
+│                    rew_teleop_vr_3point:     0.5841                          │
+│           rew_teleop_body_position_feet:     0.8533                          │
+│         rew_teleop_body_rotation_extend:     0.1880                          │
+│     rew_teleop_body_ang_velocity_extend:     0.1654                          │
+│         rew_teleop_body_velocity_extend:     0.2688                          │
+│               rew_teleop_joint_position:     0.5094                          │
+│               rew_teleop_joint_velocity:     0.4400                          │
+│                     rew_penalty_torques:    -0.0009                          │
+│                 rew_penalty_action_rate:    -1.2982                          │
+│                       rew_feet_air_time:    -0.0241                          │
+│         rew_penalty_feet_contact_forces:    -0.2943                          │
+│                     rew_penalty_stumble:    -0.0012                          │
+│                    rew_penalty_slippage:    -0.0681                          │
+│                      rew_limits_dof_pos:    -0.0024                          │
+│                      rew_limits_dof_vel:    -0.0018                          │
+│                       rew_limits_torque:    -0.9068                          │
+│                         rew_termination:    -2.3538                          │
+│                           rew_collision:    -0.1310                          │
+│                               rew_total:    -0.2856                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 7471104                             │
+│                         Collection time:     1.2589s                         │
+│                           Learning time:     0.2491s                         │
+│                          Iteration time:     1.5080s                         │
+│                              Total time:   117.9474s                         │
+│                                     ETA: 1551822.9853s                       │
+│                                Time Now: 2025-06-18 19:44:41                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 100/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 67851 steps/s                       │
+│                   Mean action noise std:     0.7216                          │
+│                             Mean reward:     0.1289                          │
+│                     Mean episode length:    73.4200                          │
+│                          end_time_ratio:     0.6956                          │
+│                      end_time_ratio_std:     0.2596                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2391                          │
+│                    lower_body_diff_norm:     0.1624                          │
+│                     vr_3point_diff_norm:     0.2769                          │
+│                     joint_pos_diff_norm:     2.2662                          │
+│          error_ema_teleop_max_joint_pos:     1.1196                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0282                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0153                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0344                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0133                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.1684                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.6662                          │
+│               adp_sigma_teleop_body_vel:     0.6662                          │
+│           error_ema_teleop_body_ang_vel:    22.4547                          │
+│           adp_sigma_teleop_body_ang_vel:    15.0000                          │
+│              error_ema_teleop_joint_pos:     0.2758                          │
+│              adp_sigma_teleop_joint_pos:     0.2758                          │
+│              error_ema_teleop_joint_vel:    33.4105                          │
+│              adp_sigma_teleop_joint_vel:    30.0000                          │
+│     terminate_when_motion_far_threshold:     1.4484                          │
+│                    terminate_by_gravity:     0.7624                          │
+│                 terminate_by_motion_far:     0.0014                          │
+│                   terminate_by_time_out:     0.2399                          │
+│                 terminate_by_motion_end:     0.2399                          │
+│                           penalty_scale:     0.1014                          │
+│                  average_episode_length:    66.2274                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3527                          │
+│           rew_teleop_max_joint_position:     0.3860                          │
+│         rew_teleop_body_position_extend:     1.0443                          │
+│                    rew_teleop_vr_3point:     0.5881                          │
+│           rew_teleop_body_position_feet:     0.8422                          │
+│         rew_teleop_body_rotation_extend:     0.1884                          │
+│     rew_teleop_body_ang_velocity_extend:     0.1948                          │
+│         rew_teleop_body_velocity_extend:     0.2712                          │
+│               rew_teleop_joint_position:     0.5024                          │
+│               rew_teleop_joint_velocity:     0.4971                          │
+│                     rew_penalty_torques:    -0.0008                          │
+│                 rew_penalty_action_rate:    -1.1993                          │
+│                       rew_feet_air_time:    -0.0236                          │
+│         rew_penalty_feet_contact_forces:    -0.2597                          │
+│                     rew_penalty_stumble:    -0.0008                          │
+│                    rew_penalty_slippage:    -0.0621                          │
+│                      rew_limits_dof_pos:    -0.0033                          │
+│                      rew_limits_dof_vel:    -0.0016                          │
+│                       rew_limits_torque:    -0.7176                          │
+│                         rew_termination:    -1.9142                          │
+│                           rew_collision:    -0.0808                          │
+│                               rew_total:     0.6034                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 9928704                             │
+│                         Collection time:     1.2041s                         │
+│                           Learning time:     0.2447s                         │
+│                          Iteration time:     1.4488s                         │
+│                              Total time:   154.1531s                         │
+│                                     ETA: 1526115.9451s                       │
+│                                Time Now: 2025-06-18 19:45:17                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 125/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 68078 steps/s                       │
+│                   Mean action noise std:     0.7037                          │
+│                             Mean reward:     2.0480                          │
+│                     Mean episode length:    95.7500                          │
+│                          end_time_ratio:     0.7458                          │
+│                      end_time_ratio_std:     0.2495                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2414                          │
+│                    lower_body_diff_norm:     0.1705                          │
+│                     vr_3point_diff_norm:     0.2792                          │
+│                     joint_pos_diff_norm:     2.2255                          │
+│          error_ema_teleop_max_joint_pos:     1.1211                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0294                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0150                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0360                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0127                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.1911                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.5688                          │
+│               adp_sigma_teleop_body_vel:     0.5688                          │
+│           error_ema_teleop_body_ang_vel:    19.6893                          │
+│           adp_sigma_teleop_body_ang_vel:    15.0000                          │
+│              error_ema_teleop_joint_pos:     0.2622                          │
+│              adp_sigma_teleop_joint_pos:     0.2622                          │
+│              error_ema_teleop_joint_vel:    28.7977                          │
+│              adp_sigma_teleop_joint_vel:    28.6837                          │
+│     terminate_when_motion_far_threshold:     1.4268                          │
+│                    terminate_by_gravity:     0.6540                          │
+│                 terminate_by_motion_far:     0.0124                          │
+│                   terminate_by_time_out:     0.3425                          │
+│                 terminate_by_motion_end:     0.3425                          │
+│                           penalty_scale:     0.1020                          │
+│                  average_episode_length:    79.7844                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3508                          │
+│           rew_teleop_max_joint_position:     0.4024                          │
+│         rew_teleop_body_position_extend:     1.0584                          │
+│                    rew_teleop_vr_3point:     0.6107                          │
+│           rew_teleop_body_position_feet:     0.8267                          │
+│         rew_teleop_body_rotation_extend:     0.1720                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2161                          │
+│         rew_teleop_body_velocity_extend:     0.2725                          │
+│               rew_teleop_joint_position:     0.5256                          │
+│               rew_teleop_joint_velocity:     0.5101                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.1691                          │
+│                       rew_feet_air_time:    -0.0218                          │
+│         rew_penalty_feet_contact_forces:    -0.2466                          │
+│                     rew_penalty_stumble:    -0.0004                          │
+│                    rew_penalty_slippage:    -0.0601                          │
+│                      rew_limits_dof_pos:    -0.0051                          │
+│                      rew_limits_dof_vel:    -0.0010                          │
+│                       rew_limits_torque:    -0.6213                          │
+│                         rew_termination:    -1.2654                          │
+│                           rew_collision:    -0.0837                          │
+│                               rew_total:     1.4702                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 12386304                            │
+│                         Collection time:     1.1998s                         │
+│                           Learning time:     0.2442s                         │
+│                          Iteration time:     1.4440s                         │
+│                              Total time:   190.8823s                         │
+│                                     ETA: 1514749.2294s                       │
+│                                Time Now: 2025-06-18 19:45:54                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 150/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 70706 steps/s                       │
+│                   Mean action noise std:     0.6939                          │
+│                             Mean reward:     4.0271                          │
+│                     Mean episode length:   121.5500                          │
+│                          end_time_ratio:     0.8105                          │
+│                      end_time_ratio_std:     0.2330                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2419                          │
+│                    lower_body_diff_norm:     0.1820                          │
+│                     vr_3point_diff_norm:     0.2814                          │
+│                     joint_pos_diff_norm:     2.1664                          │
+│          error_ema_teleop_max_joint_pos:     1.1180                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0301                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0157                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0373                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0135                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.2313                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.4859                          │
+│               adp_sigma_teleop_body_vel:     0.4859                          │
+│           error_ema_teleop_body_ang_vel:    17.2698                          │
+│           adp_sigma_teleop_body_ang_vel:    15.0000                          │
+│              error_ema_teleop_joint_pos:     0.2499                          │
+│              adp_sigma_teleop_joint_pos:     0.2499                          │
+│              error_ema_teleop_joint_vel:    24.9261                          │
+│              adp_sigma_teleop_joint_vel:    24.9261                          │
+│     terminate_when_motion_far_threshold:     1.4056                          │
+│                    terminate_by_gravity:     0.4812                          │
+│                 terminate_by_motion_far:     0.0470                          │
+│                   terminate_by_time_out:     0.4929                          │
+│                 terminate_by_motion_end:     0.4929                          │
+│                           penalty_scale:     0.1026                          │
+│                  average_episode_length:    99.8716                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3565                          │
+│           rew_teleop_max_joint_position:     0.4076                          │
+│         rew_teleop_body_position_extend:     1.0658                          │
+│                    rew_teleop_vr_3point:     0.6277                          │
+│           rew_teleop_body_position_feet:     0.7884                          │
+│         rew_teleop_body_rotation_extend:     0.1535                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2345                          │
+│         rew_teleop_body_velocity_extend:     0.2717                          │
+│               rew_teleop_joint_position:     0.5282                          │
+│               rew_teleop_joint_velocity:     0.5081                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.1698                          │
+│                       rew_feet_air_time:    -0.0205                          │
+│         rew_penalty_feet_contact_forces:    -0.2521                          │
+│                     rew_penalty_stumble:    -0.0007                          │
+│                    rew_penalty_slippage:    -0.0599                          │
+│                      rew_limits_dof_pos:    -0.0072                          │
+│                      rew_limits_dof_vel:    -0.0007                          │
+│                       rew_limits_torque:    -0.5680                          │
+│                         rew_termination:    -0.8020                          │
+│                           rew_collision:    -0.0783                          │
+│                               rew_total:     1.9822                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 14843904                            │
+│                         Collection time:     1.1419s                         │
+│                           Learning time:     0.2484s                         │
+│                          Iteration time:     1.3903s                         │
+│                              Total time:   227.3347s                         │
+│                                     ETA: 1505301.8709s                       │
+│                                Time Now: 2025-06-18 19:46:30                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 175/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 67901 steps/s                       │
+│                   Mean action noise std:     0.6818                          │
+│                             Mean reward:     5.7336                          │
+│                     Mean episode length:   140.7800                          │
+│                          end_time_ratio:     0.8868                          │
+│                      end_time_ratio_std:     0.1950                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2367                          │
+│                    lower_body_diff_norm:     0.1920                          │
+│                     vr_3point_diff_norm:     0.2793                          │
+│                     joint_pos_diff_norm:     2.0309                          │
+│          error_ema_teleop_max_joint_pos:     1.1036                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0298                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0169                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0377                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0158                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.2823                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.4138                          │
+│               adp_sigma_teleop_body_vel:     0.4138                          │
+│           error_ema_teleop_body_ang_vel:    15.2339                          │
+│           adp_sigma_teleop_body_ang_vel:    14.8755                          │
+│              error_ema_teleop_joint_pos:     0.2336                          │
+│              adp_sigma_teleop_joint_pos:     0.2336                          │
+│              error_ema_teleop_joint_vel:    21.6704                          │
+│              adp_sigma_teleop_joint_vel:    21.6704                          │
+│     terminate_when_motion_far_threshold:     1.3847                          │
+│                    terminate_by_gravity:     0.2702                          │
+│                 terminate_by_motion_far:     0.0717                          │
+│                   terminate_by_time_out:     0.6781                          │
+│                 terminate_by_motion_end:     0.6781                          │
+│                           penalty_scale:     0.1033                          │
+│                  average_episode_length:   122.7683                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3572                          │
+│           rew_teleop_max_joint_position:     0.4292                          │
+│         rew_teleop_body_position_extend:     1.0854                          │
+│                    rew_teleop_vr_3point:     0.6531                          │
+│           rew_teleop_body_position_feet:     0.7614                          │
+│         rew_teleop_body_rotation_extend:     0.1441                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2457                          │
+│         rew_teleop_body_velocity_extend:     0.2655                          │
+│               rew_teleop_joint_position:     0.5580                          │
+│               rew_teleop_joint_velocity:     0.5002                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.1617                          │
+│                       rew_feet_air_time:    -0.0202                          │
+│         rew_penalty_feet_contact_forces:    -0.2578                          │
+│                     rew_penalty_stumble:    -0.0002                          │
+│                    rew_penalty_slippage:    -0.0584                          │
+│                      rew_limits_dof_pos:    -0.0083                          │
+│                      rew_limits_dof_vel:    -0.0006                          │
+│                       rew_limits_torque:    -0.5153                          │
+│                         rew_termination:    -0.4730                          │
+│                           rew_collision:    -0.0679                          │
+│                               rew_total:     2.4358                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 17301504                            │
+│                         Collection time:     1.2017s                         │
+│                           Learning time:     0.2460s                         │
+│                          Iteration time:     1.4477s                         │
+│                              Total time:   263.2966s                         │
+│                                     ETA: 1495741.7946s                       │
+│                                Time Now: 2025-06-18 19:47:06                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 200/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 69200 steps/s                       │
+│                   Mean action noise std:     0.6692                          │
+│                             Mean reward:     7.9615                          │
+│                     Mean episode length:   169.0100                          │
+│                          end_time_ratio:     0.9255                          │
+│                      end_time_ratio_std:     0.1669                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2324                          │
+│                    lower_body_diff_norm:     0.1941                          │
+│                     vr_3point_diff_norm:     0.2759                          │
+│                     joint_pos_diff_norm:     1.9103                          │
+│          error_ema_teleop_max_joint_pos:     1.0728                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0291                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0182                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0377                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0187                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.3285                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.3578                          │
+│               adp_sigma_teleop_body_vel:     0.3578                          │
+│           error_ema_teleop_body_ang_vel:    13.5741                          │
+│           adp_sigma_teleop_body_ang_vel:    13.5741                          │
+│              error_ema_teleop_joint_pos:     0.2126                          │
+│              adp_sigma_teleop_joint_pos:     0.2126                          │
+│              error_ema_teleop_joint_vel:    19.0356                          │
+│              adp_sigma_teleop_joint_vel:    19.0356                          │
+│     terminate_when_motion_far_threshold:     1.3641                          │
+│                    terminate_by_gravity:     0.1631                          │
+│                 terminate_by_motion_far:     0.0615                          │
+│                   terminate_by_time_out:     0.7893                          │
+│                 terminate_by_motion_end:     0.7893                          │
+│                           penalty_scale:     0.1039                          │
+│                  average_episode_length:   139.9681                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3579                          │
+│           rew_teleop_max_joint_position:     0.4495                          │
+│         rew_teleop_body_position_extend:     1.1097                          │
+│                    rew_teleop_vr_3point:     0.6619                          │
+│           rew_teleop_body_position_feet:     0.7810                          │
+│         rew_teleop_body_rotation_extend:     0.1322                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2409                          │
+│         rew_teleop_body_velocity_extend:     0.2583                          │
+│               rew_teleop_joint_position:     0.5610                          │
+│               rew_teleop_joint_velocity:     0.4840                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.1352                          │
+│                       rew_feet_air_time:    -0.0178                          │
+│         rew_penalty_feet_contact_forces:    -0.2333                          │
+│                     rew_penalty_stumble:    -0.0002                          │
+│                    rew_penalty_slippage:    -0.0556                          │
+│                      rew_limits_dof_pos:    -0.0089                          │
+│                      rew_limits_dof_vel:    -0.0005                          │
+│                       rew_limits_torque:    -0.4812                          │
+│                         rew_termination:    -0.3119                          │
+│                           rew_collision:    -0.0577                          │
+│                               rew_total:     2.7334                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 19759104                            │
+│                         Collection time:     1.1770s                         │
+│                           Learning time:     0.2436s                         │
+│                          Iteration time:     1.4206s                         │
+│                              Total time:   299.4317s                         │
+│                                     ETA: 1489411.8066s                       │
+│                                Time Now: 2025-06-18 19:47:42                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 225/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 71309 steps/s                       │
+│                   Mean action noise std:     0.6595                          │
+│                             Mean reward:     7.3553                          │
+│                     Mean episode length:   144.9200                          │
+│                          end_time_ratio:     0.9446                          │
+│                      end_time_ratio_std:     0.1503                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2240                          │
+│                    lower_body_diff_norm:     0.1839                          │
+│                     vr_3point_diff_norm:     0.2733                          │
+│                     joint_pos_diff_norm:     1.8047                          │
+│          error_ema_teleop_max_joint_pos:     1.0315                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9982                          │
+│         error_ema_teleop_upper_body_pos:     0.0280                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0186                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0372                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0203                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.3638                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.3146                          │
+│               adp_sigma_teleop_body_vel:     0.3146                          │
+│           error_ema_teleop_body_ang_vel:    12.1970                          │
+│           adp_sigma_teleop_body_ang_vel:    12.1970                          │
+│              error_ema_teleop_joint_pos:     0.1920                          │
+│              adp_sigma_teleop_joint_pos:     0.1920                          │
+│              error_ema_teleop_joint_vel:    16.9450                          │
+│              adp_sigma_teleop_joint_vel:    16.9450                          │
+│     terminate_when_motion_far_threshold:     1.3437                          │
+│                    terminate_by_gravity:     0.1295                          │
+│                 terminate_by_motion_far:     0.0433                          │
+│                   terminate_by_time_out:     0.8376                          │
+│                 terminate_by_motion_end:     0.8376                          │
+│                           penalty_scale:     0.1045                          │
+│                  average_episode_length:   151.4370                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3564                          │
+│           rew_teleop_max_joint_position:     0.4763                          │
+│         rew_teleop_body_position_extend:     1.2002                          │
+│                    rew_teleop_vr_3point:     0.7125                          │
+│           rew_teleop_body_position_feet:     0.8521                          │
+│         rew_teleop_body_rotation_extend:     0.1309                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2397                          │
+│         rew_teleop_body_velocity_extend:     0.2533                          │
+│               rew_teleop_joint_position:     0.5812                          │
+│               rew_teleop_joint_velocity:     0.4814                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.1070                          │
+│                       rew_feet_air_time:    -0.0163                          │
+│         rew_penalty_feet_contact_forces:    -0.2126                          │
+│                     rew_penalty_stumble:    -0.0003                          │
+│                    rew_penalty_slippage:    -0.0553                          │
+│                      rew_limits_dof_pos:    -0.0110                          │
+│                      rew_limits_dof_vel:    -0.0006                          │
+│                       rew_limits_torque:    -0.4369                          │
+│                         rew_termination:    -0.2445                          │
+│                           rew_collision:    -0.0548                          │
+│                               rew_total:     3.1441                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 22216704                            │
+│                         Collection time:     1.1355s                         │
+│                           Learning time:     0.2431s                         │
+│                          Iteration time:     1.3785s                         │
+│                              Total time:   335.5147s                         │
+│                                     ETA: 1484244.3673s                       │
+│                                Time Now: 2025-06-18 19:48:19                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 250/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 69642 steps/s                       │
+│                   Mean action noise std:     0.6489                          │
+│                             Mean reward:     7.8655                          │
+│                     Mean episode length:   140.4800                          │
+│                          end_time_ratio:     0.9549                          │
+│                      end_time_ratio_std:     0.1363                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2161                          │
+│                    lower_body_diff_norm:     0.1770                          │
+│                     vr_3point_diff_norm:     0.2677                          │
+│                     joint_pos_diff_norm:     1.6960                          │
+│          error_ema_teleop_max_joint_pos:     0.9838                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9826                          │
+│         error_ema_teleop_upper_body_pos:     0.0266                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0180                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0366                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0205                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.3858                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2828                          │
+│               adp_sigma_teleop_body_vel:     0.2828                          │
+│           error_ema_teleop_body_ang_vel:    11.0418                          │
+│           adp_sigma_teleop_body_ang_vel:    11.0418                          │
+│              error_ema_teleop_joint_pos:     0.1720                          │
+│              adp_sigma_teleop_joint_pos:     0.1720                          │
+│              error_ema_teleop_joint_vel:    15.2169                          │
+│              adp_sigma_teleop_joint_vel:    15.2169                          │
+│     terminate_when_motion_far_threshold:     1.3237                          │
+│                    terminate_by_gravity:     0.1026                          │
+│                 terminate_by_motion_far:     0.0309                          │
+│                   terminate_by_time_out:     0.8719                          │
+│                 terminate_by_motion_end:     0.8719                          │
+│                           penalty_scale:     0.1051                          │
+│                  average_episode_length:   155.7469                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3553                          │
+│           rew_teleop_max_joint_position:     0.4896                          │
+│         rew_teleop_body_position_extend:     1.2153                          │
+│                    rew_teleop_vr_3point:     0.7334                          │
+│           rew_teleop_body_position_feet:     0.8422                          │
+│         rew_teleop_body_rotation_extend:     0.1357                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2331                          │
+│         rew_teleop_body_velocity_extend:     0.2427                          │
+│               rew_teleop_joint_position:     0.5836                          │
+│               rew_teleop_joint_velocity:     0.4641                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.0847                          │
+│                       rew_feet_air_time:    -0.0164                          │
+│         rew_penalty_feet_contact_forces:    -0.2035                          │
+│                     rew_penalty_stumble:    -0.0004                          │
+│                    rew_penalty_slippage:    -0.0528                          │
+│                      rew_limits_dof_pos:    -0.0119                          │
+│                      rew_limits_dof_vel:    -0.0004                          │
+│                       rew_limits_torque:    -0.4211                          │
+│                         rew_termination:    -0.1936                          │
+│                           rew_collision:    -0.0428                          │
+│                               rew_total:     3.2666                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 24674304                            │
+│                         Collection time:     1.1661s                         │
+│                           Learning time:     0.2454s                         │
+│                          Iteration time:     1.4115s                         │
+│                              Total time:   371.5054s                         │
+│                                     ETA: 1479731.2637s                       │
+│                                Time Now: 2025-06-18 19:48:55                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 275/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 68101 steps/s                       │
+│                   Mean action noise std:     0.6417                          │
+│                             Mean reward:     8.4300                          │
+│                     Mean episode length:   152.1300                          │
+│                          end_time_ratio:     0.9632                          │
+│                      end_time_ratio_std:     0.1254                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.2071                          │
+│                    lower_body_diff_norm:     0.1704                          │
+│                     vr_3point_diff_norm:     0.2569                          │
+│                     joint_pos_diff_norm:     1.6628                          │
+│          error_ema_teleop_max_joint_pos:     0.9347                          │
+│          adp_sigma_teleop_max_joint_pos:     0.9347                          │
+│         error_ema_teleop_upper_body_pos:     0.0250                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0172                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0353                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0201                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.4019                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2597                          │
+│               adp_sigma_teleop_body_vel:     0.2597                          │
+│           error_ema_teleop_body_ang_vel:    10.1577                          │
+│           adp_sigma_teleop_body_ang_vel:    10.1577                          │
+│              error_ema_teleop_joint_pos:     0.1559                          │
+│              adp_sigma_teleop_joint_pos:     0.1559                          │
+│              error_ema_teleop_joint_vel:    13.9195                          │
+│              adp_sigma_teleop_joint_vel:    13.9195                          │
+│     terminate_when_motion_far_threshold:     1.3040                          │
+│                    terminate_by_gravity:     0.0911                          │
+│                 terminate_by_motion_far:     0.0272                          │
+│                   terminate_by_time_out:     0.8855                          │
+│                 terminate_by_motion_end:     0.8855                          │
+│                           penalty_scale:     0.1058                          │
+│                  average_episode_length:   158.6951                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3621                          │
+│           rew_teleop_max_joint_position:     0.4709                          │
+│         rew_teleop_body_position_extend:     1.1862                          │
+│                    rew_teleop_vr_3point:     0.7257                          │
+│           rew_teleop_body_position_feet:     0.8154                          │
+│         rew_teleop_body_rotation_extend:     0.1305                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2281                          │
+│         rew_teleop_body_velocity_extend:     0.2365                          │
+│               rew_teleop_joint_position:     0.5465                          │
+│               rew_teleop_joint_velocity:     0.4558                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.0637                          │
+│                       rew_feet_air_time:    -0.0153                          │
+│         rew_penalty_feet_contact_forces:    -0.2047                          │
+│                     rew_penalty_stumble:    -0.0004                          │
+│                    rew_penalty_slippage:    -0.0521                          │
+│                      rew_limits_dof_pos:    -0.0139                          │
+│                      rew_limits_dof_vel:    -0.0005                          │
+│                       rew_limits_torque:    -0.3937                          │
+│                         rew_termination:    -0.2178                          │
+│                           rew_collision:    -0.0478                          │
+│                               rew_total:     3.1473                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 27131904                            │
+│                         Collection time:     1.1986s                         │
+│                           Learning time:     0.2449s                         │
+│                          Iteration time:     1.4435s                         │
+│                              Total time:   407.7883s                         │
+│                                     ETA: 1477087.4358s                       │
+│                                Time Now: 2025-06-18 19:49:31                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 300/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 68515 steps/s                       │
+│                   Mean action noise std:     0.6308                          │
+│                             Mean reward:     9.0946                          │
+│                     Mean episode length:   158.1500                          │
+│                          end_time_ratio:     0.9655                          │
+│                      end_time_ratio_std:     0.1230                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.1954                          │
+│                    lower_body_diff_norm:     0.1626                          │
+│                     vr_3point_diff_norm:     0.2413                          │
+│                     joint_pos_diff_norm:     1.6029                          │
+│          error_ema_teleop_max_joint_pos:     0.8932                          │
+│          adp_sigma_teleop_max_joint_pos:     0.8932                          │
+│         error_ema_teleop_upper_body_pos:     0.0230                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0160                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0149                          │
+│          error_ema_teleop_vr_3point_pos:     0.0330                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0191                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.4133                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2430                          │
+│               adp_sigma_teleop_body_vel:     0.2430                          │
+│           error_ema_teleop_body_ang_vel:     9.5186                          │
+│           adp_sigma_teleop_body_ang_vel:     9.5186                          │
+│              error_ema_teleop_joint_pos:     0.1449                          │
+│              adp_sigma_teleop_joint_pos:     0.1449                          │
+│              error_ema_teleop_joint_vel:    13.0053                          │
+│              adp_sigma_teleop_joint_vel:    13.0053                          │
+│     terminate_when_motion_far_threshold:     1.2846                          │
+│                    terminate_by_gravity:     0.0744                          │
+│                 terminate_by_motion_far:     0.0280                          │
+│                   terminate_by_time_out:     0.9010                          │
+│                 terminate_by_motion_end:     0.9010                          │
+│                           penalty_scale:     0.1064                          │
+│                  average_episode_length:   161.2303                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3599                          │
+│           rew_teleop_max_joint_position:     0.4798                          │
+│         rew_teleop_body_position_extend:     1.2454                          │
+│                    rew_teleop_vr_3point:     0.7815                          │
+│           rew_teleop_body_position_feet:     0.8539                          │
+│         rew_teleop_body_rotation_extend:     0.1401                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2238                          │
+│         rew_teleop_body_velocity_extend:     0.2322                          │
+│               rew_teleop_joint_position:     0.5596                          │
+│               rew_teleop_joint_velocity:     0.4428                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -1.0334                          │
+│                       rew_feet_air_time:    -0.0165                          │
+│         rew_penalty_feet_contact_forces:    -0.1881                          │
+│                     rew_penalty_stumble:    -0.0003                          │
+│                    rew_penalty_slippage:    -0.0516                          │
+│                      rew_limits_dof_pos:    -0.0143                          │
+│                      rew_limits_dof_vel:    -0.0004                          │
+│                       rew_limits_torque:    -0.3814                          │
+│                         rew_termination:    -0.2207                          │
+│                           rew_collision:    -0.0523                          │
+│                               rew_total:     3.3594                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 29589504                            │
+│                         Collection time:     1.1891s                         │
+│                           Learning time:     0.2457s                         │
+│                          Iteration time:     1.4348s                         │
+│                              Total time:   444.4153s                         │
+│                                     ETA: 1476020.0067s                       │
+│                                Time Now: 2025-06-18 19:50:08                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 325/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 69632 steps/s                       │
+│                   Mean action noise std:     0.6226                          │
+│                             Mean reward:    10.3567                          │
+│                     Mean episode length:   168.7500                          │
+│                          end_time_ratio:     0.9693                          │
+│                      end_time_ratio_std:     0.1168                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.1865                          │
+│                    lower_body_diff_norm:     0.1553                          │
+│                     vr_3point_diff_norm:     0.2320                          │
+│                     joint_pos_diff_norm:     1.5371                          │
+│          error_ema_teleop_max_joint_pos:     0.8510                          │
+│          adp_sigma_teleop_max_joint_pos:     0.8510                          │
+│         error_ema_teleop_upper_body_pos:     0.0210                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0147                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0146                          │
+│          error_ema_teleop_vr_3point_pos:     0.0305                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0176                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.4212                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2303                          │
+│               adp_sigma_teleop_body_vel:     0.2303                          │
+│           error_ema_teleop_body_ang_vel:     8.9797                          │
+│           adp_sigma_teleop_body_ang_vel:     8.9797                          │
+│              error_ema_teleop_joint_pos:     0.1341                          │
+│              adp_sigma_teleop_joint_pos:     0.1341                          │
+│              error_ema_teleop_joint_vel:    12.2552                          │
+│              adp_sigma_teleop_joint_vel:    12.2552                          │
+│     terminate_when_motion_far_threshold:     1.2655                          │
+│                    terminate_by_gravity:     0.0675                          │
+│                 terminate_by_motion_far:     0.0265                          │
+│                   terminate_by_time_out:     0.9097                          │
+│                 terminate_by_motion_end:     0.9097                          │
+│                           penalty_scale:     0.1070                          │
+│                  average_episode_length:   162.1378                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3582                          │
+│           rew_teleop_max_joint_position:     0.4753                          │
+│         rew_teleop_body_position_extend:     1.2830                          │
+│                    rew_teleop_vr_3point:     0.8128                          │
+│           rew_teleop_body_position_feet:     0.8807                          │
+│         rew_teleop_body_rotation_extend:     0.1337                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2214                          │
+│         rew_teleop_body_velocity_extend:     0.2305                          │
+│               rew_teleop_joint_position:     0.5635                          │
+│               rew_teleop_joint_velocity:     0.4403                          │
+│                     rew_penalty_torques:    -0.0006                          │
+│                 rew_penalty_action_rate:    -1.0116                          │
+│                       rew_feet_air_time:    -0.0146                          │
+│         rew_penalty_feet_contact_forces:    -0.1776                          │
+│                     rew_penalty_stumble:    -0.0002                          │
+│                    rew_penalty_slippage:    -0.0511                          │
+│                      rew_limits_dof_pos:    -0.0162                          │
+│                      rew_limits_dof_vel:    -0.0004                          │
+│                       rew_limits_torque:    -0.3548                          │
+│                         rew_termination:    -0.1769                          │
+│                           rew_collision:    -0.0448                          │
+│                               rew_total:     3.5503                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 32047104                            │
+│                         Collection time:     1.1671s                         │
+│                           Learning time:     0.2447s                         │
+│                          Iteration time:     1.4118s                         │
+│                              Total time:   480.6312s                         │
+│                                     ETA: 1473849.5417s                       │
+│                                Time Now: 2025-06-18 19:50:44                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 350/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 66494 steps/s                       │
+│                   Mean action noise std:     0.6161                          │
+│                             Mean reward:    10.3479                          │
+│                     Mean episode length:   159.4200                          │
+│                          end_time_ratio:     0.9734                          │
+│                      end_time_ratio_std:     0.1102                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.1780                          │
+│                    lower_body_diff_norm:     0.1484                          │
+│                     vr_3point_diff_norm:     0.2209                          │
+│                     joint_pos_diff_norm:     1.5014                          │
+│          error_ema_teleop_max_joint_pos:     0.8158                          │
+│          adp_sigma_teleop_max_joint_pos:     0.8158                          │
+│         error_ema_teleop_upper_body_pos:     0.0191                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0135                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0135                          │
+│          error_ema_teleop_vr_3point_pos:     0.0281                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0160                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.4274                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2204                          │
+│               adp_sigma_teleop_body_vel:     0.2204                          │
+│           error_ema_teleop_body_ang_vel:     8.5311                          │
+│           adp_sigma_teleop_body_ang_vel:     8.5311                          │
+│              error_ema_teleop_joint_pos:     0.1250                          │
+│              adp_sigma_teleop_joint_pos:     0.1250                          │
+│              error_ema_teleop_joint_vel:    11.6237                          │
+│              adp_sigma_teleop_joint_vel:    11.6237                          │
+│     terminate_when_motion_far_threshold:     1.2466                          │
+│                    terminate_by_gravity:     0.0574                          │
+│                 terminate_by_motion_far:     0.0231                          │
+│                   terminate_by_time_out:     0.9223                          │
+│                 terminate_by_motion_end:     0.9223                          │
+│                           penalty_scale:     0.1077                          │
+│                  average_episode_length:   164.0747                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3610                          │
+│           rew_teleop_max_joint_position:     0.4707                          │
+│         rew_teleop_body_position_extend:     1.2913                          │
+│                    rew_teleop_vr_3point:     0.8439                          │
+│           rew_teleop_body_position_feet:     0.8836                          │
+│         rew_teleop_body_rotation_extend:     0.1359                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2199                          │
+│         rew_teleop_body_velocity_extend:     0.2284                          │
+│               rew_teleop_joint_position:     0.5583                          │
+│               rew_teleop_joint_velocity:     0.4366                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -0.9924                          │
+│                       rew_feet_air_time:    -0.0148                          │
+│         rew_penalty_feet_contact_forces:    -0.1679                          │
+│                     rew_penalty_stumble:    -0.0003                          │
+│                    rew_penalty_slippage:    -0.0510                          │
+│                      rew_limits_dof_pos:    -0.0176                          │
+│                      rew_limits_dof_vel:    -0.0004                          │
+│                       rew_limits_torque:    -0.3348                          │
+│                         rew_termination:    -0.1594                          │
+│                           rew_collision:    -0.0411                          │
+│                               rew_total:     3.6493                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 34504704                            │
+│                         Collection time:     1.2255s                         │
+│                           Learning time:     0.2529s                         │
+│                          Iteration time:     1.4784s                         │
+│                              Total time:   517.0291s                         │
+│                                     ETA: 1472501.8159s                       │
+│                                Time Now: 2025-06-18 19:51:20                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 375/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 68194 steps/s                       │
+│                   Mean action noise std:     0.6104                          │
+│                             Mean reward:     9.9274                          │
+│                     Mean episode length:   155.4700                          │
+│                          end_time_ratio:     0.9775                          │
+│                      end_time_ratio_std:     0.1004                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.1698                          │
+│                    lower_body_diff_norm:     0.1406                          │
+│                     vr_3point_diff_norm:     0.2119                          │
+│                     joint_pos_diff_norm:     1.4737                          │
+│          error_ema_teleop_max_joint_pos:     0.7891                          │
+│          adp_sigma_teleop_max_joint_pos:     0.7891                          │
+│         error_ema_teleop_upper_body_pos:     0.0175                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0123                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0123                          │
+│          error_ema_teleop_vr_3point_pos:     0.0258                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0144                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.4318                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2125                          │
+│               adp_sigma_teleop_body_vel:     0.2125                          │
+│           error_ema_teleop_body_ang_vel:     8.1681                          │
+│           adp_sigma_teleop_body_ang_vel:     8.1681                          │
+│              error_ema_teleop_joint_pos:     0.1183                          │
+│              adp_sigma_teleop_joint_pos:     0.1183                          │
+│              error_ema_teleop_joint_vel:    11.1311                          │
+│              adp_sigma_teleop_joint_vel:    11.1311                          │
+│     terminate_when_motion_far_threshold:     1.2281                          │
+│                    terminate_by_gravity:     0.0551                          │
+│                 terminate_by_motion_far:     0.0147                          │
+│                   terminate_by_time_out:     0.9320                          │
+│                 terminate_by_motion_end:     0.9320                          │
+│                           penalty_scale:     0.1083                          │
+│                  average_episode_length:   164.9350                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3648                          │
+│           rew_teleop_max_joint_position:     0.4620                          │
+│         rew_teleop_body_position_extend:     1.3063                          │
+│                    rew_teleop_vr_3point:     0.8473                          │
+│           rew_teleop_body_position_feet:     0.9204                          │
+│         rew_teleop_body_rotation_extend:     0.1396                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2224                          │
+│         rew_teleop_body_velocity_extend:     0.2304                          │
+│               rew_teleop_joint_position:     0.5446                          │
+│               rew_teleop_joint_velocity:     0.4428                          │
+│                     rew_penalty_torques:    -0.0006                          │
+│                 rew_penalty_action_rate:    -0.9759                          │
+│                       rew_feet_air_time:    -0.0124                          │
+│         rew_penalty_feet_contact_forces:    -0.1517                          │
+│                     rew_penalty_stumble:    -0.0002                          │
+│                    rew_penalty_slippage:    -0.0509                          │
+│                      rew_limits_dof_pos:    -0.0199                          │
+│                      rew_limits_dof_vel:    -0.0004                          │
+│                       rew_limits_torque:    -0.3115                          │
+│                         rew_termination:    -0.1546                          │
+│                           rew_collision:    -0.0354                          │
+│                               rew_total:     3.7670                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 36962304                            │
+│                         Collection time:     1.1970s                         │
+│                           Learning time:     0.2445s                         │
+│                          Iteration time:     1.4415s                         │
+│                              Total time:   552.8933s                         │
+│                                     ETA: 1469909.4074s                       │
+│                                Time Now: 2025-06-18 19:51:56                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 400/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 68953 steps/s                       │
+│                   Mean action noise std:     0.6074                          │
+│                             Mean reward:    10.2100                          │
+│                     Mean episode length:   144.4000                          │
+│                          end_time_ratio:     0.9746                          │
+│                      end_time_ratio_std:     0.1031                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.1640                          │
+│                    lower_body_diff_norm:     0.1335                          │
+│                     vr_3point_diff_norm:     0.2051                          │
+│                     joint_pos_diff_norm:     1.4592                          │
+│          error_ema_teleop_max_joint_pos:     0.7669                          │
+│          adp_sigma_teleop_max_joint_pos:     0.7669                          │
+│         error_ema_teleop_upper_body_pos:     0.0159                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0149                          │
+│         error_ema_teleop_lower_body_pos:     0.0110                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0110                          │
+│          error_ema_teleop_vr_3point_pos:     0.0239                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0127                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.4337                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2055                          │
+│               adp_sigma_teleop_body_vel:     0.2055                          │
+│           error_ema_teleop_body_ang_vel:     7.8332                          │
+│           adp_sigma_teleop_body_ang_vel:     7.8332                          │
+│              error_ema_teleop_joint_pos:     0.1130                          │
+│              adp_sigma_teleop_joint_pos:     0.1130                          │
+│              error_ema_teleop_joint_vel:    10.6612                          │
+│              adp_sigma_teleop_joint_vel:    10.6612                          │
+│     terminate_when_motion_far_threshold:     1.2098                          │
+│                    terminate_by_gravity:     0.0730                          │
+│                 terminate_by_motion_far:     0.0159                          │
+│                   terminate_by_time_out:     0.9148                          │
+│                 terminate_by_motion_end:     0.9148                          │
+│                           penalty_scale:     0.1090                          │
+│                  average_episode_length:   165.9198                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3577                          │
+│           rew_teleop_max_joint_position:     0.4649                          │
+│         rew_teleop_body_position_extend:     1.3283                          │
+│                    rew_teleop_vr_3point:     0.9019                          │
+│           rew_teleop_body_position_feet:     0.9539                          │
+│         rew_teleop_body_rotation_extend:     0.1356                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2192                          │
+│         rew_teleop_body_velocity_extend:     0.2295                          │
+│               rew_teleop_joint_position:     0.5519                          │
+│               rew_teleop_joint_velocity:     0.4346                          │
+│                     rew_penalty_torques:    -0.0006                          │
+│                 rew_penalty_action_rate:    -0.9753                          │
+│                       rew_feet_air_time:    -0.0124                          │
+│         rew_penalty_feet_contact_forces:    -0.1721                          │
+│                     rew_penalty_stumble:    -0.0003                          │
+│                    rew_penalty_slippage:    -0.0505                          │
+│                      rew_limits_dof_pos:    -0.0194                          │
+│                      rew_limits_dof_vel:    -0.0004                          │
+│                       rew_limits_torque:    -0.2956                          │
+│                         rew_termination:    -0.1092                          │
+│                           rew_collision:    -0.0365                          │
+│                               rew_total:     3.9050                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 39419904                            │
+│                         Collection time:     1.1802s                         │
+│                           Learning time:     0.2454s                         │
+│                          Iteration time:     1.4257s                         │
+│                              Total time:   588.9413s                         │
+│                                     ETA: 1468093.9699s                       │
+│                                Time Now: 2025-06-18 19:52:32                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯╭──────────────────────────────── Training Log ────────────────────────────────╮
+│                     [1m Learning iteration 425/1000000 [0m                   │
+│                                                                              │
+│                             Computation: 70920 steps/s                       │
+│                   Mean action noise std:     0.6040                          │
+│                             Mean reward:    11.6668                          │
+│                     Mean episode length:   159.6700                          │
+│                          end_time_ratio:     0.9773                          │
+│                      end_time_ratio_std:     0.0988                          │
+│                        action_clip_frac:     0.0000                          │
+│                    upper_body_diff_norm:     0.1589                          │
+│                    lower_body_diff_norm:     0.1297                          │
+│                     vr_3point_diff_norm:     0.1972                          │
+│                     joint_pos_diff_norm:     1.4277                          │
+│          error_ema_teleop_max_joint_pos:     0.7463                          │
+│          adp_sigma_teleop_max_joint_pos:     0.7463                          │
+│         error_ema_teleop_upper_body_pos:     0.0147                          │
+│         adp_sigma_teleop_upper_body_pos:     0.0147                          │
+│         error_ema_teleop_lower_body_pos:     0.0100                          │
+│         adp_sigma_teleop_lower_body_pos:     0.0100                          │
+│          error_ema_teleop_vr_3point_pos:     0.0222                          │
+│          adp_sigma_teleop_vr_3point_pos:     0.0149                          │
+│               error_ema_teleop_feet_pos:     0.0115                          │
+│               adp_sigma_teleop_feet_pos:     0.0099                          │
+│               error_ema_teleop_body_rot:     0.4360                          │
+│               adp_sigma_teleop_body_rot:     0.0999                          │
+│               error_ema_teleop_body_vel:     0.2008                          │
+│               adp_sigma_teleop_body_vel:     0.2008                          │
+│           error_ema_teleop_body_ang_vel:     7.5981                          │
+│           adp_sigma_teleop_body_ang_vel:     7.5981                          │
+│              error_ema_teleop_joint_pos:     0.1084                          │
+│              adp_sigma_teleop_joint_pos:     0.1084                          │
+│              error_ema_teleop_joint_vel:    10.3241                          │
+│              adp_sigma_teleop_joint_vel:    10.3241                          │
+│     terminate_when_motion_far_threshold:     1.1918                          │
+│                    terminate_by_gravity:     0.0562                          │
+│                 terminate_by_motion_far:     0.0206                          │
+│                   terminate_by_time_out:     0.9256                          │
+│                 terminate_by_motion_end:     0.9256                          │
+│                           penalty_scale:     0.1096                          │
+│                  average_episode_length:   164.9990                          │
+│           soft_dof_pos_curriculum_value:     0.9500                          │
+│           soft_dof_vel_curriculum_value:     0.9500                          │
+│            soft_torque_curriculum_value:     0.8500                          │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                 rew_teleop_contact_mask:     0.3662                          │
+│           rew_teleop_max_joint_position:     0.4552                          │
+│         rew_teleop_body_position_extend:     1.2781                          │
+│                    rew_teleop_vr_3point:     0.8833                          │
+│           rew_teleop_body_position_feet:     0.9333                          │
+│         rew_teleop_body_rotation_extend:     0.1358                          │
+│     rew_teleop_body_ang_velocity_extend:     0.2187                          │
+│         rew_teleop_body_velocity_extend:     0.2274                          │
+│               rew_teleop_joint_position:     0.5379                          │
+│               rew_teleop_joint_velocity:     0.4367                          │
+│                     rew_penalty_torques:    -0.0007                          │
+│                 rew_penalty_action_rate:    -0.9737                          │
+│                       rew_feet_air_time:    -0.0112                          │
+│         rew_penalty_feet_contact_forces:    -0.1606                          │
+│                     rew_penalty_stumble:    -0.0003                          │
+│                    rew_penalty_slippage:    -0.0513                          │
+│                      rew_limits_dof_pos:    -0.0217                          │
+│                      rew_limits_dof_vel:    -0.0004                          │
+│                       rew_limits_torque:    -0.2898                          │
+│                         rew_termination:    -0.1382                          │
+│                           rew_collision:    -0.0398                          │
+│                               rew_total:     3.7849                          │
+│ Note: reward computed per step                                               │
+│ ---------------------------------------------------------------------------- │
+│ ----                                                                         │
+│                         Total timesteps: 41877504                            │
+│                         Collection time:     1.1402s                         │
+│                           Learning time:     0.2459s                         │
+│                          Iteration time:     1.3861s                         │
+│                              Total time:   624.7500s                         │
+│                                     ETA: 1465925.9603s                       │
+│                                Time Now: 2025-06-18 19:53:08                 │
+│ Logging Directory:                                                           │
+│ logs/MotionTracking/20250618_194221-debug-motion_tracking-g1_23dof_lock_wris │
+│ t                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯

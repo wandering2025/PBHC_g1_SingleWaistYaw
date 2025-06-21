@@ -8,6 +8,30 @@ import os
 import sys
 from pathlib import Path
 
+paths_to_remove = [
+    '/home/bbw/ASAPx1',
+    '/home/bbw/ASAPx1/isaac_utils',
+    # 移除任何不必要的或重复的 PBHC 相关路径，避免混淆
+    '/home/bbw/PBHC/humanoidverse/isaac_utils/isaac_utils/__init__.py', # 文件路径
+    '/home/bbw/PBHC/humanoidverse/isaac_utils', # 这是 isaac_utils 的直接父目录，但如果 PBHC_ROOT 包含了它，就不需要单独添加
+    # '/home/bbw', # 如果之前有这个，也要移除，因为它太宽泛
+    '/home/bbw/PBHC/humanoidverse' # 移除脚本所在的目录，避免它作为顶层路径被优先查找
+]
+
+# 倒序遍历 sys.path 以安全地移除元素
+for p in reversed(sys.path):
+    if p in paths_to_remove:
+        sys.path.remove(p)
+
+pbhc_humanoidverse_path = Path(__file__).resolve().parent.parent # 获取 /home/bbw/PBHC
+if str(pbhc_humanoidverse_path) not in sys.path:
+    sys.path.insert(0, str(pbhc_humanoidverse_path))
+isaac_utils_actual_parent_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'isaac_utils'))
+pbhc_project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if isaac_utils_actual_parent_path not in sys.path:
+    # 插入到 pbhc_project_root 之后
+    sys.path.insert(1 if len(sys.path) > 0 and sys.path[0] == pbhc_project_root else 0, isaac_utils_actual_parent_path)
+
 import torch
 import hydra
 from hydra.utils import instantiate
@@ -19,7 +43,7 @@ from humanoidverse.utils.helpers import parse_observation
 from humanoidverse.deploy import URCIRobot, URCIPolicyObs, CfgType
 from scipy.spatial.transform import Rotation as R
 import logging
-from utils.config_utils import *  # noqa: E402, F403
+from humanoidverse.utils.config_utils import *  # noqa: E402, F403
 # add argparse arguments
 
 from typing import Dict, Optional
@@ -29,7 +53,7 @@ from loguru import logger
 
 import onnxruntime as ort
 import numpy as np
-from utils.devtool import pdb_decorator
+from humanoidverse.utils.devtool import pdb_decorator
 
 @hydra.main(config_path="config", config_name="base_eval")
 def main(override_config: OmegaConf):

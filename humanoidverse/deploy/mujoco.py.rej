@@ -1,0 +1,10 @@
+diff a/humanoidverse/deploy/mujoco.py b/humanoidverse/deploy/mujoco.py	(rejected hunks)
+@@ -13,7 +13,7 @@ import torch
+ from humanoidverse.deploy import URCIRobot
+ from scipy.spatial.transform import Rotation as R
+ import logging
+-from utils.config_utils import *  # noqa: E402, F403
++from humanoidverse.utils.config_utils import *  # noqa: E402, F403
+ # add argparse arguments
+ 
+ from typing import Dict, Optional, Tuple
