@@ -106,6 +106,13 @@ def pre_process_config(config) -> None:
                 motion_data = joblib.load(f)
             assert len(motion_data) == 1, 'current only support single motion tracking'
             the_motion_data = motion_data[next(iter(motion_data))]
+
+            print(f"fps type: {type(the_motion_data['fps'])}")
+            print(f"fps: {the_motion_data['fps']}")
+            if isinstance(the_motion_data['fps'], np.ndarray):
+                the_motion_data['fps'] = the_motion_data['fps'].item()
+                print(f"fps NOT int but nparray, converted to {type(the_motion_data['fps'])}")
+
             assert type(the_motion_data['fps']) == int, 'motion fps should be an integer'
             config.obs.motion_len = len(the_motion_data['dof']) / the_motion_data['fps']
             config.obs.motion_file = motion_file
