@@ -562,7 +562,7 @@ robot:
       - right_ankle_roll_link
     - - pelvis
       - waist_yaw_link
-      - waist_roll_link
+      #- waist_roll_link
       - torso_link
     - - left_shoulder_pitch_link
       - left_shoulder_roll_link

@@ -20,6 +20,10 @@ from smpl_sim.smpllib.smpl_joint_names import (
     SMPLH_MUJOCO_NAMES,
     SMPL_MUJOCO_NAMES
 )
+print('##########################################')
+print('SMPL_MUJOCO_NAMES')
+print(SMPL_MUJOCO_NAMES)
+print('##########################################')
 
 import mink
 from mink.utils import get_body_geom_ids
