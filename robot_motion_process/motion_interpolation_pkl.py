@@ -5,7 +5,7 @@ from scipy.spatial.transform import Slerp
 import joblib
 import argparse
 from pathlib import Path
-DOF_AXIS_FILE = "./description/robots/g1/dof_axis.npy"
+DOF_AXIS_FILE = "./description/robots/g1/g1_23dof_dof_axis.npy"
 
 def lower_dof_interpolation(start_dof,end_dof,nframe):
     mid_frame = nframe // 2
@@ -45,7 +45,7 @@ def correct_rot(root_rot,root_trans,dof):
 
     print('correct theta: ',theta)
     
-    dof[:,[0,6,14]] += theta
+    #dof[:,[0,6,14]] += theta
 
     return correct_root_trans,correct_root_rot,dof
 
@@ -259,20 +259,29 @@ if __name__ == "__main__":
     if args.default_pose is not None:
         default_pose = np.load(args.default_pose)
     else:
+        # default_pose = np.array([0.0, 0.0, 0.80, 
+        #                          0.0, 0.0, 0.0, 1.0, 
+        #                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        #                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        #                          0.0, 0.0, 0.0, 
+        #                          0.0, 0.0, 0.0, 0.0, 
+        #                          0.0, 0.0, 0.0, 0.0])
+        # default_pose = np.array([0.0, 0.0, 0.80, 
+        #                          0.0, 0.0, 0.0, 1.0, 
+        #                          -0.1, 0.0, 0.0, 0.3, -0.2, 0.0, 
+        #                          -0.1, 0.0, 0.0, 0.3, -0.2, 0.0, 
+        #                          0.0, 0.0, 0.0, 
+        #                          0.2, 0.2, 0.0, 0.9, 
+        #                          0.2, -0.2, 0.0, 0.9])
         default_pose = np.array([0.0, 0.0, 0.80, 
-                                 0.0, 0.0, 0.0, 1.0, 
-                                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                                 0.0, 0.0, 0.0, 
-                                 0.0, 0.0, 0.0, 0.0, 
-                                 0.0, 0.0, 0.0, 0.0])
-        default_pose = np.array([0.0, 0.0, 0.80, 
-                                 0.0, 0.0, 0.0, 1.0, 
-                                 -0.1, 0.0, 0.0, 0.3, -0.2, 0.0, 
-                                 -0.1, 0.0, 0.0, 0.3, -0.2, 0.0, 
-                                 0.0, 0.0, 0.0, 
-                                 0.2, 0.2, 0.0, 0.9, 
-                                 0.2, -0.2, 0.0, 0.9])
+                                0.0, 0.0, 0.0, 1.0,
+                                -0.1, 0.0, 0.1, 0.1, -0.2, 0.0,
+                                -0.1, 0.0, 0.1, 0.1, -0.2, 0.0,
+                                0.0,
+                                0.37, 0.2, 0.0, 0.72, 0.0,
+                                0.37, 0.2, 0.0, 0.72, 0.0])
+
+                                
 
     start_ext_frames = args.start_inter_frame
     end_ext_frames = args.end_inter_frame

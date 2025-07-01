@@ -5,7 +5,7 @@ import numpy as np
 
 # 指定你的PKL文件路径
 #file_path = '/home/bbw/PBHC_g1_SingleWaistYaw/smpl_retarget/retargeted_motion_data/mink/hips_poses.pkl'
-lift_magnitude = 0.05
+clipping_threshold = 0.0004
 
 def load_pkl_as_dict(filepath):
     """
@@ -53,25 +53,40 @@ def main():
 
     first_level_key = list(loaded_file.keys())[0] 
     inner_dict = loaded_file[first_level_key]
-    for inner_key in inner_dict.keys():
-        print(inner_key)
-
-    original_root_trans_offset = inner_dict['root_trans_offset']
-    modified_root_trans_offset = original_root_trans_offset.copy()
-    modified_root_trans_offset[:, 2] += lift_magnitude
-
-    print("\n--- 原始 root_trans_offset 对应的内容 (前5行) ---")
-    print(original_root_trans_offset[:5])
-
-    inner_dict['root_trans_offset'] = modified_root_trans_offset
-
-    print("\n--- 修改后的 root_trans_offset 对应的内容 (前5行) ---")
-    print(loaded_file[list(loaded_file.keys())[0]]['root_trans_offset'][:5])
+    # for inner_key in inner_dict.keys():
+    #     print(inner_key)
+    dof_content = inner_dict['dof']
+    print(dof_content.shape)
     
+    for i in range(len(dof_content)):
+        # print(f"frame{i} left_ankle_pitch_joint:{dof_content[i][4]} left_ankle_roll_joint:{dof_content[i][5]}")
+        # print(f"frame{i} right_ankle_pitch_joint:{dof_content[i][10]} right_ankle_roll_joint:{dof_content[i][11]}")
+        
+        left_ankle_pitch_joint = dof_content[i][4]
+        left_ankle_roll_joint = dof_content[i][5]
+        right_ankle_pitch_joint = dof_content[i][10]
+        right_ankle_roll_joint = dof_content[i][11]
+            # Using a ternary operator for concise clipping
+        
+        clipped_left_ankle_pitch = max(-clipping_threshold, min(left_ankle_pitch_joint, clipping_threshold))
+        clipped_left_ankle_roll = max(-clipping_threshold, min(left_ankle_roll_joint, clipping_threshold))
+        clipped_right_ankle_pitch = max(-clipping_threshold, min(right_ankle_pitch_joint, clipping_threshold))
+        clipped_right_ankle_roll = max(-clipping_threshold, min(right_ankle_roll_joint, clipping_threshold))
+
+        dof_content[i][4] = clipped_left_ankle_pitch
+        dof_content[i][5] = clipped_left_ankle_roll
+        dof_content[i][10] = clipped_right_ankle_pitch
+        dof_content[i][11] = clipped_right_ankle_roll
+
+
+        # print('--------------clipped------------------')
+        # print(f"frame{i} left_ankle_pitch_joint:{dof_content[i][4]} left_ankle_roll_joint:{dof_content[i][5]}")
+        # print(f"frame{i} right_ankle_pitch_joint:{dof_content[i][10]} right_ankle_roll_joint:{dof_content[i][11]}")
+        # print('#################################################################')
+
     dir_name = os.path.dirname(file_path)
     base_name = os.path.splitext(os.path.basename(file_path))[0]
-
-    new_file_name = f"{base_name}_RootLifted_{lift_magnitude}.pkl"
+    new_file_name = f"{base_name}_AnkleClipped_{clipping_threshold}.pkl"
     new_file_path = os.path.join(dir_name, new_file_name)
 
     save_dict_as_pkl(loaded_file, new_file_path)
