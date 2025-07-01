@@ -771,8 +771,22 @@ class LeggedRobotBase(BaseTask):
         """
         actions_scaled = actions * self.config.robot.control.action_scale
         control_type = self.config.robot.control.control_type
+        
+        # print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+        # print(f'dof_pos:{self.simulator.dof_pos}')
+        # print(f'dof_vel: {self.simulator.dof_vel}')
+        
         if control_type=="P":
-            torques = self._kp_scale * self.p_gains*(actions_scaled + self.default_dof_pos - self.simulator.dof_pos) - self._kd_scale * self.d_gains*self.simulator.dof_vel
+
+            # 计算PD控制器的目标位置
+            target_dof_pos = actions_scaled + self.default_dof_pos  
+            # 将第5位和第11位电机的目标角度设置为0
+            target_dof_pos[:, [5, 11]] = 0.0
+            
+            # 使用修改后的目标位置计算扭矩
+            torques = self._kp_scale * self.p_gains * (target_dof_pos - self.simulator.dof_pos) - self._kd_scale * self.d_gains * self.simulator.dof_vel
+            #torques = self._kp_scale * self.p_gains*(actions_scaled + self.default_dof_pos - self.simulator.dof_pos) - self._kd_scale * self.d_gains*self.simulator.dof_vel
+        
         elif control_type=="V":
             torques = self._kp_scale * self.p_gains*(actions_scaled - self.simulator.dof_vel) - self._kd_scale * self.d_gains*(self.simulator.dof_vel - self.last_dof_vel)/self.sim_dt
         elif control_type=="T":
@@ -780,6 +794,10 @@ class LeggedRobotBase(BaseTask):
         else:
             raise NameError(f"Unknown controller type: {control_type}")
         
+        # print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+        # print(f'torques: {torques}')
+        # print(torques.shape)
+
         if self.config.domain_rand.randomize_torque_rfi:
             torques = torques + (torch.rand_like(torques)*2.-1.) * self.config.domain_rand.rfi_lim * self._rfi_lim_scale * self.torque_limits
             
