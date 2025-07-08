@@ -22,6 +22,9 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.live import Live
 console = Console()
+from collections import defaultdict
+
+import numpy as np
 
 class MHPPO(BaseAlgo):
     def __init__(self,
@@ -59,6 +62,12 @@ class MHPPO(BaseAlgo):
         self.eval_callbacks: list[RL_EvalCallback] = []
         self.episode_env_tensors = TensorAverageMeterDict()
         _ = self.env.reset_all()
+
+        print("INITIALIZING: /root/PBHC_g1_SingleWaistYaw/humanoidverse/agents/mh_ppo/mh_ppo.py")
+        self.data_save_dir = os.path.join(self.log_dir, "iteration_data_collection")
+        os.makedirs(self.data_save_dir, exist_ok=True)
+        #self.save_data_per_iteration = [] # This list will hold data for the current iteration
+        self.save_data_per_iteration = defaultdict(list)
 
     def _init_config(self):
         # Env related Config
@@ -216,12 +225,27 @@ class MHPPO(BaseAlgo):
         num_learning_iterations = self.num_learning_iterations
 
         tot_iter = self.current_learning_iteration + num_learning_iterations
+
+
+        if self.current_learning_iteration == 0:
+            inertia_save_path = os.path.join(self.log_dir, "rigid_body_inertia.npy")
+            if not os.path.exists(inertia_save_path) and self.env.inertia_data_to_save is not None:
+                np.save(inertia_save_path, self.env.inertia_data_to_save, allow_pickle=True)
+                logger.info(f"All rigid_bodys inertia successfully saved: {inertia_save_path}")
+            elif os.path.exists(inertia_save_path):
+                logger.info(f"'{inertia_save_path}' already exists")
+            else:
+                logger.warning("inertia_data_to_save is None,unable to save inertia")
+
+
         
         # do not use track, because it will confict with motion loading bar
         # for it in track(range(self.current_learning_iteration, tot_iter), description="Learning Iterations"):
         for it in range(self.current_learning_iteration, tot_iter):
             self.start_time = time.time()
-
+            #####dev####
+            self.save_data_per_iteration = defaultdict(list)
+            #####dev####
             obs_dict =self._rollout_step(obs_dict)
 
             loss_dict = self._training_step()
@@ -241,6 +265,25 @@ class MHPPO(BaseAlgo):
                 'num_learning_iterations': num_learning_iterations
             }
             self._post_epoch_logging(log_dict)
+
+            if self.save_data_per_iteration:
+                # file_path = os.path.join(self.data_save_dir, f"iteration_{it}_env0_data.npy")
+                # np.save(file_path, self.save_data_per_iteration, allow_pickle=True)
+                # logger.info(f"saved env0 alive data to: {file_path}")
+                processed_data_to_save = {}
+                for key, data_list in self.save_data_per_iteration.items():
+                    if data_list: # 确保列表非空
+                        processed_data_to_save[key] = np.stack(data_list, axis=0)
+                    else:
+                        logger.warning(f"Warning: Data list for key '{key}' is empty for iteration {it}.")
+
+                if processed_data_to_save: # 只有当有实际数据时才保存
+                    file_path = os.path.join(self.data_save_dir, f"iteration_{it}_env0_data.npy") #
+                    np.save(file_path, processed_data_to_save, allow_pickle=True) #
+                    logger.info(f"saved env0 alive data to: {file_path}")
+                else:
+                    logger.warning(f"No data collected for env0 in iteration {it}. Skipping save.")
+
             if it % self.save_interval == 0:
                 self.current_learning_iteration = it
                 self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(it)))
@@ -321,6 +364,22 @@ class MHPPO(BaseAlgo):
                     self.lenbuffer.extend(self.cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
                     self.cur_reward_sum[new_ids] = 0
                     self.cur_episode_length[new_ids] = 0
+                env0_id = 0
+                
+                if not dones[env0_id].item():
+                    # current_step_data = {
+                    #     "link_angular_acceleration": self.env.realtime_angular_acceleration[env0_id].cpu().numpy(),
+                    #     "base_angular_vel": self.env.base_ang_vel[env0_id].cpu().numpy(),
+                    #     "projected_gravity": self.env.projected_gravity[env0_id].cpu().numpy(),
+                    #     "dof_pos": self.env.simulator.dof_pos[env0_id].cpu().numpy(),
+                    #     "dof_vel": self.env.simulator.dof_vel[env0_id].cpu().numpy(),
+                    # }
+                    # self.save_data_per_iteration.append(current_step_data)
+                    self.save_data_per_iteration["link_angular_acceleration"].append(self.env.realtime_angular_acceleration[env0_id].cpu().numpy())
+                    self.save_data_per_iteration["base_angular_vel"].append(self.env.base_ang_vel[env0_id].cpu().numpy())
+                    self.save_data_per_iteration["projected_gravity"].append(self.env.projected_gravity[env0_id].cpu().numpy())
+                    self.save_data_per_iteration["dof_pos"].append(self.env.simulator.dof_pos[env0_id].cpu().numpy())
+                    self.save_data_per_iteration["dof_vel"].append(self.env.simulator.dof_vel[env0_id].cpu().numpy())
 
             self.stop_time = time.time()
             self.collection_time = self.stop_time - self.start_time

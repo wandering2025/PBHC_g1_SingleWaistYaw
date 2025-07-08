@@ -23,7 +23,7 @@ from humanoidverse.envs.env_utils.visualization import Point
 from loguru import logger
 import copy
 
-
+IF_SAVE_INERTIA = True
 
 
 class LeggedRobotBase(BaseTask):
@@ -128,7 +128,7 @@ class LeggedRobotBase(BaseTask):
             ], dtype=torch.float, device=self.device)
             self.rigid_body_inertias[i] = inertia_tensor
         logger.info("Inertia of all rigid bodies has been successfully obtained and stored in self.rigid_body_inertias")
-        print(f'all rigid_bodys:{self.simulator.body_names}')      
+        print(f'\nall rigid_bodys:{self.simulator.body_names}\n')      
         
         # all rigid_bodys:
         # ['pelvis', 'left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 
@@ -139,13 +139,33 @@ class LeggedRobotBase(BaseTask):
 
 
         target_body_name_inertia = 'left_hip_pitch_link'
-        print(f'Inertia of {target_body_name_inertia}')
+        #print(f'Inertia of {target_body_name_inertia}')
         if target_body_name_inertia in self.rigid_body_name_to_idx:
             specific_body_inertia = self.rigid_body_inertias[self.rigid_body_names_map[target_body_name_inertia]]
-            print(specific_body_inertia)
+            #print(specific_body_inertia)
         else:
             logger.warning(f"Warning: Can't find '{target_body_name_inertia}' Check if it is in robot xml") 
         
+        self.inertia_data_to_save = {}
+        for body_name in self.simulator.body_names:
+            if body_name in self.rigid_body_name_to_idx:
+                body_idx = self.rigid_body_name_to_idx[body_name]
+                # 将 PyTorch Tensor 转换为 NumPy 数组
+                self.inertia_data_to_save[body_name] = self.rigid_body_inertias[body_idx].cpu().numpy()
+            else:
+                logger.warning(f"Warning '{body_name}' not in xml, unable to save it")
+
+        # save_path = os.path.join('/root/PBHC_g1_SingleWaistYaw/description/robots/g1', "g1_23dof_rigid_body_inertia.npy")
+        
+        # if IF_SAVE_INERTIA:
+        #     if not os.path.exists(save_path):
+        #         np.save(save_path, inertia_data_to_save, allow_pickle=True)
+        #         logger.info(f"all rigid_bodys inertias saved to: {save_path}")
+        #     else:
+        #         logger.info(f"'{save_path}' already exists.")
+
+
+
         ####dev####  
         
 
@@ -337,8 +357,8 @@ class LeggedRobotBase(BaseTask):
             # logger.info(f"环境0中 '{target_body_name}' 的实时角加速度: {specific_body_angular_acceleration[0]}")
             
             # 如果你需要将其存储以供其他地方使用，可以将其添加到 self 的属性中
-            print('angular_acceleration of left_hip_pitch_link:')
-            print(specific_body_angular_acceleration)
+            #print('angular_acceleration of left_hip_pitch_link:')
+            #print(specific_body_angular_acceleration)
         else:
             logger.warning(f"Warning: Can't find '{target_body_name}' Check if it is in robot xml")        
         
@@ -396,8 +416,13 @@ class LeggedRobotBase(BaseTask):
         self.base_quat[:] = self.simulator.base_quat[:]
         self.rpy[:] = get_euler_xyz_in_tensor(self.base_quat[:])
         self.base_lin_vel[:] = quat_rotate_inverse(self.base_quat, self.simulator.robot_root_states[:, 7:10])
+
         self.base_ang_vel[:] = quat_rotate_inverse(self.base_quat, self.simulator.robot_root_states[:, 10:13])
+        #print(f'base_angular_vel: {self.base_ang_vel}')
+        
         self.projected_gravity[:] = quat_rotate_inverse(self.base_quat, self.gravity_vec)
+        #print(f'projected_gravity: {self.projected_gravity}')
+
         self.contacts = ( self.simulator.contact_forces[:, self.feet_indices, :].norm(dim=-1) > 1.).float()
         self.contacts_filt = torch.logical_or(self.contacts, self.last_contacts).float()
         
@@ -445,8 +470,13 @@ class LeggedRobotBase(BaseTask):
 
     def _post_compute_observations_callback(self):
         self.last_actions[:] = self.actions[:]
+        
+        #print(f'dof_pos:{self.simulator.dof_pos}')
         self.last_dof_pos[:] = self.simulator.dof_pos[:]
+
+        #print(f'dof_vel:{self.simulator.dof_vel}')
         self.last_dof_vel[:] = self.simulator.dof_vel[:]
+
         self.last_root_vel[:] = self.simulator.robot_root_states[:, 7:13]
         
         self.last_contacts[:] = self.contacts
