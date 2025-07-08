@@ -109,6 +109,44 @@ class LeggedRobotBase(BaseTask):
         else:
             self.use_noise_process = False
         
+        ####dev####
+        self.rigid_body_name_to_idx = {name: idx for idx, name in enumerate(self.simulator.body_names)}
+        self.last_rigid_body_ang_vel = torch.zeros_like(self.simulator._rigid_body_ang_vel)
+
+        # get inertia of each joint
+        env_ptr = self.simulator.envs[0]
+        robot_handle = self.simulator.robot_handles[0]
+        rigid_body_props = self.simulator.gym.get_actor_rigid_body_properties(env_ptr, robot_handle)
+        self.rigid_body_inertias = torch.zeros(self.num_bodies, 3, 3, dtype=torch.float, device=self.device, requires_grad=False)
+        self.rigid_body_names_map = {name: i for i, name in enumerate(self.simulator.body_names)}
+        for i, body_prop in enumerate(rigid_body_props):
+            inertia_matrix = body_prop.inertia
+            inertia_tensor = torch.tensor([
+                [inertia_matrix.x.x, inertia_matrix.x.y, inertia_matrix.x.z],
+                [inertia_matrix.y.x, inertia_matrix.y.y, inertia_matrix.y.z],
+                [inertia_matrix.z.x, inertia_matrix.z.y, inertia_matrix.z.z]
+            ], dtype=torch.float, device=self.device)
+            self.rigid_body_inertias[i] = inertia_tensor
+        logger.info("Inertia of all rigid bodies has been successfully obtained and stored in self.rigid_body_inertias")
+        print(f'all rigid_bodys:{self.simulator.body_names}')      
+        
+        # all rigid_bodys:
+        # ['pelvis', 'left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 
+        # 'right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link', 
+        # 'waist_yaw_link', 'waist_roll_link', 'torso_link', 
+        # 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_link', 
+        # 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_link']
+
+
+        target_body_name_inertia = 'left_hip_pitch_link'
+        print(f'Inertia of {target_body_name_inertia}')
+        if target_body_name_inertia in self.rigid_body_name_to_idx:
+            specific_body_inertia = self.rigid_body_inertias[self.rigid_body_names_map[target_body_name_inertia]]
+            print(specific_body_inertia)
+        else:
+            logger.warning(f"Warning: Can't find '{target_body_name_inertia}' Check if it is in robot xml") 
+        
+        ####dev####  
         
 
     def _domain_rand_config(self):
@@ -277,6 +315,35 @@ class LeggedRobotBase(BaseTask):
 
     def _post_physics_step(self):
         self._refresh_sim_tensors()
+
+        ####dev####
+
+        # calculated angular_acceleration
+        current_rigid_body_ang_vel = self.simulator._rigid_body_ang_vel
+        self.realtime_angular_acceleration = (current_rigid_body_ang_vel - self.last_rigid_body_ang_vel) / self.sim_dt
+        self.last_rigid_body_ang_vel[:] = current_rigid_body_ang_vel[:]
+        logger.info("rigid body angular_acceleration have been stored in self.realtime_angular_acceleration")
+        
+        # print picked body's angular acceleration 
+        target_body_name = 'left_hip_pitch_link'
+        if target_body_name in self.rigid_body_name_to_idx:
+            target_body_idx = self.rigid_body_name_to_idx[target_body_name]
+            
+            # 获取所有环境中该特定刚体的角加速度
+            # 形状将是 [num_envs, 3]
+            specific_body_angular_acceleration = self.realtime_angular_acceleration[:, target_body_idx, :]
+            
+            # 示例：打印第一个环境的特定刚体角加速度
+            # logger.info(f"环境0中 '{target_body_name}' 的实时角加速度: {specific_body_angular_acceleration[0]}")
+            
+            # 如果你需要将其存储以供其他地方使用，可以将其添加到 self 的属性中
+            print('angular_acceleration of left_hip_pitch_link:')
+            print(specific_body_angular_acceleration)
+        else:
+            logger.warning(f"Warning: Can't find '{target_body_name}' Check if it is in robot xml")        
+        
+        ####dev####
+
         self.episode_length_buf += 1
         # update counters
         self._update_counters_each_step()
