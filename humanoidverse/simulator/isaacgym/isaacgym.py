@@ -369,7 +369,13 @@ class IsaacGym(BaseSimulator):
             self.dof_pos_limits_termination = torch.zeros(self.num_dof, 2, dtype=torch.float, device=self.device, requires_grad=False)
 
             for i in range(len(props)):
-                
+                ####dev####
+                print('$'*30)
+                logger.info(f"\nDOF Name: {self.dof_names[i]}, Viscous Friction Coefficient: {props['damping'][i].item():.6f}")
+                props['damping'][i] = 0.05
+                logger.info(f"\nMANUALLY SET DOF Name: {self.dof_names[i]}, Viscous Friction Coefficient: {props['damping'][i].item():.6f}")
+                print('$'*30)
+                ####dev####
                 self.hard_dof_pos_limits[i, 0] = props["lower"][i].item()
                 self.hard_dof_pos_limits[i, 1] = props["upper"][i].item()
                 self.dof_pos_limits[i, 0] = props["lower"][i].item()

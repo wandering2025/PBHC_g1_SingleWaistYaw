@@ -380,6 +380,7 @@ class MHPPO(BaseAlgo):
                     self.save_data_per_iteration["projected_gravity"].append(self.env.projected_gravity[env0_id].cpu().numpy())
                     self.save_data_per_iteration["dof_pos"].append(self.env.simulator.dof_pos[env0_id].cpu().numpy())
                     self.save_data_per_iteration["dof_vel"].append(self.env.simulator.dof_vel[env0_id].cpu().numpy())
+                    self.save_data_per_iteration["torque"].append(self.env.torques[env0_id].cpu().numpy())
 
             self.stop_time = time.time()
             self.collection_time = self.stop_time - self.start_time

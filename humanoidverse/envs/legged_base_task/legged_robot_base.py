@@ -1282,7 +1282,12 @@ class LeggedRobotBase(BaseTask):
     
     def _get_obs_dr_ctrl_delay(self,):
         # breakpoint()
-        return self.action_delay_idx.reshape(self.num_envs, -1).float()
+        #return self.action_delay_idx.reshape(self.num_envs, -1).float()
+        if hasattr(self, 'action_delay_idx'):
+            return self.action_delay_idx.reshape(self.num_envs, -1).float()
+        else:
+            expected_dim = 1
+            return torch.zeros(self.num_envs, expected_dim, dtype=torch.float, device=self.device)
     
     
     
