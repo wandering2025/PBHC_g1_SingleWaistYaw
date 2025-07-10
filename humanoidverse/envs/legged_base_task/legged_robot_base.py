@@ -885,7 +885,7 @@ class LeggedRobotBase(BaseTask):
 
             # 计算PD控制器的目标位置
             target_dof_pos = actions_scaled + self.default_dof_pos  
-            # 将第5位和第11位电机的目标角度设置为0
+            # Disable ankle roll
             target_dof_pos[:, [5, 11]] = 0.0
             
             # 使用修改后的目标位置计算扭矩

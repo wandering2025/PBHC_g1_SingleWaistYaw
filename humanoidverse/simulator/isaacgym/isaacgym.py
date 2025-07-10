@@ -368,14 +368,39 @@ class IsaacGym(BaseSimulator):
 
             self.dof_pos_limits_termination = torch.zeros(self.num_dof, 2, dtype=torch.float, device=self.device, requires_grad=False)
 
+            randomize_viscous_friction = self.env_config.domain_rand.get('randomize_viscous_friction', False)
+            viscous_friction_range = self.env_config.domain_rand.get('viscous_friction_range', [0.0, 0.0])
+            
+            if randomize_viscous_friction and not hasattr(self, '_viscous_friction_coeffs'):
+                lower_bound, upper_bound = viscous_friction_range[0], viscous_friction_range[1]
+                # set unique joint viscous friction coefficients for each DOF
+                #self._viscous_friction_coeffs = torch_rand_float(lower_bound, upper_bound, (self.num_envs, 1), device='cpu')
+                self._viscous_friction_coeffs = torch_rand_float(lower_bound, upper_bound, (self.num_envs, self.num_dof), device='cpu')
+
             for i in range(len(props)):
+                
+                if self.env_config.domain_rand.get('randomize_viscous_friction', False):
+                    #props['damping'][i] = self._viscous_friction_coeffs[env_id].item()
+                    props['damping'][i] = self._viscous_friction_coeffs[env_id, i].item()
+                    if env_id < 1:
+                        print("randomize_viscous_friction ON")
+                        print(f"Env {env_id}, DOF Name: {self.dof_names[i]}, Random Viscous Friction: {props['damping'][i].item():.6f}")
+                else:
+                    props['damping'][i] = 0.01
+                    if env_id < 1:
+                        logger.debug("randomize_viscous_friction OFF, set fixed to 0.01")
+                
                 ####dev####
-                print('$'*30)
-                logger.info(f"\nDOF Name: {self.dof_names[i]}, Viscous Friction Coefficient: {props['damping'][i].item():.6f}")
-                props['damping'][i] = 0.05
-                logger.info(f"\nMANUALLY SET DOF Name: {self.dof_names[i]}, Viscous Friction Coefficient: {props['damping'][i].item():.6f}")
-                print('$'*30)
+                # print('$'*30)
+                # logger.info(f"\nDOF Name: {self.dof_names[i]}, Viscous Friction Coefficient: {props['damping'][i].item():.6f}")
+                # props['damping'][i] = 0.05
+                # logger.info(f"\nMANUALLY SET DOF Name: {self.dof_names[i]}, Viscous Friction Coefficient: {props['damping'][i].item():.6f}")
+                # print('$'*30)
+
                 ####dev####
+                
+                
+                
                 self.hard_dof_pos_limits[i, 0] = props["lower"][i].item()
                 self.hard_dof_pos_limits[i, 1] = props["upper"][i].item()
                 self.dof_pos_limits[i, 0] = props["lower"][i].item()
