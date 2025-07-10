@@ -13,11 +13,12 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
         output_filename (str): 合并后的 .npy 文件名。
     """
     #dict_keys(['link_angular_acceleration', 'base_angular_vel', 'projected_gravity', 'dof_pos', 'dof_vel', 'torque'])
-    all_link_angular_list = [] 
+    #all_link_angular_list = [] 
     all_base_angular_vel_list = []
     all_projected_gravity_list = [] 
     all_dof_pos_list = []  
     all_dof_vel_list = [] 
+    all_dof_angular_acceleration_list = []
     all_torque_list = []  
     
 
@@ -38,7 +39,7 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
             saved_data = np.load(npy_path, allow_pickle=True).item()
 
             # 验证数据结构
-            if not isinstance(saved_data, dict) or 'link_angular_acceleration' not in saved_data \
+            if not isinstance(saved_data, dict) or 'dof_angular_acceleration_list' not in saved_data \
             or 'base_angular_vel' not in saved_data or 'projected_gravity' not in saved_data \
             or 'dof_pos' not in saved_data or 'dof_vel' not in saved_data or 'torque' not in saved_data:
                 
@@ -48,11 +49,12 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
 
 
             # 提取数据
-            all_link_angular_list.append(saved_data.get('link_angular_acceleration', None))  # 将 link_angular_acceleration 数组添加到列表中
+            #all_link_angular_list.append(saved_data.get('link_angular_acceleration', None))  # 将 link_angular_acceleration 数组添加到列表中
             all_base_angular_vel_list.append(saved_data.get('base_angular_vel', None))  # 将 base_angular_vel 数组添加到列表中
             all_projected_gravity_list.append(saved_data.get('projected_gravity', None))  # 将 projected_gravity 数组添加到列表中
             all_dof_pos_list.append(saved_data['dof_pos'])     # 将独立的 dof_pos 数组添加到列表中
             all_dof_vel_list.append(saved_data.get('dof_vel', None))  # 将 dof_vel 数组添加到列表中
+            all_dof_angular_acceleration_list.append(saved_data.get('dof_angular_acceleration', None))  # 将 dof_angular_acceleration 数组添加到列表中
             all_torque_list.append(saved_data.get('torque', None    ))  # 将 torque 数组添加到列表中
 
 
@@ -64,7 +66,7 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
             print(f"加载或处理文件 {filename} 时发生错误：{e}")
             continue
 
-    if not all_link_angular_list or not all_base_angular_vel_list or not all_dof_pos_list or not all_torque_list or not all_projected_gravity_list or not all_dof_vel_list:
+    if not all_dof_angular_acceleration_list or not all_base_angular_vel_list or not all_dof_pos_list or not all_torque_list or not all_projected_gravity_list or not all_dof_vel_list:
         # 如果没有任何数据可合并，打印提示信息并返回
         print("没有可合并的数据。")
         return
@@ -72,11 +74,12 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
     # 创建新的字典
     # 'motions' 和 'dof_pos' 的值现在都是列表
     combined_data = {
-        'link_angular_acceleration': all_link_angular_list,  # 这里是一个包含所有 link_angular_acceleration 数组的列表
+        #'link_angular_acceleration': all_link_angular_list,  # 这里是一个包含所有 link_angular_acceleration 数组的列表
         'base_angular_vel': all_base_angular_vel_list,      # 这里是一个包含所有 base_angular_vel 数组的列表
         'projected_gravity': all_projected_gravity_list,  # 这里是一个包含所有 projected_gravity 数组的 列表
         'dof_pos': all_dof_pos_list,        # 这里是一个包含所有 dof_pos 数组的列表
         'dof_vel': all_dof_vel_list ,      # 这里是一个包含所有 dof_vel 数组的列表
+        'dof_angular_acceleration': all_dof_vel_list,  # 这里是一个包含所有 dof_angular_acceleration 数组的列表
         'torque': all_torque_list,         # 这里是一个包含所有 torque 数组的列表
 
     }

@@ -375,11 +375,12 @@ class MHPPO(BaseAlgo):
                     #     "dof_vel": self.env.simulator.dof_vel[env0_id].cpu().numpy(),
                     # }
                     # self.save_data_per_iteration.append(current_step_data)
-                    self.save_data_per_iteration["link_angular_acceleration"].append(self.env.realtime_angular_acceleration[env0_id].cpu().numpy())
+                    #self.save_data_per_iteration["link_angular_acceleration"].append(self.env.realtime_angular_acceleration[env0_id].cpu().numpy())
                     self.save_data_per_iteration["base_angular_vel"].append(self.env.base_ang_vel[env0_id].cpu().numpy())
                     self.save_data_per_iteration["projected_gravity"].append(self.env.projected_gravity[env0_id].cpu().numpy())
                     self.save_data_per_iteration["dof_pos"].append(self.env.simulator.dof_pos[env0_id].cpu().numpy())
                     self.save_data_per_iteration["dof_vel"].append(self.env.simulator.dof_vel[env0_id].cpu().numpy())
+                    self.save_data_per_iteration["dof_angular_acceleration"].append(self.env.realtime_dof_ang_acceleration[env0_id].cpu().numpy())
                     self.save_data_per_iteration["torque"].append(self.env.torques[env0_id].cpu().numpy())
 
             self.stop_time = time.time()

@@ -113,6 +113,8 @@ class LeggedRobotBase(BaseTask):
         self.rigid_body_name_to_idx = {name: idx for idx, name in enumerate(self.simulator.body_names)}
         self.last_rigid_body_ang_vel = torch.zeros_like(self.simulator._rigid_body_ang_vel)
 
+        self.last_dof_ang_vel = torch.zeros_like(self.simulator.dof_vel)
+
         # get inertia of each joint
         env_ptr = self.simulator.envs[0]
         robot_handle = self.simulator.robot_handles[0]
@@ -362,6 +364,12 @@ class LeggedRobotBase(BaseTask):
         else:
             logger.warning(f"Warning: Can't find '{target_body_name}' Check if it is in robot xml")        
         
+        current_dof_ang_vel = self.simulator.dof_vel
+        self.realtime_dof_ang_acceleration = (current_dof_ang_vel - self.last_dof_ang_vel) / self.sim_dt
+        self.last_dof_ang_vel[:] = current_dof_ang_vel[:]
+        logger.info("dof angular_acceleration have been stored in self.realtime_dof_ang_acceleration")
+
+
         ####dev####
 
         self.episode_length_buf += 1
