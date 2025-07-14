@@ -294,7 +294,42 @@ class IsaacGym(BaseSimulator):
         Returns:
             [List[gymapi.RigidShapeProperties]]: Modified rigid shape properties
         """
-        if self.env_config.domain_rand.randomize_friction:
+        ####Set different friction for each link"
+        if self.env_config.domain_rand.get("randomize_friction_per_link", False):
+            if env_id==0:
+                friction_range = self.env_config.domain_rand.friction_range
+                # <<< NEW: 定义全新的变量 self.per_link_friction_coeffs >>>
+
+                num_friction_buckets = self.env_config.domain_rand.get("num_friction_buckets", 256)
+                # self.per_link_friction_buckets = torch_rand_float(
+                #     friction_range[0], friction_range[1], (num_friction_buckets,), device='cpu'
+                # )
+                temp_buckets_2d = torch_rand_float(
+                friction_range[0], friction_range[1], (num_friction_buckets, 1), device='cpu'
+                    )
+                # 2. 使用 .squeeze() 将其从 (N, 1) 变回 (N,) 的一维形状
+                self.per_link_friction_buckets = temp_buckets_2d.squeeze()
+                self.per_link_material_indices = torch.randint(
+                    0, num_friction_buckets, (self.num_envs, self.num_bodies), device='cpu'
+                )
+
+                # self.per_link_friction_coeffs = torch_rand_float(
+                #     friction_range[0], friction_range[1], (self.num_envs, self.num_bodies), device='cpu'
+                # )
+                logger.info("Using PER-LINK friction randomization.")
+            
+            # 应用 per-link 的摩擦系数
+            num_shapes_to_randomize = min(len(props), self.num_bodies)
+            for s in range(num_shapes_to_randomize):
+                # <<< NEW: 从新变量中获取摩擦系数 >>>
+                bucket_index = self.per_link_material_indices[env_id, s].item()
+                friction_val = self.per_link_friction_buckets[bucket_index].item()
+                #friction_val = self.per_link_friction_coeffs[env_id, s].item()
+                props[s].friction = friction_val          # 设置静摩擦
+                #props[s].dynamic_friction = friction_val  # 同样设置动摩擦
+                self._ground_friction_values[env_id, s] += friction_val        
+        
+        elif self.env_config.domain_rand.randomize_friction:
             if env_id==0:
                 # prepare friction randomization
                 friction_range = self.env_config.domain_rand.friction_range
