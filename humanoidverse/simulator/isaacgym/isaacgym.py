@@ -405,6 +405,15 @@ class IsaacGym(BaseSimulator):
 
             randomize_viscous_friction = self.env_config.domain_rand.get('randomize_viscous_friction', False)
             viscous_friction_range = self.env_config.domain_rand.get('viscous_friction_range', [0.0, 0.0])
+
+            randomize_dry_friction = self.env_config.domain_rand.get('randomize_joint_dry_friction', False)
+            dry_friction_range = self.env_config.domain_rand.get('joint_dry_friction_range', [0.0, 0.0])
+            if randomize_dry_friction and not hasattr(self, '_dry_friction_coeffs'):
+                lower, upper = dry_friction_range[0], dry_friction_range[1]
+                self._dry_friction_coeffs = torch_rand_float(lower, upper, (self.num_envs, self.num_dof), device='cpu')
+            # <<< NEW END >>>
+
+
             
             if randomize_viscous_friction and not hasattr(self, '_viscous_friction_coeffs'):
                 lower_bound, upper_bound = viscous_friction_range[0], viscous_friction_range[1]
@@ -424,6 +433,11 @@ class IsaacGym(BaseSimulator):
                     props['damping'][i] = 0.01
                     if env_id < 1:
                         logger.debug("randomize_viscous_friction OFF, set fixed to 0.01")
+
+                if self.env_config.domain_rand.get('randomize_joint_dry_friction', False):
+                    props['friction'][i] = self._dry_friction_coeffs[env_id, i].item()
+                    if env_id < 1:
+                        logger.debug(f"Env {env_id}, DOF {self.dof_names[i]}, Dry Friction: {props['friction'][i]:.6f}")
                 
                 ####dev####
                 # print('$'*30)

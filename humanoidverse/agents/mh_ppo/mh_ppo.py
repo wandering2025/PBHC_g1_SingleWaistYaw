@@ -383,16 +383,17 @@ class MHPPO(BaseAlgo):
                     self.save_data_per_iteration["dof_angular_acceleration"].append(self.env.realtime_dof_ang_acceleration[env0_id].cpu().numpy())
                     self.save_data_per_iteration["torque"].append(self.env.torques[env0_id].cpu().numpy())
 
-                    #self.save_data_per_iteration["friction_coeffs"].append(self.env.simulator.per_link_friction_coeffs[env0_id].cpu().numpy())
-                    if hasattr(self.env.simulator, 'per_link_material_indices'):
-                        # 1. 获取 env0 中所有 link 被分配到的 "桶" 的索引
-                        env0_bucket_indices = self.env.simulator.per_link_material_indices[0, :]
-                        # 2. 获取存储着所有摩擦力值的 "桶"
-                        friction_buckets = self.env.simulator.per_link_friction_buckets
-                        # 3. 通过索引去桶里查询，重构出 env0 每个 link 实际的摩擦力值
-                        env0_per_link_friction = friction_buckets[env0_bucket_indices]
-                        # 4. 将重构出的摩擦力数组存入记录
-                        self.save_data_per_iteration["friction_coeffs"].append(env0_per_link_friction.cpu().numpy()) 
+                    self.save_data_per_iteration["friction_coeffs"].append(self.env.simulator._dry_friction_coeffs[env0_id].cpu().numpy())
+                    
+                    # if hasattr(self.env.simulator, 'per_link_material_indices'):
+                    #     # 1. 获取 env0 中所有 link 被分配到的 "桶" 的索引
+                    #     env0_bucket_indices = self.env.simulator.per_link_material_indices[0, :]
+                    #     # 2. 获取存储着所有摩擦力值的 "桶"
+                    #     friction_buckets = self.env.simulator.per_link_friction_buckets
+                    #     # 3. 通过索引去桶里查询，重构出 env0 每个 link 实际的摩擦力值
+                    #     env0_per_link_friction = friction_buckets[env0_bucket_indices]
+                    #     # 4. 将重构出的摩擦力数组存入记录
+                    #     self.save_data_per_iteration["friction_coeffs"].append(env0_per_link_friction.cpu().numpy()) 
 
                     self.save_data_per_iteration["viscous_friction_coeffs"].append(self.env.simulator._viscous_friction_coeffs[env0_id].cpu().numpy())
 
