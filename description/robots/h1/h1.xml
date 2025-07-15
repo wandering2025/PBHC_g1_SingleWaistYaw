@@ -19,27 +19,27 @@
     <material name="black" rgba="0.1 0.1 0.1 1"/>
     <material name="white" rgba="1 1 1 1"/>
 
-    <mesh file="pelvis.STL"/>
-    <mesh file="left_hip_yaw_link.STL"/>
-    <mesh file="left_hip_roll_link.STL"/>
-    <mesh file="left_hip_pitch_link.STL"/>
-    <mesh file="left_knee_link.STL"/>
-    <mesh file="left_ankle_link.STL"/>
-    <mesh file="right_hip_yaw_link.STL"/>
-    <mesh file="right_hip_roll_link.STL"/>
-    <mesh file="right_hip_pitch_link.STL"/>
-    <mesh file="right_knee_link.STL"/>
-    <mesh file="right_ankle_link.STL"/>
-    <mesh file="torso_link.STL"/>
-    <mesh file="left_shoulder_pitch_link.STL"/>
-    <mesh file="left_shoulder_roll_link.STL"/>
-    <mesh file="left_shoulder_yaw_link.STL"/>
-    <mesh file="left_elbow_link.STL"/>
-    <mesh file="right_shoulder_pitch_link.STL"/>
-    <mesh file="right_shoulder_roll_link.STL"/>
-    <mesh file="right_shoulder_yaw_link.STL"/>
-    <mesh file="right_elbow_link.STL"/>
-    <mesh file="logo_link.STL"/>
+    <mesh name='pelvis' file="pelvis.STL"/>
+    <mesh name='left_hip_yaw_link' file="left_hip_yaw_link.STL"/>
+    <mesh name='left_hip_roll_link' file="left_hip_roll_link.STL"/>
+    <mesh name='left_hip_pitch_link' file="left_hip_pitch_link.STL"/>
+    <mesh name='left_knee_link' file="left_knee_link.STL"/>
+    <mesh name='left_ankle_link' file="left_ankle_link.STL"/>
+    <mesh name='right_hip_yaw_link' file="right_hip_yaw_link.STL"/>
+    <mesh name='right_hip_roll_link' file="right_hip_roll_link.STL"/>
+    <mesh name='right_hip_pitch_link' file="right_hip_pitch_link.STL"/>
+    <mesh name='right_knee_link' file="right_knee_link.STL"/>
+    <mesh name='right_ankle_link' file="right_ankle_link.STL"/>
+    <mesh name='torso_link' file="torso_link.STL"/>
+    <mesh name='left_shoulder_pitch_link' file="left_shoulder_pitch_link.STL"/>
+    <mesh name='left_shoulder_roll_link' file="left_shoulder_roll_link.STL"/>
+    <mesh name='left_shoulder_yaw_link' file="left_shoulder_yaw_link.STL"/>
+    <mesh name='left_elbow_link' file="left_elbow_link.STL"/>
+    <mesh name='right_shoulder_pitch_link' file="right_shoulder_pitch_link.STL"/>
+    <mesh name='right_shoulder_roll_link' file="right_shoulder_roll_link.STL"/>
+    <mesh name='right_shoulder_yaw_link' file="right_shoulder_yaw_link.STL"/>
+    <mesh name='right_elbow_link' file="right_elbow_link.STL"/>
+    <mesh name='logo_link' file="logo_link.STL"/>
   </asset>
 
   <worldbody>

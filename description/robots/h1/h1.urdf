@@ -18,7 +18,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/pelvis.dae" />
+        <mesh filename="meshes/pelvis.dae" />
       </geometry>
       <material name="Material_049-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -37,7 +37,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_hip_yaw_link.dae" />
+        <mesh filename="meshes/left_hip_yaw_link.dae" />
       </geometry>
       <material name="Material_017-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
         <collision>
@@ -63,7 +63,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_hip_roll_link.dae" />
+        <mesh filename="meshes/left_hip_roll_link.dae" />
       </geometry>
       <material name="Material_018-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -89,7 +89,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_hip_pitch_link.dae" />
+        <mesh filename="meshes/left_hip_pitch_link.dae" />
       </geometry>
       <material name="Material_019-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -115,7 +115,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_knee_link.dae" />
+        <mesh filename="meshes/left_knee_link.dae" />
       </geometry>
       <material name="Material_016-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -141,7 +141,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_ankle_link.dae" />
+        <mesh filename="meshes/left_ankle_link.dae" />
       </geometry>
       <material name="Material_022-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -167,7 +167,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_hip_yaw_link.dae" />
+        <mesh filename="meshes/right_hip_yaw_link.dae" />
       </geometry>
       <material name="Material_004-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
         <collision>
@@ -193,7 +193,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_hip_roll_link.dae" />
+        <mesh filename="meshes/right_hip_roll_link.dae" />
       </geometry>
       <material name="Material_006-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -219,7 +219,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_hip_pitch_link.dae" />
+        <mesh filename="meshes/right_hip_pitch_link.dae" />
       </geometry>
       <material name="Material_007-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -245,7 +245,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_knee_link.dae" />
+        <mesh filename="meshes/right_knee_link.dae" />
       </geometry>
       <material name="Material_005-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -271,7 +271,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_ankle_link.dae" />
+        <mesh filename="meshes/right_ankle_link.dae" />
       </geometry>
       <material name="Material_050-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -297,7 +297,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/torso_link.dae" />
+        <mesh filename="meshes/torso_link.dae" />
       </geometry>
       <material name="Material_001-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -323,7 +323,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_shoulder_pitch_link.dae" />
+        <mesh filename="meshes/left_shoulder_pitch_link.dae" />
       </geometry>
       <material name="Material_015-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -349,7 +349,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_shoulder_roll_link.dae" />
+        <mesh filename="meshes/left_shoulder_roll_link.dae" />
       </geometry>
       <material name="Material_014-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -375,7 +375,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_shoulder_yaw_link.dae" />
+        <mesh filename="meshes/left_shoulder_yaw_link.dae" />
       </geometry>
       <material name="Material_013-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -401,7 +401,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/left_elbow_link.dae" />
+        <mesh filename="meshes/left_elbow_link.dae" />
       </geometry>
       <material name="Material_021-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -427,7 +427,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_shoulder_pitch_link.dae" />
+        <mesh filename="meshes/right_shoulder_pitch_link.dae" />
       </geometry>
       <material name="Material_003-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -453,7 +453,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_shoulder_roll_link.dae" />
+        <mesh filename="meshes/right_shoulder_roll_link.dae" />
       </geometry>
       <material name="Material_002-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -479,7 +479,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_shoulder_yaw_link.dae" />
+        <mesh filename="meshes/right_shoulder_yaw_link.dae" />
       </geometry>
       <material name="Material_001-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -505,7 +505,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/right_elbow_link.dae" />
+        <mesh filename="meshes/right_elbow_link.dae" />
       </geometry>
       <material name="Material_009-effect"><color rgba="0.1 0.1 0.1 1" /></material></visual>
     <collision>
@@ -532,7 +532,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://h1_description/meshes/logo_link.dae" />
+        <mesh filename="meshes/logo_link.dae" />
       </geometry>
       <material name="Material_053-effect"><color rgba="0.9 0.9 0.9 1" /></material></visual>
 
