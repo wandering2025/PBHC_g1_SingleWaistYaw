@@ -265,66 +265,68 @@ robot:
 
 
     motion_tracking_link:
-      - "left_wrist_roll_rubber_hand"
-      - "right_wrist_roll_rubber_hand"
+      - "left_end_effector_link"
+      - "right_end_effector_link"
       - "head_link"
 
     lower_body_link:
-      - "pelvis"
-      - "left_hip_pitch_link"
-      - "left_hip_roll_link"
-      - "left_hip_yaw_link"
-      - "left_knee_link"
-      - "left_ankle_pitch_link"
-      - "left_ankle_roll_link"
-      - "right_hip_pitch_link"
-      - "right_hip_roll_link"
-      - "right_hip_yaw_link"
-      - "right_knee_link"
-      - "right_ankle_pitch_link"
-      - "right_ankle_roll_link"
+      - "base_link"
       - "torso_link"
+      - "camera_link"
+      - "imu_link"
+      - "left_thigh_pitch_link"
+      - "left_thigh_roll_link"
+      - "left_thigh_yaw_link"
+      - "left_shank_pitch_link"
+      - "left_foot_roll_link"
+      - "left_foot_pitch_link"
+      - "right_thigh_pitch_link"
+      - "right_thigh_roll_link"
+      - "right_thigh_yaw_link"
+      - "right_shank_pitch_link"
+      - "right_foot_roll_link"
+      - "right_foot_pitch_link"
+      - "waist_yaw_link"
+
 
     upper_body_link:
-      - "left_shoulder_pitch_link"
-      - "left_shoulder_roll_link"
-      - "left_shoulder_yaw_link"
-      - "left_elbow_link"
-      - "right_shoulder_pitch_link"
-      - "right_shoulder_roll_link"
-      - "right_shoulder_yaw_link"
-      - "right_elbow_link"
-      - "left_wrist_roll_rubber_hand"
-      - "right_wrist_roll_rubber_hand"
-      - "head_link"
-      - "left_wrist_roll_rubber_hand"
-      - "right_wrist_roll_rubber_hand"
+      - "left_upper_arm_pitch_link"
+      - "left_upper_arm_roll_link"
+      - "left_upper_arm_yaw_link"
+      - "left_lower_arm_pitch_link"
+      - "left_hand_yaw_link"
+      - "left_end_effector_link"
+      - "right_upper_arm_pitch_link"
+      - "right_upper_arm_roll_link"
+      - "right_upper_arm_yaw_link"
+      - "right_lower_arm_pitch_link"
+      - "right_hand_yaw_link"
+      - "right_end_effector_link"
 
 
-    pelvis_link: "pelvis"
-    base_link: "torso_link"
-    hips_link:
-      - "left_hip_pitch_link"
-      - "left_hip_roll_link"
-      - "left_hip_yaw_link"
-      - "right_hip_pitch_link"
-      - "right_hip_roll_link"
-      - "right_hip_yaw_link"
+
+    # pelvis_link: "pelvis"
+    # base_link: "torso_link"
+    # hips_link:
+    #   - "left_hip_pitch_link"
+    #   - "left_hip_roll_link"
+    #   - "left_hip_yaw_link"
+    #   - "right_hip_pitch_link"
+    #   - "right_hip_roll_link"
+    #   - "right_hip_yaw_link"
     
     joint_matches:
-      - ["pelvis", "Pelvis"]
-      - ["left_hip_pitch_link", "L_Hip"]
-      - ["left_knee_link", "L_Knee"]
-      - ["left_ankle_roll_link", "L_Ankle"]
-      - ["right_hip_pitch_link", "R_Hip"]
-      - ["right_knee_link", "R_Knee"]
-      - ["right_ankle_roll_link", "R_Ankle"]
-      - ["left_shoulder_roll_link", "L_Shoulder"]
-      - ["left_elbow_link", "L_Elbow"]
-      - ["left_wrist_roll_rubber_hand", "L_Hand"]
+      - ["base_link", "Pelvis"]
+      - ["left_thigh_pitch_link", "L_Hip"]
+      - ["left_shank_pitch_link", "L_Knee"]
+      - ["left_foot_roll_link", "L_Ankle"]
+      - ["right_thigh_pitch_link", "R_Hip"]
+      - ["right_shank_pitch_link", "R_Knee"]
+      - ["right_foot_roll_link", "R_Ankle"]
+      - ["left_upper_arm_roll_link", "L_Shoulder"]
+      - ["left_lower_arm_pitch_link", "L_Elbow"]
       - ["right_shoulder_roll_link", "R_Shoulder"]
-      - ["right_elbow_link", "R_Elbow"]
-      - ["right_wrist_roll_rubber_hand", "R_Hand"]
+      - ["right_lower_arm_pitch_link", "R_Elbow"]
       - ["head_link", "Head"]
       - ["left_toe_link", "L_Toe"]
       - ["right_toe_link", "R_Toe"]
