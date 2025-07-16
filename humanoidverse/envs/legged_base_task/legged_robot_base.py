@@ -23,6 +23,9 @@ from humanoidverse.envs.env_utils.visualization import Point
 from loguru import logger
 import copy
 
+
+from isaac_utils.rotations import get_euler_xyz_in_tensor, quat_from_euler_xyz_better
+
 IF_SAVE_INERTIA = True
 
 
@@ -175,6 +178,10 @@ class LeggedRobotBase(BaseTask):
         if self.config.domain_rand.push_robots:
             self.push_interval_s = torch.randint(self.config.domain_rand.push_interval_s[0], self.config.domain_rand.push_interval_s[1], (self.num_envs,), device=self.device)
 
+        if self.config.domain_rand.overturn_base_orientation:
+            # 初始化每个环境的根关节朝向扰动间隔
+            self.overturn_interval_s = torch.randint(self.config.domain_rand.overturn_interval_s[0], self.config.domain_rand.overturn_interval_s[1], (self.num_envs,), device=self.device)
+
     def _init_counters(self):
         self.common_step_counter = 0
         self.push_robot_counter = torch.zeros(self.num_envs, dtype=torch.int, device=self.device, requires_grad=False)
@@ -182,11 +189,15 @@ class LeggedRobotBase(BaseTask):
         self.command_counter = torch.zeros(self.num_envs, dtype=torch.int, device=self.device, requires_grad=False)
         self.reinit_epis_rand_counter = 0
 
+        self.overturn_counter = torch.zeros(self.num_envs, dtype=torch.int, device=self.device, requires_grad=False)
+
     def _update_counters_each_step(self):
         self.common_step_counter  +=1
         self.push_robot_counter[:] += 1
         self.push_robot_plot_counter[:] += 1
         self.command_counter[:] += 1
+
+        self.overturn_counter[:] += 1
 
     def _init_domain_rand_buffers(self):
         ######################################### DR related tensors #########################################
@@ -467,7 +478,28 @@ class LeggedRobotBase(BaseTask):
             self.push_robot_plot_counter[push_robot_env_ids] = 0
             self.push_interval_s[push_robot_env_ids] = torch.randint(self.config.domain_rand.push_interval_s[0], self.config.domain_rand.push_interval_s[1], (len(push_robot_env_ids),), device=self.device, requires_grad=False)
             self._push_robots(push_robot_env_ids)
-            
+        
+        if self.config.domain_rand.overturn_base_orientation:
+            # 找出达到扰动间隔的环境
+            overturn_env_ids = (self.overturn_counter == (self.overturn_interval_s / self.dt).int()).nonzero(as_tuple=False).flatten()
+            if len(overturn_env_ids) > 0:
+                # 重置这些环境的计数器并重新随机化下一个间隔
+                self.overturn_counter[overturn_env_ids] = 0
+                self.overturn_interval_s[overturn_env_ids] = torch.randint(
+                    self.config.domain_rand.overturn_interval_s[0],
+                    self.config.domain_rand.overturn_interval_s[1],
+                    (len(overturn_env_ids),),
+                    device=self.device,
+                    requires_grad=False
+                )
+                # 根据概率决定是否实际施加扰动
+                #prob_mask = torch_rand_float(0., 1., (len(overturn_env_ids),), device=self.device) < self.config.domain_rand.overturn_probability
+                prob_mask = torch_rand_float(0., 1., (len(overturn_env_ids), 1), device=self.device).squeeze(-1) < self.config.domain_rand.overturn_probability
+                actual_overturn_env_ids = overturn_env_ids[prob_mask]
+                if len(actual_overturn_env_ids) > 0:
+                    self._overturn_robots(actual_overturn_env_ids)
+
+
         if 'reinit_epis_rand' in self.config.domain_rand and self.config.domain_rand.reinit_epis_rand > 0:
             if self.common_step_counter >= self.reinit_epis_rand_counter:
                 print(f"Reinit domain rand at step {self.common_step_counter}")
@@ -1182,6 +1214,48 @@ class LeggedRobotBase(BaseTask):
         else:
             self.simulator.robot_root_states[env_ids, 7:9] = self.push_robot_vel_buf[env_ids]
         # self.gym.set_actor_root_state_tensor(self.sim, gymtorch.unwrap_tensor(self.simulator.all_root_states))
+
+    def _overturn_robots(self, env_ids):
+        """
+        Randomly changes the orientation (roll and pitch) of the robot's base for selected environments.
+        This simulates a sudden loss of balance or external angular disturbance.
+        """
+        if len(env_ids) == 0:
+            return
+
+        self.need_to_refresh_envs[env_ids] = True # 标记这些环境需要在模拟器中刷新状态
+
+        max_angle_deg = self.config.domain_rand.max_overturn_angle_deg
+        max_angle_rad = np.deg2rad(max_angle_deg)
+
+        # 获取当前根关节的四元数 (xyzw)
+        current_base_quat = self.simulator.robot_root_states[env_ids, 3:7]
+
+        # 将当前四元数转换为欧拉角 (roll, pitch, yaw)
+        # 假设 get_euler_xyz_in_tensor 返回 (roll, pitch, yaw) 顺序的 Tensor
+        current_rpy = get_euler_xyz_in_tensor(current_base_quat) # shape: (len(env_ids), 3)
+
+        # 生成随机的roll和pitch变化量
+        # 我们可以让扰动在正负 max_angle_rad 之间随机
+        delta_roll = torch_rand_float(-max_angle_rad, max_angle_rad, (len(env_ids), 1), device=self.device)
+        delta_pitch = torch_rand_float(-max_angle_rad, max_angle_rad, (len(env_ids), 1), device=self.device)
+        delta_yaw = torch.zeros((len(env_ids), 1), device=self.device) # 通常不对yaw做随机冲击
+
+        # 应用变化量到当前欧拉角
+        new_roll = current_rpy[:, 0:1] + delta_roll
+        new_pitch = current_rpy[:, 1:2] + delta_pitch
+        new_yaw = current_rpy[:, 2:3] + delta_yaw
+
+        # 将新的欧拉角转换回四元数 (xyzw)
+        # 确保 quat_from_euler_xyz_better 能够正确处理批量的 Tensor 输入，
+        # 并且其输出的四元数是 (x, y, z, w) 顺序，与 Isaac Gym 保持一致。
+        #new_base_quats = quat_from_euler_xyz_better(new_roll, new_pitch, new_yaw) # shape: (len(env_ids), 4)
+        new_rpy_combined = torch.cat((new_roll, new_pitch, new_yaw), dim=-1)
+        new_base_quats = quat_from_euler_xyz_better(new_rpy_combined)
+        # 更新机器人根关节状态中的四元数
+        self.simulator.robot_root_states[env_ids, 3:7] = new_base_quats.squeeze(1) # 如果 new_base_quats 是 (N, 1, 4) 需要 squeeze
+
+        logger.info(f"Applied random orientation perturbation to {len(env_ids)} environments.")    
 
 
     ############ TERRAIN AND COMMANDS
