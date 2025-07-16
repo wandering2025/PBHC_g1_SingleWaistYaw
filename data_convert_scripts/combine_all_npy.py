@@ -20,6 +20,8 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
     all_dof_vel_list = [] 
     all_dof_angular_acceleration_list = []
     all_torque_list = []  
+    all_friction_coeffs_list = [] 
+    all_viscous_friction_coeffs_list = []
     
 
     # 获取所有 .npy 文件的路径，并确保按某种顺序处理（例如，按文件名排序）
@@ -39,9 +41,15 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
             saved_data = np.load(npy_path, allow_pickle=True).item()
 
             # 验证数据结构
-            if not isinstance(saved_data, dict) or 'dof_angular_acceleration_list' not in saved_data \
-            or 'base_angular_vel' not in saved_data or 'projected_gravity' not in saved_data \
-            or 'dof_pos' not in saved_data or 'dof_vel' not in saved_data or 'torque' not in saved_data:
+            if not isinstance(saved_data, dict) \
+                or 'dof_angular_acceleration' not in saved_data \
+                or 'base_angular_vel' not in saved_data \
+                or 'projected_gravity' not in saved_data \
+                or 'dof_pos' not in saved_data \
+                or 'dof_vel' not in saved_data \
+                or 'torque' not in saved_data \
+                or 'friction_coeffs' not in saved_data \
+                or 'viscous_friction_coeffs' not in saved_data:
                 
                 print(f"警告：文件 {filename} 的结构不符合预期，跳过。")
                 continue
@@ -56,6 +64,8 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
             all_dof_vel_list.append(saved_data.get('dof_vel', None))  # 将 dof_vel 数组添加到列表中
             all_dof_angular_acceleration_list.append(saved_data.get('dof_angular_acceleration', None))  # 将 dof_angular_acceleration 数组添加到列表中
             all_torque_list.append(saved_data.get('torque', None    ))  # 将 torque 数组添加到列表中
+            all_friction_coeffs_list.append(saved_data.get('friction_coeffs', None))  # 将 friction_coeffs 数组添加到列表中
+            all_viscous_friction_coeffs_list.append(saved_data.get('viscous_friction_coeffs', None))  # 将 viscous_friction_coeffs 数组添加到列表中
 
 
             if (i + 1) % 100 == 0 or (i + 1) == len(npy_files):
@@ -66,7 +76,14 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
             print(f"加载或处理文件 {filename} 时发生错误：{e}")
             continue
 
-    if not all_dof_angular_acceleration_list or not all_base_angular_vel_list or not all_dof_pos_list or not all_torque_list or not all_projected_gravity_list or not all_dof_vel_list:
+    if not all_dof_angular_acceleration_list or \
+        not all_base_angular_vel_list or \
+            not all_dof_pos_list or \
+                not all_torque_list or \
+                    not all_projected_gravity_list or \
+                        not all_dof_vel_list or \
+                            not all_friction_coeffs_list or \
+                                not all_viscous_friction_coeffs_list:
         # 如果没有任何数据可合并，打印提示信息并返回
         print("没有可合并的数据。")
         return
@@ -81,6 +98,8 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
         'dof_vel': all_dof_vel_list ,      # 这里是一个包含所有 dof_vel 数组的列表
         'dof_angular_acceleration': all_dof_vel_list,  # 这里是一个包含所有 dof_angular_acceleration 数组的列表
         'torque': all_torque_list,         # 这里是一个包含所有 torque 数组的列表
+        'friction_coeffs': all_friction_coeffs_list,  # 这里是一个包含所有 friction_coeffs 数组的列表
+        'viscous_friction_coeffs': all_viscous_friction_coeffs_list
 
     }
 
@@ -106,11 +125,12 @@ def combine_npy_files_with_text_motions(npy_folder_path, output_filename_base):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="path_to_log_folder")
     parser.add_argument('--log_path', type=str, required=True,
-                        help="--log_path path_to_your_.pkl")
+                        help="--log_path path_to_your_log_folder")
     args = parser.parse_args()
     file_path = args.log_path
     count = 0
     combine_npy_files_with_text_motions(npy_folder_path=f'{file_path}/iteration_data_collection',
+                                        #npy_folder_path=f'{file_path}/LOOSE_JumpJumpJump_RandViscous_Hard_iteration_data_collection',
                                         output_filename_base=f'{file_path}/iteration_data_combined')
     
     #npy_path = '/root/PHC_process/g1_npy_combined.npy'
