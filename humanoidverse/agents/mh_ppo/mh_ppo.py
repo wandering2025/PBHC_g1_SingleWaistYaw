@@ -64,10 +64,19 @@ class MHPPO(BaseAlgo):
         _ = self.env.reset_all()
 
         print("INITIALIZING: /root/PBHC_g1_SingleWaistYaw/humanoidverse/agents/mh_ppo/mh_ppo.py")
-        self.data_save_dir = os.path.join(self.log_dir, "iteration_data_collection")
-        os.makedirs(self.data_save_dir, exist_ok=True)
-        #self.save_data_per_iteration = [] # This list will hold data for the current iteration
-        self.save_data_per_iteration = defaultdict(list)
+        
+        self.if_record_data = self.config.get('IF_RECORD', False)
+        
+        if self.if_record_data:
+        
+            self.data_save_dir = os.path.join(self.log_dir, "iteration_data_collection")
+            os.makedirs(self.data_save_dir, exist_ok=True)
+            #self.save_data_per_iteration = [] # This list will hold data for the current iteration
+            self.save_data_per_iteration = defaultdict(list)
+
+        else:
+            self.data_save_dir = None
+            logger.info("Not Recoding")
 
     def _init_config(self):
         # Env related Config
@@ -244,7 +253,8 @@ class MHPPO(BaseAlgo):
         for it in range(self.current_learning_iteration, tot_iter):
             self.start_time = time.time()
             #####dev####
-            self.save_data_per_iteration = defaultdict(list)
+            if self.if_record_data: 
+                self.save_data_per_iteration = defaultdict(list)
             #####dev####
             obs_dict =self._rollout_step(obs_dict)
 
@@ -266,7 +276,8 @@ class MHPPO(BaseAlgo):
             }
             self._post_epoch_logging(log_dict)
 
-            if self.save_data_per_iteration:
+            #if self.save_data_per_iteration:
+            if self.if_record_data and self.save_data_per_iteration:
                 # file_path = os.path.join(self.data_save_dir, f"iteration_{it}_env0_data.npy")
                 # np.save(file_path, self.save_data_per_iteration, allow_pickle=True)
                 # logger.info(f"saved env0 alive data to: {file_path}")
@@ -366,7 +377,8 @@ class MHPPO(BaseAlgo):
                     self.cur_episode_length[new_ids] = 0
                 env0_id = 0
                 
-                if not dones[env0_id].item():
+                #if not dones[env0_id].item():
+                if self.if_record_data and not dones[env0_id].item():
                     # current_step_data = {
                     #     "link_angular_acceleration": self.env.realtime_angular_acceleration[env0_id].cpu().numpy(),
                     #     "base_angular_vel": self.env.base_ang_vel[env0_id].cpu().numpy(),
