@@ -410,7 +410,7 @@ class IsaacGym(BaseSimulator):
             dry_friction_range = self.env_config.domain_rand.get('joint_dry_friction_range', [0.0, 0.0])
             if randomize_dry_friction and not hasattr(self, '_dry_friction_coeffs'):
                 lower, upper = dry_friction_range[0], dry_friction_range[1]
-                self._dry_friction_coeffs = torch_rand_float(lower, upper, (self.num_envs, self.num_dof), device='cpu')
+                self._dry_friction_coeffs = torch_rand_float(lower, upper, (self.num_envs, self.num_dof), device=self.device)
             # <<< NEW END >>>
 
 
@@ -419,7 +419,7 @@ class IsaacGym(BaseSimulator):
                 lower_bound, upper_bound = viscous_friction_range[0], viscous_friction_range[1]
                 # set unique joint viscous friction coefficients for each DOF
                 #self._viscous_friction_coeffs = torch_rand_float(lower_bound, upper_bound, (self.num_envs, 1), device='cpu')
-                self._viscous_friction_coeffs = torch_rand_float(lower_bound, upper_bound, (self.num_envs, self.num_dof), device='cpu')
+                self._viscous_friction_coeffs = torch_rand_float(lower_bound, upper_bound, (self.num_envs, self.num_dof), device=self.device)
 
             for i in range(len(props)):
                 

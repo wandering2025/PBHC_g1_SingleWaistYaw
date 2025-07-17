@@ -172,6 +172,13 @@ class LeggedRobotBase(BaseTask):
 
 
         ####dev####  
+
+        # Buffer to store the state of push perturbations
+        self.push_perturbation = torch.zeros(self.num_envs, 2, dtype=torch.float, device=self.device, requires_grad=False)
+    # Buffer to store the state of overturn perturbations
+        self.overturn_perturbation = torch.zeros(self.num_envs, 2, dtype=torch.float, device=self.device, requires_grad=False)
+    # A counter to decay the perturbation signals over time
+        self.perturbation_recovery_counter = torch.zeros(self.num_envs, dtype=torch.long, device=self.device, requires_grad=False)
         
 
     def _domain_rand_config(self):
@@ -198,6 +205,12 @@ class LeggedRobotBase(BaseTask):
         self.command_counter[:] += 1
 
         self.overturn_counter[:] += 1
+
+        self.perturbation_recovery_counter += 1
+# After about 0.3 seconds (15 steps @ 50Hz), reset the signal to zero
+        recovery_done_ids = (self.perturbation_recovery_counter > 15).nonzero(as_tuple=False).flatten()
+        self.push_perturbation[recovery_done_ids] = 0.
+        self.overturn_perturbation[recovery_done_ids] = 0.
 
     def _init_domain_rand_buffers(self):
         ######################################### DR related tensors #########################################
@@ -1207,6 +1220,11 @@ class LeggedRobotBase(BaseTask):
         self.need_to_refresh_envs[env_ids] = True
         max_vel = self.config.domain_rand.max_push_vel_xy
         self.push_robot_vel_buf[env_ids] = torch_rand_float(-max_vel, max_vel, (len(env_ids), 2), device=str(self.device))  # lin vel x/y
+        
+        self.push_perturbation[env_ids] = self.push_robot_vel_buf[env_ids]
+        self.perturbation_recovery_counter[env_ids] = 0 # Reset recovery counter
+        
+        
         self.record_push_robot_vel_buf[env_ids] = self.push_robot_vel_buf[env_ids].clone()
         
         if '_push_fixed' in self.config.domain_rand and self.config.domain_rand._push_fixed:
@@ -1239,6 +1257,12 @@ class LeggedRobotBase(BaseTask):
         # 我们可以让扰动在正负 max_angle_rad 之间随机
         delta_roll = torch_rand_float(-max_angle_rad, max_angle_rad, (len(env_ids), 1), device=self.device)
         delta_pitch = torch_rand_float(-max_angle_rad, max_angle_rad, (len(env_ids), 1), device=self.device)
+        
+        self.overturn_perturbation[env_ids, 0] = delta_roll.squeeze()
+        self.overturn_perturbation[env_ids, 1] = delta_pitch.squeeze()
+        self.perturbation_recovery_counter[env_ids] = 0 # Reset recovery counter
+        
+        
         delta_yaw = torch.zeros((len(env_ids), 1), device=self.device) # 通常不对yaw做随机冲击
 
         # 应用变化量到当前欧拉角
@@ -1376,3 +1400,33 @@ class LeggedRobotBase(BaseTask):
     @property
     def num_rew_fn(self):
         return len(self.reward_functions)+1 if self.config.use_vec_reward else 1
+    
+
+
+    def _get_obs_dr_friction(self,):
+    # This function now returns per-link friction values
+    # NOTE: Ensure your simulator object exposes this property.
+        return self.simulator._ground_friction_values
+
+    def _get_obs_dr_joint_dry_friction(self,):
+        # Getter for joint dry friction coefficients
+        # NOTE: Ensure your simulator object exposes this property.
+        return self.simulator._dry_friction_coeffs
+
+    def _get_obs_dr_joint_viscous_friction(self,):
+        # Getter for joint viscous friction coefficients
+        # NOTE: Ensure your simulator object exposes this property.
+        return self.simulator._viscous_friction_coeffs
+
+    def _get_obs_dr_push_state(self,):
+        # Getter for the current push perturbation state
+        return self.push_perturbation
+
+    def _get_obs_dr_overturn_state(self,):
+        # Getter for the current overturn perturbation state
+        return self.overturn_perturbation
+
+    def _get_obs_dr_rigid_body_vel(self,):
+        # Getter for all rigid body linear velocities, flattened
+        # shape: (num_envs, num_bodies * 3)
+        return self.simulator._rigid_body_vel.flatten(start_dim=1)

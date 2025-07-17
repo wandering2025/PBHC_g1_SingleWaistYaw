@@ -7,7 +7,7 @@ algo:
   _recursive_: False
   config:
 
-    IF_RECORD: True # True for data recording in training
+    IF_RECORD: False # True for data recording in training
 
     num_learning_epochs: 5
     num_mini_batches: 4
