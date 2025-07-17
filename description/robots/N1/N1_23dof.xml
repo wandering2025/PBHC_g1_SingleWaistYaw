@@ -1,5 +1,5 @@
 <mujoco model="N1">
-    <compiler angle="radian" meshdir="../meshes" autolimits="true"/>
+    <compiler angle="radian" meshdir="meshes" autolimits="true"/>
 
     <default>
         <default class="N1">
@@ -46,7 +46,7 @@
     </default>
 
     <asset>
-        <mesh name="base_link" content_type="model/stl" file="base_link.STL"/>
+        <mesh name="pelvis" content_type="model/stl" file="pelvis.STL"/>
         <mesh name="torso_link" content_type="model/stl" file="torso_link.STL"/>
         <mesh name="camera_link" content_type="model/stl" file="camera_link.STL"/>
         <mesh name="imu_link" content_type="model/stl" file="imu_link.STL"/>
@@ -88,14 +88,14 @@
     </asset>
 
     <worldbody>
-        <light mode="targetbodycom" target="base_link" pos="1.40 0 1.40"/>
+        <light mode="targetbodycom" target="pelvis" pos="1.40 0 1.40"/>
 
-        <body name="base_link" pos="0 0 0.70">
+        <body name="pelvis" pos="0 0 0.70">
             <!-- Add freejoint will add additional 7 dofs -->
-            <freejoint name="base_free_joint"/>
+            <joint name="base_free_joint" type='free' />
 
             <inertial pos="0.00025493 1.049e-05 -0.05502" quat="0.704566 0.709615 0.00402273 -0.00405522" mass="3.18" diaginertia="0.0111393 0.00899019 0.00761893"/>
-            <geom class="visual" mesh="base_link"/>
+            <geom class="visual" mesh="pelvis"/>
             <geom class="collision" size="0.065 0.0675" pos="0 0 -0.05" quat="0.707388 0.706825 0 0" type="cylinder"/>
 
             <!-- left leg -->
@@ -292,7 +292,7 @@
 
 
     <actuator>
-        <!-- left leg -->
+        
         <motor class="motor_8029E" name="left_hip_pitch_link" joint="left_hip_pitch_joint"/>
         <motor class="motor_6043E" name="left_hip_roll_link" joint="left_hip_roll_joint"/>
         <motor class="motor_6043E" name="left_hip_yaw_link" joint="left_hip_yaw_joint"/>
@@ -300,7 +300,7 @@
         <motor class="motor_4530E" name="left_ankle_roll_link" joint="left_ankle_roll_joint"/>
         <motor class="motor_4530E" name="left_ankle_pitch_link" joint="left_ankle_pitch_joint"/>
 
-        <!-- right leg -->
+        
         <motor class="motor_8029E" name="right_hip_pitch" joint="right_hip_pitch_joint"/>
         <motor class="motor_6043E" name="right_hip_roll" joint="right_hip_roll_joint"/>
         <motor class="motor_6043E" name="right_hip_yaw" joint="right_hip_yaw_joint"/>
@@ -308,17 +308,17 @@
         <motor class="motor_4530E" name="right_ankle_roll" joint="right_ankle_roll_joint"/>
         <motor class="motor_4530E" name="right_ankle_pitch" joint="right_ankle_pitch_joint"/>
 
-        <!-- waist -->
+        
         <motor class="motor_6043E" name="waist_yaw" joint="waist_yaw_joint"/>
 
-        <!-- left arm -->
+        
         <motor class="motor_6043E" name="left_shoulder_pitch" joint="left_shoulder_pitch_joint"/>
         <motor class="motor_4530E" name="left_shoulder_roll" joint="left_shoulder_roll_joint"/>
         <motor class="motor_4530E" name="left_shoulder_yaw" joint="left_shoulder_yaw_joint"/>
         <motor class="motor_4530E" name="left_elbow_pitch" joint="left_elbow_pitch_joint"/>
         <motor class="motor_4530E" name="left_wrist_yaw" joint="left_wrist_yaw_joint"/>
 
-        <!-- right arm -->
+        
         <motor class="motor_6043E" name="right_shoulder_pitch" joint="right_shoulder_pitch_joint"/>
         <motor class="motor_4530E" name="right_shoulder_roll" joint="right_shoulder_roll_joint"/>
         <motor class="motor_4530E" name="right_shoulder_yaw" joint="right_shoulder_yaw_joint"/>

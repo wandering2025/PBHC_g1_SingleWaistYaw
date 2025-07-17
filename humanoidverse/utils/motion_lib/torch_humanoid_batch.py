@@ -61,6 +61,11 @@ class Humanoid_Batch:
         
         self.mjcf_data = mjcf_data = self.from_mjcf(self.mjcf_file)
         self.body_names = copy.deepcopy(mjcf_data['node_names'])
+        #### dev ####
+        if self.asset_file == "N1_23dof.xml":
+            delete_body_names = ['torso_link', 'camera_link', 'left_end_effector_link', 'right_end_effector_link', 'imu_link']
+            self.body_names = [body_name for body_name in self.body_names if body_name not in delete_body_names]
+        #### dev ####
         self._parents = mjcf_data['parent_indices']
         self.body_names_augment = copy.deepcopy(mjcf_data['node_names'])
         self._offsets = mjcf_data['local_translation'][None, ].to(device)
