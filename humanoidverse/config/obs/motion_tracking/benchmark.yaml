@@ -35,10 +35,10 @@ obs:
       #dr_friction,
 
       dr_joint_dry_friction,      # Privileged info for joint dry friction
-      dr_joint_viscous_friction,  # Privileged info for joint viscous friction
-      dr_push_state,              # Privileged info for push robot state
-      dr_overturn_state,          # Privileged info for overturn state
-      dr_rigid_body_vel,          # Privileged info for all rigid body velocities
+      # dr_joint_viscous_friction,  # Privileged info for joint viscous friction
+      # dr_push_state,              # Privileged info for push robot state
+      # dr_overturn_state,          # Privileged info for overturn state
+      # dr_rigid_body_vel,          # Privileged info for all rigid body velocities
 
       dr_ctrl_delay,
       history_critic
@@ -85,10 +85,10 @@ obs:
     #dr_friction: 1.0,
 
     dr_joint_dry_friction: 1.0,
-    dr_joint_viscous_friction: 1.0,
-    dr_push_state: 1.0,
-    dr_overturn_state: 1.0,
-    dr_rigid_body_vel: 0.05,
+    # dr_joint_viscous_friction: 1.0,
+    # dr_push_state: 1.0,
+    # dr_overturn_state: 1.0,
+    # dr_rigid_body_vel: 0.05,
 
     dr_ctrl_delay: 1.0,
   }
@@ -112,10 +112,10 @@ obs:
     #dr_friction: 0.0,
 
     dr_joint_dry_friction: ${robot.dof_obs_size},
-    dr_joint_viscous_friction: ${robot.dof_obs_size},
-    dr_push_state: 2,  # For push velocity in x, y
-    dr_overturn_state: 2, # For overturn delta in roll, pitch
-    dr_rigid_body_vel: ${eval:'3 * ${robot.num_bodies}'},
+    # dr_joint_viscous_friction: ${robot.dof_obs_size},
+    # dr_push_state: 2,  # For push velocity in x, y
+    # dr_overturn_state: 2, # For overturn delta in roll, pitch
+    # dr_rigid_body_vel: ${eval:'3 * ${robot.num_bodies}'},
 
     dr_ctrl_delay: 0.0,
   }

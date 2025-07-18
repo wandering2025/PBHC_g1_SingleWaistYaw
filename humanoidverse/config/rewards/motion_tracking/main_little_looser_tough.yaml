@@ -24,7 +24,7 @@ rewards:
       penalty_torques: -0.000001
       # penalty_dof_vel: -0.0001
       # penalty_dof_acc: -2.5e-8
-      penalty_action_rate: -0.5 # need to be tuned up to -0.5 for real robot
+      penalty_action_rate: -0.8 #-0.5 # need to be tuned up to -0.5 for real robot
 
       feet_air_time: 1.0
       penalty_feet_contact_forces: -0.01

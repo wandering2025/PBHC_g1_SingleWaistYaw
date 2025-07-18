@@ -11,7 +11,7 @@ env:
     max_episode_length_s : 100000
     termination:
       terminate_by_contact: False
-      terminate_by_gravity: True
+      terminate_by_gravity: True 
       terminate_by_low_height: False
       terminate_when_motion_end: True
       terminate_when_motion_far: True
