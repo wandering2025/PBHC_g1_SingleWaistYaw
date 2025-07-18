@@ -117,8 +117,7 @@ obs:
     - local_ref_rigid_body_pos: ${eval:'3 * ${robot.num_bodies} + 9'}
     - ref_motion_phase: 1
     - dr_base_com: 3
-    # - dr_link_mass: 22 # = num of 'randomize_link_body_names'
-    - dr_link_mass: 20 # 根据h1的调为20，不知道是否正确
+    - dr_link_mass: 22 # = num of 'randomize_link_body_names'
     - dr_kp: ${robot.dof_obs_size}
     - dr_kd: ${robot.dof_obs_size}
     - dr_friction: 1
