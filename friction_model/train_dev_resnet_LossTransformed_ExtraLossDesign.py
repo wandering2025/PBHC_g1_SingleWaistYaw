@@ -192,7 +192,9 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
             
             target_numerator = batch_on_device['viscous_friction_coeffs'] * batch_on_device['dof_vel']
 
-            norm_factor = torch.abs(batch_on_device['torque']) + 1.0
+            #norm_factor = torch.abs(batch_on_device['torque']) + 1.0
+            norm_factor = 1.0
+
             loss_cri = criterion(numerator_pre / norm_factor, target_numerator / norm_factor)
 
             #loss_mse = criterion(numerator_pre, target_numerator)
@@ -232,7 +234,8 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
 
                 target_numerator = batch_on_device['viscous_friction_coeffs'] * batch_on_device['dof_vel']
 
-                norm_factor_val = torch.abs(batch_on_device['torque']) + 1.0
+                #norm_factor_val = torch.abs(batch_on_device['torque']) + 1.0
+                norm_factor_val = 1.0
 
                 loss_cri_val = criterion(numerator / norm_factor_val, target_numerator / norm_factor_val)
                 #loss_mse_val = criterion(numerator, target_numerator)
@@ -277,7 +280,7 @@ def main():
     block_dims = [512, 1024,1024, 512] 
     
     # Training Hyperparameters
-    learning_rate = 1e-2 #1e-3 #1e-4
+    learning_rate = 1e-3 #1e-4
     weight_decay = 0.0
     batch_size = 1024
     num_epochs = 50000

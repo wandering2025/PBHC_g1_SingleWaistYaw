@@ -117,9 +117,8 @@ def differentiable_physics_model(f_c, r, F_trans, J, dof_ang_acc, torque_a, tao_
     """
     sign_dof_vel = torch.sign(dof_vel)
     numerator = -f_c * r * F_trans * sign_dof_vel - J * dof_ang_acc + torque_a + tao_load
-    #dof_vel_pre = numerator / (f_v + 1e-8)
-    #return dof_vel_pre
-    return numerator
+    dof_vel_pre = numerator / (f_v + 1e-8)
+    return dof_vel_pre
 
 # --- 3. Custom Dataset with Standardization (Unchanged) ---
 class PhysicsDataset(Dataset):
@@ -172,17 +171,12 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
             nn_input = batch_on_device['nn_input']
             optimizer.zero_grad()
             F_trans, J, tao_load = model(nn_input)
-            
-            numerator = differentiable_physics_model(
-            #dof_vel_predicted = differentiable_physics_model(
+            dof_vel_predicted = differentiable_physics_model(
                 f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
                 dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
                 tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
             )
-            
-            target_numerator = batch_on_device['viscous_friction_coeffs'] * batch_on_device['dof_vel']
-            loss = criterion(numerator, target_numerator)
-            #loss = criterion(dof_vel_predicted, batch_on_device['dof_vel'])
+            loss = criterion(dof_vel_predicted, batch_on_device['dof_vel'])
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
@@ -196,16 +190,12 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
                 batch_on_device = {k: v.to(device) for k, v in batch.items()}
                 nn_input = batch_on_device['nn_input']
                 F_trans, J, tao_load = model(nn_input)
-                numerator = differentiable_physics_model(
-                #dof_vel_predicted = differentiable_physics_model(
+                dof_vel_predicted = differentiable_physics_model(
                     f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
                     dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
                     tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
                 )
-
-                target_numerator = batch_on_device['viscous_friction_coeffs'] * batch_on_device['dof_vel']
-                loss = criterion(numerator,target_numerator)
-                #loss = criterion(dof_vel_predicted, batch_on_device['dof_vel'])
+                loss = criterion(dof_vel_predicted, batch_on_device['dof_vel'])
                 total_val_loss += loss.item()
         
         avg_val_loss = total_val_loss / len(val_loader)
@@ -237,11 +227,12 @@ def main():
     
     # ***** ResNet Architecture Configuration *****
 
-    block_dims = [512, 1024,1024, 1024, 512] 
+    #block_dims = [512, 1024,1024, 1024, 256] 
+    block_dims = [512, 1024,1024, 1024, 1024, 512]
     
     # Training Hyperparameters
-    learning_rate = 1e-4
-    weight_decay = 0.0
+    learning_rate = 1e-2 #1e-3
+    weight_decay = 1e-6
     batch_size = 1024
     num_epochs = 50000
     patience = 150
@@ -252,7 +243,7 @@ def main():
     log_base_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/logs'
     data_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/LOOSE_JumpJumpJump_RandViscous_Hard_concat_data/data_for_training'
     
-    experiment_name = 'dev_resnet_5dim_LossEdited' # Default experiment name
+    experiment_name = 'dev_resnet_Predict_dof_vel' # Default experiment name
     for arg in sys.argv:
         if arg.startswith('+experiment='):
             experiment_name = arg.split('=')[1]
@@ -297,8 +288,8 @@ def main():
                                num_dofs=num_dofs, 
                                dropout_rate=dropout_rate).to(device)
     
-    criterion = nn.MSELoss()
-    #criterion = nn.SmoothL1Loss()
+    #criterion = nn.MSELoss()
+    criterion = nn.SmoothL1Loss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, patience=scheduler_patience, verbose=True)
     

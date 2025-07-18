@@ -117,9 +117,8 @@ def differentiable_physics_model(f_c, r, F_trans, J, dof_ang_acc, torque_a, tao_
     """
     sign_dof_vel = torch.sign(dof_vel)
     numerator = -f_c * r * F_trans * sign_dof_vel - J * dof_ang_acc + torque_a + tao_load
-    #dof_vel_pre = numerator / (f_v + 1e-8)
-    #return dof_vel_pre
-    return numerator
+    dof_vel_pre = numerator / (f_v + 1e-8)
+    return dof_vel_pre
 
 # --- 3. Custom Dataset with Standardization (Unchanged) ---
 class PhysicsDataset(Dataset):
@@ -164,6 +163,9 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
     ], dtype=torch.float32).to(device)
 
     print(f"\n--- Starting Training: State-Dependent Parameter Prediction ---")
+
+    dof_vel_threshhold = 40.0
+
     for epoch in range(num_epochs):
         model.train()
         total_train_loss = 0
@@ -172,17 +174,20 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
             nn_input = batch_on_device['nn_input']
             optimizer.zero_grad()
             F_trans, J, tao_load = model(nn_input)
-            
-            numerator = differentiable_physics_model(
-            #dof_vel_predicted = differentiable_physics_model(
+            dof_vel_predicted = differentiable_physics_model(
                 f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
                 dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
                 tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
             )
-            
-            target_numerator = batch_on_device['viscous_friction_coeffs'] * batch_on_device['dof_vel']
-            loss = criterion(numerator, target_numerator)
-            #loss = criterion(dof_vel_predicted, batch_on_device['dof_vel'])
+
+            loss_cri = criterion(dof_vel_predicted, batch_on_device['dof_vel'])
+            boundary_violations = F.relu(torch.abs(dof_vel_predicted) - dof_vel_threshhold)
+            loss_bound = torch.mean(boundary_violations)
+
+            weight_bound = 0.5
+            loss = loss_cri + (1+weight_bound) * loss_bound
+
+
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
@@ -196,17 +201,19 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
                 batch_on_device = {k: v.to(device) for k, v in batch.items()}
                 nn_input = batch_on_device['nn_input']
                 F_trans, J, tao_load = model(nn_input)
-                numerator = differentiable_physics_model(
-                #dof_vel_predicted = differentiable_physics_model(
+                dof_vel_predicted_val = differentiable_physics_model(
                     f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
                     dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
                     tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
                 )
+                loss_cri_val = criterion(dof_vel_predicted_val, batch_on_device['dof_vel'])
+                boundary_violations_val = F.relu(torch.abs(dof_vel_predicted_val) - dof_vel_threshhold)
+                loss_bound_val = torch.mean(boundary_violations_val)
+                
+            
+                loss_val = loss_cri_val + (1+weight_bound) * loss_bound_val
 
-                target_numerator = batch_on_device['viscous_friction_coeffs'] * batch_on_device['dof_vel']
-                loss = criterion(numerator,target_numerator)
-                #loss = criterion(dof_vel_predicted, batch_on_device['dof_vel'])
-                total_val_loss += loss.item()
+                total_val_loss += loss_val.item()
         
         avg_val_loss = total_val_loss / len(val_loader)
         current_lr = optimizer.param_groups[0]['lr']
@@ -237,11 +244,11 @@ def main():
     
     # ***** ResNet Architecture Configuration *****
 
-    block_dims = [512, 1024,1024, 1024, 512] 
+    block_dims = [512, 1024,1024, 256] 
     
     # Training Hyperparameters
-    learning_rate = 1e-4
-    weight_decay = 0.0
+    learning_rate = 1e-3
+    weight_decay = 1e-6
     batch_size = 1024
     num_epochs = 50000
     patience = 150
@@ -252,7 +259,7 @@ def main():
     log_base_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/logs'
     data_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/LOOSE_JumpJumpJump_RandViscous_Hard_concat_data/data_for_training'
     
-    experiment_name = 'dev_resnet_5dim_LossEdited' # Default experiment name
+    experiment_name = 'dev_resnet_Predict_dof_vel' # Default experiment name
     for arg in sys.argv:
         if arg.startswith('+experiment='):
             experiment_name = arg.split('=')[1]
@@ -297,8 +304,8 @@ def main():
                                num_dofs=num_dofs, 
                                dropout_rate=dropout_rate).to(device)
     
-    criterion = nn.MSELoss()
-    #criterion = nn.SmoothL1Loss()
+    #criterion = nn.MSELoss()
+    criterion = nn.SmoothL1Loss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, patience=scheduler_patience, verbose=True)
     
