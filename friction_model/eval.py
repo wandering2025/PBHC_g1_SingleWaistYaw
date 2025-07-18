@@ -82,7 +82,7 @@ def differentiable_physics_model(f_c, r, F_trans, J, dof_ang_acc, torque_a, tao_
 # Path to the specific experiment directory you want to evaluate.
 # Example: '/root/PBHC_g1_SingleWaistYaw/friction_model/logs/20250716_181040_dev_resnet...'
 # You can also pass this as a command line argument.
-EXPERIMENT_DIR = '/root/PBHC_g1_SingleWaistYaw/friction_model/logs/20250717_220257_resnet_LossTransformed_ExtraLossDesign_L1Loss'
+EXPERIMENT_DIR = '/root/PBHC_g1_SingleWaistYaw/friction_model/logs/20250718_120930_dev_resnet_Predict_dof_vel_lr1e-3'
 
 # Path to the validation data
 DATA_PATH = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/LOOSE_JumpJumpJump_RandViscous_Hard_concat_data/data_for_training/val_data.npy'
@@ -91,7 +91,7 @@ DATA_PATH = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/LOOSE_JumpJumpJump
 MODEL_PARAMS = {
     'input_dim': 98,
     'num_dofs': 23,
-    'block_dims': [512, 1024,1024, 512], # Example for a 3-block network, change if needed
+    'block_dims': [512, 1024,1024, 256], # Example for a 3-block network, change if needed
     'dropout_rate': 0.1
 }
 
@@ -257,7 +257,7 @@ def main():
             total_samples += len(x_unscaled)
             
     avg_val_loss = total_val_loss / total_samples
-    print(f"\nOverall Validation MSE Loss: {avg_val_loss:.6f}")
+    print(f"\nOverall Validation MSE Loss for DOF_VEL: {avg_val_loss:.6f}")
     print("--- Evaluation Finished ---")
 
 if __name__ == '__main__':
