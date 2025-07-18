@@ -196,7 +196,7 @@ robot:
     motion_file : ???
     asset:
       assetRoot: "description/robots/N1/"
-      assetFileName: "N1_23dof.xml"
+      assetFileName: "N1_new.xml"
       urdfFileName: "N1_23dof.urdf"
 
     humanoid_type: N1_23dof
