@@ -46,7 +46,7 @@
     <body name="pelvis" pos="0 0 1.1" childclass="h1">
       <inertial pos="-0.0002 4e-05 -0.04522" quat="0.498303 0.499454 -0.500496 0.501741" mass="5.39"
         diaginertia="0.0490211 0.0445821 0.00824619"/>
-      <joint type='free' />
+      <joint name="floating_base_joint" type='free' />
       <geom class="visual" mesh="pelvis"/>
       <geom class="collision" mesh="pelvis"/>
       <body name="left_hip_yaw_link" pos="0 0.0875 -0.1742">
