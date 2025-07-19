@@ -34,7 +34,7 @@ obs:
       dr_kd,
       #dr_friction,
 
-      dr_joint_dry_friction,      # Privileged info for joint dry friction
+      #dr_joint_dry_friction,      # Privileged info for joint dry friction
       # dr_joint_viscous_friction,  # Privileged info for joint viscous friction
       # dr_push_state,              # Privileged info for push robot state
       # dr_overturn_state,          # Privileged info for overturn state
@@ -85,7 +85,7 @@ obs:
     #dr_friction: 1.0,
 
 
-    dr_joint_dry_friction: 1.0,
+    # dr_joint_dry_friction: 1.0,
     # dr_joint_viscous_friction: 1.0,
     # dr_push_state: 1.0,
     # dr_overturn_state: 1.0,
@@ -113,7 +113,7 @@ obs:
     dr_kd: 0.0,
     #dr_friction: 0.0,
 
-    dr_joint_dry_friction: 0.0,
+    # dr_joint_dry_friction: 0.0,
     # dr_joint_viscous_friction: 0.0,
     # dr_push_state: 0.0,
     # dr_overturn_state: 0.0,
@@ -146,7 +146,7 @@ obs:
     - dr_kd: ${robot.dof_obs_size}
     #- dr_friction: 1
 
-    - dr_joint_dry_friction: ${robot.dof_obs_size}
+    # - dr_joint_dry_friction: ${robot.dof_obs_size}
     # - dr_joint_viscous_friction: ${robot.dof_obs_size}
     # - dr_push_state: 2  # For push velocity in x, y
     # - dr_overturn_state: 2 # For overturn delta in roll, pitch
