@@ -23,7 +23,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/pelvis_copy.STL" />
+          filename="meshes/pelvis.STL" />
       </geometry>
       <material
         name="">
