@@ -2,8 +2,8 @@ import numpy as np
 import os
 
 # --- 1. Setup Paths ---
-log_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/LOOSE_JumpJumpJump_RandViscous_Hard_concat_data/split_cat_data'
-save_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/LOOSE_JumpJumpJump_RandViscous_Hard_concat_data/data_for_training'
+log_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/looser_JumpJumpJump_Randviscous_harder_overturn/split_cat_data'
+save_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/data/looser_JumpJumpJump_Randviscous_harder_overturn/data_for_training'
 os.makedirs(save_dir, exist_ok=True)
 
 # --- 2. Load All Necessary Data ---
