@@ -10,13 +10,13 @@ from omegaconf import OmegaConf
 
 import logging
 from loguru import logger
+import multiprocessing
+from humanoidverse.utils.devtool import *
 
-from utils.devtool import *
 
+from humanoidverse.utils.config_utils import *  # noqa: E402, F403
 
-from utils.config_utils import *  # noqa: E402, F403
-@hydra.main(config_path="config", config_name="base", version_base="1.1")
-def main(config: OmegaConf):
+def launch_training(config: OmegaConf, ipc_queue: multiprocessing.Queue):
     # import ipdb; ipdb.set_trace()
     simulator_type = config.simulator['_target_'].split('.')[-1]
     # import ipdb; ipdb.set_trace()
@@ -104,6 +104,7 @@ def main(config: OmegaConf):
         OmegaConf.save(unresolved_conf, file)
 
     algo: BaseAlgo = instantiate(device=device, env=env, config=config.algo, log_dir=experiment_save_dir)
+    algo.ipc_queue = ipc_queue
     algo.setup()
     if config.checkpoint is not None:
         algo.load(config.checkpoint)
@@ -114,5 +115,10 @@ def main(config: OmegaConf):
     if simulator_type == 'IsaacSim':
         simulation_app.close()
 
+@hydra.main(config_path="config", config_name="base", version_base="1.1")
+def main(config: OmegaConf):
+    # 当从命令行直接运行时，没有IPC队列
+    launch_training(config, ipc_queue=None)
+
 if __name__ == "__main__":
-    main()
+    main(ipc_queue=None)

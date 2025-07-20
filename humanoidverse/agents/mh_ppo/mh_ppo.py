@@ -229,6 +229,17 @@ class MHPPO(BaseAlgo):
             self.stop_time = time.time()
             self.learn_time = self.stop_time - self.start_time
 
+            if self.log_dir is not None:
+                data_to_send = {
+                    'obs_dict': obs_dict,
+                    'storage': self.storage,
+                }
+                try:
+                    self.ipc_queue.put_nowait(data_to_send)
+                except Exception:
+                    # 队列可能已满，可以忽略或打印警告
+                    pass
+                
             # Logging
             log_dict = {
                 'it': it,

@@ -11,12 +11,13 @@ from typing import Optional, List, Tuple, Dict
 from hydra.utils import instantiate
 
 from humanoidverse.envs.base_task.base_task import BaseTask
-
+import multiprocessing
 class BaseAlgo:
-    def __init__(self, env: BaseTask, config, device):
+    def __init__(self, env: BaseTask, config, device, ipc_queue: multiprocessing.Queue):
         self.env = env
         self.config = config
         self.device = device
+        self.ipc_queue = ipc_queue
 
     def setup(self):
         return NotImplementedError
