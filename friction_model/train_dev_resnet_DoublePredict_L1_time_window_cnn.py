@@ -313,6 +313,8 @@ def main():
     print("\nModel Structure:")
     print(model)
     
+
+    last_vel = 0
     # --- Start Training ---
     # Pass new hyperparams to the train function
     train(model, train_loader, val_loader, criterion, mse_criterion, optimizer, scheduler, device, session_save_dir, num_epochs, patience, dt, loss_weight_vel)

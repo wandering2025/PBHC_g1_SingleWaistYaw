@@ -126,6 +126,8 @@ class PhysicsDataset(Dataset):
         self.data = data
         self.input_keys = sorted(input_keys)
         self.all_keys = sorted(list(data.keys()))
+        print('------------INIT---------------------')
+        print(f'Dataset keys: {self.all_keys}')
         self.num_iterations = len(data[self.all_keys[0]])
         self.x_scaler = x_scaler
 
@@ -221,18 +223,26 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
 # --- 6. Main Execution Block (MODIFIED TO USE NEW NETWORK) ---
 def main():
     # --- Configuration ---
-    input_keys = ['base_angular_vel', 'projected_gravity', 'dof_pos', 'dof_vel', 'dof_angular_acceleration', 'torque']
-    input_dim = sum([3, 3, 23, 23, 23, 23]) # 98
+    #exclued torque in model input dims to avoid model misunderstanding tao_load
+    input_keys = ['base_angular_vel', 'projected_gravity', 'dof_pos', 'dof_vel', 'dof_angular_acceleration'
+                  #'torque'
+                  ]
+    input_dim = sum([3, 3, 23, 23, 23
+                     #23
+                     ]) # 98
     num_dofs = 23
     
     # ***** ResNet Architecture Configuration *****
 
+    block_dims = [256, 512]
+    #block_dims = [512, 1024, 256]
     #block_dims = [512, 1024,1024, 1024, 256] 
-    block_dims = [512, 1024,1024, 1024, 1024, 512]
+    #block_dims = [512, 1024,1024, 1024, 1024, 512]
+    #block_dims = [512, 1024, 2048, 2048, 2048, 1024, 512]
     
     # Training Hyperparameters
-    learning_rate = 1e-2 #1e-3
-    weight_decay = 1e-6
+    learning_rate = 1e-3 #1e-3
+    weight_decay = 1e-4
     batch_size = 1024
     num_epochs = 50000
     patience = 150
@@ -264,6 +274,9 @@ def main():
 
     print("Fitting StandardScaler on training data...")
     sorted_input_keys = sorted(input_keys)
+    print('#'*30)
+    print(f"sorted Input keys: {sorted_input_keys}")
+
     full_train_x_list = [np.concatenate([train_data[key][i] for key in sorted_input_keys], axis=1) for i in range(len(train_data[input_keys[0]]))]
     full_train_x = np.concatenate(full_train_x_list, axis=0)
     

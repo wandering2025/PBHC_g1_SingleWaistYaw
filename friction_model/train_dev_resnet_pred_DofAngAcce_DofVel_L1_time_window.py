@@ -91,7 +91,7 @@ class ParameterNetResNet(nn.Module):
         return F_trans, J, tao_load
 
 # --- 2. Differentiable Physics Model (Unchanged) ---
-def differentiable_physics_model(f_c, r, F_trans, J, dof_ang_acc, torque_a, tao_load, f_v, dof_vel):
+def physics_compute_dof_alpha(f_c, r, F_trans, J, dof_ang_acc, torque_a, tao_load, f_v, dof_vel):
     """
     Differentiable physics model implemented in PyTorch.
     All inputs are expected to be PyTorch Tensors.
@@ -100,6 +100,17 @@ def differentiable_physics_model(f_c, r, F_trans, J, dof_ang_acc, torque_a, tao_
     dof_ang_acc__mult__J = -f_c * r * F_trans * sign_dof_vel - f_v * dof_vel + torque_a + tao_load
     dof_ang_acc_pre = dof_ang_acc__mult__J / (J + 1e-8)
     return dof_ang_acc_pre
+
+
+def physics_compute_dof_vel(f_c, r, F_trans, J, dof_ang_acc, torque_a, tao_load, f_v, dof_vel):
+    """
+    Differentiable physics model implemented in PyTorch.
+    All inputs are expected to be PyTorch Tensors.
+    """
+    sign_dof_vel = torch.sign(dof_vel)
+    numerator = -f_c * r * F_trans * sign_dof_vel - J * dof_ang_acc + torque_a + tao_load
+    dof_vel_pre = numerator / (f_v + 1e-8)
+    return dof_vel_pre
 
 # --- 3. Custom Dataset with Time Window (MODIFIED) ---
 class PhysicsDataset(Dataset):
@@ -217,12 +228,23 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
             optimizer.zero_grad()
             F_trans, J, tao_load = model(nn_input)
 
-            dof_ang_acc_pre = differentiable_physics_model(
+            dof_ang_acc_pre = physics_compute_dof_alpha(
                 f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
                 dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
                 tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
             )
-            loss = criterion(dof_ang_acc_pre, batch_on_device['dof_angular_acceleration'])
+
+            dof_vel_pre = physics_compute_dof_vel(
+                f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
+                dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
+                tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
+            )
+
+            loss_dof_alpha = criterion(dof_ang_acc_pre, batch_on_device['dof_angular_acceleration'])
+            loss_dof_vel =  criterion(dof_vel_pre, batch_on_device['dof_vel'])
+
+            loss = loss_dof_alpha + loss_dof_vel
+
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
@@ -237,17 +259,28 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
                 nn_input = batch_on_device['nn_input']
                 F_trans, J, tao_load = model(nn_input)
 
-                dof_ang_acc_pre = differentiable_physics_model(
+                dof_ang_acc_pre_val = physics_compute_dof_alpha(
                     f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
                     dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
                     tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
                 )
-                loss = criterion(dof_ang_acc_pre, batch_on_device['dof_angular_acceleration'])
-                total_val_loss += loss.item()
+
+                dof_vel_pre_val = physics_compute_dof_vel(
+                    f_c=batch_on_device['friction_coeffs'], r=r_tensor, F_trans=F_trans, J=J,
+                    dof_ang_acc=batch_on_device['dof_angular_acceleration'], torque_a=batch_on_device['torque'],
+                    tao_load=tao_load, f_v=batch_on_device['viscous_friction_coeffs'], dof_vel=batch_on_device['dof_vel']
+                )
+
+                loss_dof_alpha_val = criterion(dof_ang_acc_pre_val, batch_on_device['dof_angular_acceleration'])
+                loss_dof_vel_val = criterion(dof_vel_pre_val, batch_on_device['dof_vel'])
+                loss_val = loss_dof_alpha_val + loss_dof_vel_val
+
+                total_val_loss += loss_val.item()
         
         avg_val_loss = total_val_loss / len(val_loader)
         current_lr = optimizer.param_groups[0]['lr']
         print(f"Epoch {epoch+1}/{num_epochs} | Train Loss: {avg_train_loss:.6f} | Val Loss: {avg_val_loss:.6f} | LR: {current_lr:.1e}")
+        print(f'---------------------- loss_dof_alpha_val: {loss_dof_alpha_val:.6f} | loss_dof_vel_val: {loss_dof_vel_val:.6f}-------------------')
 
         if avg_val_loss < min_val_loss:
             min_val_loss = avg_val_loss
@@ -279,10 +312,10 @@ def main():
     input_dim = input_dim_per_frame * window_size  # Total input dim is features * window_size
     
     # ***** ResNet Architecture Configuration *****
-    block_dims = [512,216]
+    block_dims = [512,512,512]#[512,216]
     
     # Training Hyperparameters
-    learning_rate = 5e-4 #1e-3
+    learning_rate = 1e-3#5e-4 #1e-3
     weight_decay = 1e-3
     batch_size = 4096 
     num_epochs = 50000
