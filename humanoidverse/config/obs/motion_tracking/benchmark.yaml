@@ -32,7 +32,7 @@ obs:
       dr_link_mass,
       dr_kp,
       dr_kd,
-      dr_friction,
+      #dr_friction,
       dr_ctrl_delay,
       history_critic
     ]
@@ -75,7 +75,7 @@ obs:
     dr_link_mass: 1.0,
     dr_kp: 1.0,
     dr_kd: 1.0,
-    dr_friction: 1.0,
+    #dr_friction: 1.0,
     dr_ctrl_delay: 1.0,
   }
 
@@ -95,7 +95,7 @@ obs:
     dr_link_mass: 0.0,
     dr_kp: 0.0,
     dr_kd: 0.0,
-    dr_friction: 0.0,
+    #dr_friction: 0.0,
     dr_ctrl_delay: 0.0,
   }
 
@@ -121,7 +121,7 @@ obs:
     - dr_link_mass: 22 # = num of 'randomize_link_body_names'
     - dr_kp: ${robot.dof_obs_size}
     - dr_kd: ${robot.dof_obs_size}
-    - dr_friction: 1
+    #- dr_friction: 1
     - dr_ctrl_delay: 1
 
   post_compute_config: {} # Will store values after preprocessing, don't put anything here
