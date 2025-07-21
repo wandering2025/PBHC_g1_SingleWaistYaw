@@ -9,6 +9,7 @@ import datetime
 import sys
 from sklearn.preprocessing import StandardScaler
 import joblib
+from config.config import Config
 
 # --- 1a. Residual Block Definition (Unchanged) ---
 class ResidualBlock(nn.Module):
@@ -203,7 +204,7 @@ def train(model, train_loader, val_loader, criterion, optimizer, scheduler, devi
         avg_loss_consist_val = val_loss_consist_agg / len(val_loader)
         
         current_lr = optimizer.param_groups[0]['lr']
-        print(f"Epoch {epoch+1}/{num_epochs} | Train Loss: {avg_train_loss:.6f} | Val Loss: {avg_val_loss:.6f} | LR: {current_lr:.1e}")
+        print(f"\nEpoch {epoch+1}/{num_epochs} | Train Loss: {avg_train_loss:.6f} | Val Loss: {avg_val_loss:.6f} | LR: {current_lr:.1e}")
         # --- MODIFIED: Detailed Logging ---
         print(f"  └─ Val Loss Components (Weighted): Accel: {avg_loss_accel_val * w_accel:.4f}, Vel: {avg_loss_vel_val * w_vel:.4f}, Consist: {avg_loss_consist_val * w_consist:.4f}")
 
@@ -228,28 +229,50 @@ def main():
     # --- Configuration ---
     input_keys = ['base_angular_vel', 'projected_gravity', 'dof_pos', 'dof_vel', 'dof_angular_acceleration']
     num_dofs = 23
-    window_size = 10 
-    input_dim_per_frame = sum([3, 3, 23, 23, 23]) # 75
-    input_dim = input_dim_per_frame * window_size
-    
-    # --- Architecture and Hyperparameters ---
-    block_dims = [512, 1024,1024, 512] 
-    dropout_rate = 0.2
+
     
     # --- MODIFIED: Hyperparameters for 3-Term Loss ---
-    dt = 1 / 200 
+    #dt = 1 / 200 
     # Start with weights that prioritize the most stable loss (accel)
-    loss_weight_accel = 1.0
-    loss_weight_vel = 0.1
-    loss_weight_consistency = 0.1
+    
+    config_path = "config/train_scale.yaml" 
+    config = Config(config_path)    
+    
+    loss_weight_accel = config.loss_weight_accel
+    loss_weight_vel = config.loss_weight_vel
+    loss_weight_consistency = config.loss_weight_consistency
+    # loss_weight_accel = 1.0
+    # loss_weight_vel = 0.1
+    # loss_weight_consistency = 0.1
 
     # Start with a conservative learning rate due to complex loss
-    learning_rate = 1e-5
-    weight_decay = 1e-4
-    batch_size = 2048
-    num_epochs = 5000
-    patience = 150
-    scheduler_patience = 40
+    window_size = config.window_size
+    # window_size = 10 
+    input_dim_per_frame = sum([3, 3, 23, 23, 23]) # 75
+    input_dim = input_dim_per_frame * window_size
+
+    block_dims = config.block_dims
+    dropout_rate = config.dropout_rate
+    
+    # # --- Architecture and Hyperparameters ---
+    # block_dims = [512, 1024,1024,1024,1024, 512] #[512, 1024,1024, 512] 
+    # dropout_rate = 0.2
+    
+
+    dt = config.dt
+    learning_rate = float(config.learning_rate)
+    weight_decay = float(config.weight_decay)
+    batch_size = config.batch_size
+    num_epochs = config.num_epochs
+    patience = config.total_patience
+    scheduler_patience = config.scheduler_patience
+
+    # learning_rate = 1e-5
+    # weight_decay = 1e-4
+    # batch_size = 2048
+    # num_epochs = 5000
+    # patience = 150
+    # scheduler_patience = 40
     
     # --- Paths and Session Management ---
     log_base_dir = '/root/PBHC_g1_SingleWaistYaw/friction_model/logs'

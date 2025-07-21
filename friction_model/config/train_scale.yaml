@@ -1,0 +1,28 @@
+input:
+  scale:
+    base_angular_vel: 10.0
+    projected_gravity: 1.0
+    dof_pos: 10.0
+    dof_vel: 10.0
+    dof_angular_acceleration: 10.0
+
+loss:
+  weight:
+    loss_weight_accel: 1.0
+    loss_weight_vel: 0.025 #0.1
+    loss_weight_consistency: 0.025 #0.1
+
+train:
+  window_size: 15 #10
+  dropout_rate: 0.25
+  dt: 0.005 # =1/200 -> isaacgym fps 200
+  learning_rate: 5e-4 #1e-4 #1e-5
+  weight_decay: 0.1 #1e-2 #1e-3
+  batch_size: 4096
+  num_epochs: 5000
+  total_patience: 150
+  scheduler_patience: 40
+  #block_dims: [512, 512, 512, 512] #[512, 1024,1024,512] #[512, 1024,1024,1024, 512] #[512, 1024,1024,1024,1024, 512]
+  block_dims: [256] #[256,256]
+
+
