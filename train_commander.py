@@ -29,15 +29,18 @@ class ParallelTrainer:
         :param tasks: 任务列表，每个字典代表一个独立的实验配置
         :param config_path: Hydra配置文件的相对路径
         """
-        # self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tasks = tasks
         self.config_path = config_path
         self.processes = []
+        # 子进程->主进程
         self.ipc_queues = []
+        # 子进程->主进程
+        self.weight_queues = []
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
-        # self.cfg = OmegaConf.create(get_config())
+        self.cfg = OmegaConf.create(get_config())
         # 创建模型和优化器
-        # self._setup_models_and_optimizer()
+        self._setup_models_and_optimizer()
         # 设置当前工作目录
         os.chdir(self.script_dir)
         print(f"当前工作目录: {os.getcwd()}")
@@ -65,7 +68,7 @@ class ParallelTrainer:
         return dict(items)
     
     @staticmethod
-    def run_process(config: Dict[str, Any], ipc_queue: multiprocessing.Queue, config_path: str):
+    def run_process(config: Dict[str, Any], ipc_queue: multiprocessing.Queue, weight_queue: multiprocessing.Queue ,config_path: str):
         """
         子进程执行函数
         
@@ -109,7 +112,7 @@ class ParallelTrainer:
                     HydraConfig.instance().set_config(subproc_cfg)
                 
                 # 调用训练函数
-                launch_training(subproc_cfg, ipc_queue)
+                launch_training(subproc_cfg, ipc_queue, weight_queue)
                 
         except Exception as e:
             print(f"进程启动失败或在运行时发生错误: {e}")
@@ -125,12 +128,14 @@ class ParallelTrainer:
             
             # 为每个进程创建一个队列
             q = multiprocessing.Queue()
+            weight_q = multiprocessing.Queue()
             self.ipc_queues.append(q)
-            
+            self.weight_queues.append(weight_q)
+
             # 创建并启动进程
             p = multiprocessing.Process(
                 target=self.run_process, 
-                args=(task_overrides, q, self.config_path)
+                args=(task_overrides, q, weight_q, self.config_path)
             )
             self.processes.append(p)
             p.start()
@@ -148,9 +153,9 @@ class ParallelTrainer:
                             print(f"❌ 收到来自任务 {self.tasks[i]['experiment_name']} 的错误: {data['error']}")
                         else:
                             print(f"✅ 收到 [任务 {i+1}] 数据: obs shape {data['obs_dict']['actor_obs'].shape}")
-                            # obs_dict = data['obs_dict']
-                            # self.storage = data['storage']
+                            self.storage = data['storage']
                             # loss_dict = self._training_step()
+                            self.send_weights_to_process(i)
                     except queue.Empty:
                         pass  # 队列为空，正常
                 
@@ -159,10 +164,22 @@ class ParallelTrainer:
                 time.sleep(1)
         
         except KeyboardInterrupt:
-            print("\n用户中断，正在终止所有子进程...")
+            print("\n用户中断,正在终止所有子进程...")
         finally:
             self.cleanup()
-    
+
+    def send_weights_to_process(self, process_idx: int):
+        """发送当前模型权重给指定子进程"""
+        actor_state = self.actor.state_dict()
+        critic_state = self.critic.state_dict()
+        
+        self.weight_queues[process_idx].put({
+            "actor": actor_state,
+            "critic": critic_state,
+            # "loss_dict": loss_dict,
+        })
+        print(f"已发送初始权重给任务 {process_idx+1}")
+
     def cleanup(self):
         """清理所有进程资源"""
         for p in self.processes:
@@ -177,8 +194,6 @@ class ParallelTrainer:
         self.monitor()
 
     def _setup_models_and_optimizer(self):
-        print("-" * 150)
-        print(self.cfg['module_dict']['actor'])
         actor_kwargs = {
             "obs_dim_dict": self.cfg['algo_obs_dim_dict'],
             "module_config_dict": self.cfg['module_dict']['actor'],

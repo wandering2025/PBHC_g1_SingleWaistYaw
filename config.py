@@ -19,7 +19,7 @@ def get_config():
             'output_dim': [21],
             'layer_config': {
                 'type': 'MLP',
-                'hidden_dims': [512, 256, 128],
+                'hidden_dims': [768, 512, 128],
                 'activation': 'ELU',
             }
         }

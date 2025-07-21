@@ -223,12 +223,6 @@ class MHPPO(BaseAlgo):
             self.start_time = time.time()
 
             obs_dict =self._rollout_step(obs_dict)
-
-            loss_dict = self._training_step()
-
-            self.stop_time = time.time()
-            self.learn_time = self.stop_time - self.start_time
-
             if self.log_dir is not None:
                 data_to_send = {
                     'obs_dict': obs_dict,
@@ -239,6 +233,23 @@ class MHPPO(BaseAlgo):
                 except Exception:
                     # 队列可能已满，可以忽略或打印警告
                     pass
+            loss_dict = self._training_step()
+            # 更新模型权重
+            if self.weight_queue:
+                try:
+                    weights = self.weight_queue.get(timeout=30.0)  # 等待权重更新
+                    
+                    # 应用权重更新
+                    self.actor.load_state_dict(weights["actor"])
+                    self.critic.load_state_dict(weights["critic"])
+                    print(f"🔄 迭代 {it} 已更新模型权重")
+                except Exception as e:
+                    print(f"❌ 加载权重失败: {str(e)}")
+            # loss_dict = self.weight_queue["loss_dict"]
+            self.stop_time = time.time()
+            self.learn_time = self.stop_time - self.start_time
+
+
                 
             # Logging
             log_dict = {
