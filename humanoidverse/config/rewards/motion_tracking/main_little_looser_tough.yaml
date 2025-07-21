@@ -72,7 +72,7 @@ rewards:
   reward_min_penalty_scale: 0.0
   reward_max_penalty_scale: 1.0
   reward_penalty_level_down_threshold: 40
-  reward_penalty_level_up_threshold: 50 #42 
+  reward_penalty_level_up_threshold: 45 #50 #42 
   reward_penalty_degree: 0.000005 # 0.00001
   num_compute_average_epl: 10000
 
@@ -88,7 +88,7 @@ rewards:
       soft_dof_pos_min_limit: 0.95 #0.95
       soft_dof_pos_curriculum_degree: 0.0000001 #0.00000025
       soft_dof_pos_curriculum_level_down_threshold: 40
-      soft_dof_pos_curriculum_level_up_threshold: 50
+      soft_dof_pos_curriculum_level_up_threshold: 45 #50
 
       soft_dof_vel_curriculum: True
       soft_dof_vel_initial_limit: 0.99 #0.95
@@ -96,7 +96,7 @@ rewards:
       soft_dof_vel_min_limit: 0.95 #0.95
       soft_dof_vel_curriculum_degree: 0.0000001 #0.00000025
       soft_dof_vel_curriculum_level_down_threshold: 40
-      soft_dof_vel_curriculum_level_up_threshold: 50
+      soft_dof_vel_curriculum_level_up_threshold: 45 # 50
 
       soft_torque_curriculum: True
       soft_torque_initial_limit: 0.95 #0.85
@@ -104,7 +104,7 @@ rewards:
       soft_torque_min_limit: 0.85 #0.85
       soft_torque_curriculum_degree: 0.0000001 #0.00000025
       soft_torque_curriculum_level_down_threshold: 40
-      soft_torque_curriculum_level_up_threshold: 50 #42
+      soft_torque_curriculum_level_up_threshold: 45 #50 #42
 
   reward_penalty_reward_names : [
     "penalty_torques",
