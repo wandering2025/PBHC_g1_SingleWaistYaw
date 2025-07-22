@@ -96,7 +96,6 @@ class MHPPO(BaseAlgo):
 
         self.num_rew_fn = self.env.num_rew_fn
 
-
     def setup(self):
         # import ipdb; ipdb.set_trace()
         logger.info("Setting up PPO")
@@ -110,7 +109,7 @@ class MHPPO(BaseAlgo):
             "obs_dim_dict": self.algo_obs_dim_dict,
             "module_config_dict": self.config.module_dict.actor,
             "num_actions": self.num_act,
-            "init_noise_std": self.config.init_noise_std
+            "init_noise_std": self.config.init_noise_std,
         }
         critic_kwargs = {
             "obs_dim_dict": self.algo_obs_dim_dict,
@@ -223,29 +222,35 @@ class MHPPO(BaseAlgo):
             self.start_time = time.time()
 
             obs_dict =self._rollout_step(obs_dict)
+            print("-" * 150)
+            print(f"it: {it}")
             if self.log_dir is not None:
                 data_to_send = {
+                    'round': it,
                     'obs_dict': obs_dict,
                     'storage': self.storage,
                 }
                 try:
                     self.ipc_queue.put_nowait(data_to_send)
                 except Exception:
-                    # 队列可能已满，可以忽略或打印警告
                     pass
-            loss_dict = self._training_step()
+            # loss_dict = self._training_step()
             # 更新模型权重
+            loss_dict = dict()
+            # 当有数据时候
             if self.weight_queue:
                 try:
-                    weights = self.weight_queue.get(timeout=30.0)  # 等待权重更新
-                    
+                    # 循环等待获得的数据是该回合的
+                    weights = self.weight_queue.get(timeout=1)
                     # 应用权重更新
-                    self.actor.load_state_dict(weights["actor"])
-                    self.critic.load_state_dict(weights["critic"])
-                    print(f"🔄 迭代 {it} 已更新模型权重")
+                    if weights['round'] == it:
+                        self.actor.load_state_dict(weights["actor"])
+                        self.critic.load_state_dict(weights["critic"])
+                        loss_dict = weights["loss_dict"]
+                        print(f"🔄 迭代 {it} 已更新模型权重")
                 except Exception as e:
                     print(f"❌ 加载权重失败: {str(e)}")
-            # loss_dict = self.weight_queue["loss_dict"]
+            self.storage.clear()
             self.stop_time = time.time()
             self.learn_time = self.stop_time - self.start_time
 

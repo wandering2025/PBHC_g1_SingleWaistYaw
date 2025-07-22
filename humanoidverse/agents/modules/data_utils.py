@@ -36,7 +36,16 @@ class RolloutStorage(nn.Module):
 
         self.step = 0
         self.stored_keys = list()
-        
+
+        ### custom ###
+
+    def query_key(self, key: str):
+        """返回数据的视图而不是副本"""
+        assert hasattr(self, key), key
+        return getattr(self, key)
+    
+        ### custom ###        
+    
     def register_key(self, key: str, shape=(), dtype=torch.float):
         # This class was partially copied from https://github.com/NVlabs/ProtoMotions/blob/94059259ba2b596bf908828cc04e8fc6ff901114/phys_anim/agents/utils/data_utils.py
         assert not hasattr(self, key), key
