@@ -917,8 +917,22 @@ class LeggedRobotBase(BaseTask):
 
             # 计算PD控制器的目标位置
             target_dof_pos = actions_scaled + self.default_dof_pos  
+            
+            
+            left_ankle_roll_idx = 5
+            right_ankle_roll_idx = 11
+            ankle_roll_min = -0.15
+            ankle_roll_max = -0.15
+            # clip ankle roll target angle
+            target_dof_pos[:, left_ankle_roll_idx] = torch.clamp(
+                target_dof_pos[:, left_ankle_roll_idx], ankle_roll_min, ankle_roll_max
+            )
+            target_dof_pos[:, right_ankle_roll_idx] = torch.clamp(
+                target_dof_pos[:, right_ankle_roll_idx], ankle_roll_min, ankle_roll_max
+            )
+
             # Disable ankle roll
-            target_dof_pos[:, [5, 11]] = 0.0
+            #target_dof_pos[:, [5, 11]] = 0.0
             
             # 使用修改后的目标位置计算扭矩
             torques = self._kp_scale * self.p_gains * (target_dof_pos - self.simulator.dof_pos) - self._kd_scale * self.d_gains * self.simulator.dof_vel
