@@ -25,6 +25,9 @@ class IsaacGym(BaseSimulator):
         if config.save_rendering_dir is not None:
             self.save_rendering_dir = Path(config.save_rendering_dir)
 
+        self.ground_static_friction_val = None
+        self.ground_dynamic_friction_val = None
+
     def set_headless(self, headless):
         # call super
         super().set_headless(headless)
@@ -104,8 +107,31 @@ class IsaacGym(BaseSimulator):
         logger.info('Creating plane terrain')
         plane_params = gymapi.PlaneParams()
         plane_params.normal = gymapi.Vec3(0.0, 0.0, 1.0)
-        plane_params.static_friction = self.simulator_config.terrain.static_friction
-        plane_params.dynamic_friction = self.simulator_config.terrain.dynamic_friction
+        domain_rand_cfg = self.config.domain_rand
+        if domain_rand_cfg.get('randomize_ground_static_friction', False):
+            if self.ground_static_friction_val is None: # 只在第一次创建环境时随机化
+                static_friction_range = domain_rand_cfg.ground_static_friction_range
+                self.ground_static_friction_val = torch_rand_float(
+                    static_friction_range[0], static_friction_range[1], (1,1), device='cpu'
+                ).item()
+                logger.info(f"Randomizing ground static friction: {self.ground_static_friction_val:.2f}")
+            plane_params.static_friction = self.ground_static_friction_val
+        else:
+            plane_params.static_friction = self.simulator_config.terrain.static_friction
+
+        # 随机化地面动摩擦系数
+        if domain_rand_cfg.get('randomize_ground_dynamic_friction', False):
+            if self.ground_dynamic_friction_val is None: # 只在第一次创建环境时随机化
+                dynamic_friction_range = domain_rand_cfg.ground_dynamic_friction_range
+                self.ground_dynamic_friction_val = torch_rand_float(
+                    dynamic_friction_range[0], dynamic_friction_range[1], (1,1), device='cpu'
+                ).item()
+                logger.info(f"Randomizing ground dynamic friction: {self.ground_dynamic_friction_val:.2f}")
+            plane_params.dynamic_friction = self.ground_dynamic_friction_val
+        else:
+            plane_params.dynamic_friction = self.simulator_config.terrain.dynamic_friction        
+        # plane_params.static_friction = self.simulator_config.terrain.static_friction
+        # plane_params.dynamic_friction = self.simulator_config.terrain.dynamic_friction
         plane_params.restitution = self.simulator_config.terrain.restitution
         self.gym.add_ground(self.sim, plane_params)
         logger.info('Created plane terrain \t| static_friction: {:.2f} \t| dynamic_friction: {:.2f} \t| restitution: {:.2f}'.format(
