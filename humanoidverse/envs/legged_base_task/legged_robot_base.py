@@ -919,17 +919,17 @@ class LeggedRobotBase(BaseTask):
             target_dof_pos = actions_scaled + self.default_dof_pos  
             
             
-            left_ankle_roll_idx = 5
-            right_ankle_roll_idx = 11
-            ankle_roll_min = -0.15
-            ankle_roll_max = -0.15
-            # clip ankle roll target angle
-            target_dof_pos[:, left_ankle_roll_idx] = torch.clamp(
-                target_dof_pos[:, left_ankle_roll_idx], ankle_roll_min, ankle_roll_max
-            )
-            target_dof_pos[:, right_ankle_roll_idx] = torch.clamp(
-                target_dof_pos[:, right_ankle_roll_idx], ankle_roll_min, ankle_roll_max
-            )
+            # left_ankle_roll_idx = 5
+            # right_ankle_roll_idx = 11
+            # ankle_roll_min = -0.15
+            # ankle_roll_max = -0.15
+            # # clip ankle roll target angle
+            # target_dof_pos[:, left_ankle_roll_idx] = torch.clamp(
+            #     target_dof_pos[:, left_ankle_roll_idx], ankle_roll_min, ankle_roll_max
+            # )
+            # target_dof_pos[:, right_ankle_roll_idx] = torch.clamp(
+            #     target_dof_pos[:, right_ankle_roll_idx], ankle_roll_min, ankle_roll_max
+            # )
 
             # Disable ankle roll
             #target_dof_pos[:, [5, 11]] = 0.0

@@ -1,13 +1,13 @@
 # @package _global_
 
-IF_RECORD: True
+IF_RECORD: False
 
 algo:
   _target_: humanoidverse.agents.mh_ppo.mh_ppo.MHPPO
   _recursive_: False
   config:
 
-    IF_RECORD: True # True for data recording in training
+    IF_RECORD: False # True for data recording in training
 
     num_learning_epochs: 5
     num_mini_batches: 4
