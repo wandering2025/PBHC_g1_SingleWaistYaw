@@ -38,13 +38,12 @@ class ParallelTrainer:
         self.accumulated_data = {}
 
         self.cfg = OmegaConf.create(get_config())
-        # 创建模型和优化器
-        self._setup_models_and_optimizer()
-        self._setup_storage()
+        
 
         self.config_path = config_path
         self.processes = []
         self.num_envs = tasks[0].get('num_envs', 1) * len(tasks)
+
         # 子进程->主进程
         self.ipc_queue = []
         # 子进程->主进程
@@ -54,6 +53,10 @@ class ParallelTrainer:
         self.cfg_l2c2 = self.cfg.l2c2  if 'l2c2' in self.cfg else None
         self.current_round = 0
 
+        # 创建模型和优化器
+        self._setup_models_and_optimizer()
+        self._setup_storage()
+        
         # 设置当前工作目录
         os.chdir(self.script_dir)
         print(f"当前工作目录: {os.getcwd()}")
@@ -104,6 +107,7 @@ class ParallelTrainer:
                     overrides=overrides,
                     return_hydra_config=True
                 )
+
                 
                 # 确保输出目录存在
                 if 'hydra' in subproc_cfg and 'run' in subproc_cfg.hydra and 'dir' in subproc_cfg.hydra.run:
@@ -152,7 +156,8 @@ class ParallelTrainer:
             )
             self.processes.append(p)
             p.start()
-    
+        self._train_mode()
+
     def monitor(self):
         """监控训练进程状态"""
         try:
@@ -165,16 +170,17 @@ class ParallelTrainer:
                         # 注意get(timeout=1)和get_nowait都是非阻塞模式，若队列为空会抛出异常
                         # 而get()是阻塞模式，直到有数据可用前会永久等待
                         data = self.ipc_queue[i].get()
-                        if data["round"] is not self.current_round:
-                            print("没获得到本回合的数据")
+                        if data["round"] != self.current_round:
+                            print(f"{data['round']} != {self.current_round} 没获得到本回合的数据")
                         else:
                             print(f"✅ 收到 [任务 {i+1}] 数据, 回合: {data['round']}")
                             storage = data['storage']
                             self._merge_storage(storage, i)
-                            loss_dict = self._training_step()
-                            self.send_weights_to_process(loss_dict, i)
                     except queue.Empty:
                         pass  # 队列为空，正常
+                loss_dict = self._training_step()
+                for i in range(self.tasks_count):
+                    self.send_weights_to_process(loss_dict, i)
                 # 清空存储区
                 self.storage.clear()
                 self.current_round += 1
@@ -184,6 +190,7 @@ class ParallelTrainer:
         
         except KeyboardInterrupt:
             print("\n用户中断,正在终止所有子进程...")
+            self.cleanup()
         finally:
             self.cleanup()
 
@@ -299,6 +306,10 @@ class ParallelTrainer:
         self.storage.register_key('action_mean', shape=(self.cfg['num_act'],), dtype=torch.float)
         self.storage.register_key('action_sigma', shape=(self.cfg['num_act'],), dtype=torch.float)
 
+    def _train_mode(self):
+        self.actor.train()
+        self.critic.train()
+        
     def _training_step(self):
         loss_dict = self._init_loss_dict_at_training_step()
 
@@ -445,7 +456,7 @@ if __name__ == "__main__":
             "+exp": "motion_tracking",
             "+terrain": "terrain_locomotion_plane",
             "project_name": "MotionTracking",
-            "num_envs": 1,
+            "num_envs": 2048,
             "+obs": "motion_tracking/main",
             "+robot": "g1/g1_23dof_lock_wrist",
             "+domain_rand": "main",
@@ -461,7 +472,7 @@ if __name__ == "__main__":
             "+exp": "motion_tracking",
             "+terrain": "terrain_locomotion_plane",
             "project_name": "MotionTracking",
-            "num_envs": 1,
+            "num_envs": 2048,
             "+obs": "motion_tracking/main",
             "+robot": "g1/g1_23dof_lock_wrist",
             "+domain_rand": "main",

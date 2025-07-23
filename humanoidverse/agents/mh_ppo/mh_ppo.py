@@ -222,8 +222,6 @@ class MHPPO(BaseAlgo):
             self.start_time = time.time()
 
             obs_dict =self._rollout_step(obs_dict)
-            print("-" * 150)
-            print(f"it: {it}")
             if self.log_dir is not None:
                 data_to_send = {
                     'round': it,
@@ -232,6 +230,7 @@ class MHPPO(BaseAlgo):
                 }
                 try:
                     self.ipc_queue.put_nowait(data_to_send)
+                    print(f"子进程 PID: {os.getpid()} 已发送数据到主进程")
                 except Exception:
                     pass
             # loss_dict = self._training_step()
@@ -241,7 +240,7 @@ class MHPPO(BaseAlgo):
             if self.weight_queue:
                 try:
                     # 循环等待获得的数据是该回合的
-                    weights = self.weight_queue.get(timeout=1)
+                    weights = self.weight_queue.get()
                     # 应用权重更新
                     if weights['round'] == it:
                         self.actor.load_state_dict(weights["actor"])
