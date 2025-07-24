@@ -545,6 +545,7 @@ class ParallelTrainer:
 
         self.actor_optimizer.step()
         self.critic_optimizer.step()
+        self.encoder_optimizer.step()
 
         loss_dict['Value'] += value_loss.item()
         loss_dict['Surrogate'] += surrogate_loss.item()
