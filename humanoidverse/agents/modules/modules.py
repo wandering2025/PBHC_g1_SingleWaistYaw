@@ -25,8 +25,10 @@ class BaseModule(nn.Module):
             else:
                 current_function_name = inspect.currentframe().f_code.co_name
                 raise ValueError(f"{current_function_name} - Unknown input type: {each_input}")
-        
-        self.input_dim = input_dim
+            
+        # 这里直接暴力增加输入网络的维度
+        self.input_dim = input_dim + 128
+        # self.input_dim = input_dim
 
     def _calculate_output_dim(self):
         output_dim = 0

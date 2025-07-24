@@ -48,7 +48,7 @@ def get_config():
     num_rew_fn = 21
     num_act = 23
 
-
+    
     return {
         'algo_obs_dim_dict': algo_obs_dim_dict,
         'module_dict': module_dict,
@@ -69,4 +69,5 @@ def get_config():
         'num_steps_per_env': num_steps_per_env,
         'num_rew_fn': num_rew_fn,
         'num_act': num_act,
+        'encoder': 'GNN'
     }

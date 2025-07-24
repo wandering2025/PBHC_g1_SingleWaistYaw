@@ -23,13 +23,14 @@ from config import get_config
 from humanoidverse.train_agent import launch_training
 
 class ParallelTrainer:
-    def __init__(self, tasks: List[Dict[str, Any]], config_path: str = "humanoidverse/config"):
+    def __init__(self, tasks: List[Dict[str, Any]], encoder_content, config_path: str = "humanoidverse/config"):
         """
         并行训练器初始化
         
         :param tasks: 任务列表，每个字典代表一个独立的实验配置
         :param config_path: Hydra配置文件的相对路径
         """
+        self.encoder_content = encoder_content
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tasks = tasks
         self.tasks_count = len(tasks)
@@ -56,6 +57,9 @@ class ParallelTrainer:
         # 创建模型和优化器
         self._setup_models_and_optimizer()
         self._setup_storage()
+
+        # 创建编码网络,向量化xml和urdf
+        self.init_encoder(encoder_content)
         
         # 设置当前工作目录
         os.chdir(self.script_dir)
@@ -63,6 +67,46 @@ class ParallelTrainer:
         
         # 设置多进程启动方法
         multiprocessing.set_start_method('spawn', force=True)
+    
+    def init_encoder(self, encoder_content):
+        encoder_type = None
+        self.encoder_datas = []
+        for i, encoder in enumerate(encoder_content):
+            type = encoder['type']
+            if i == 0:
+                encoder_type = type
+            if i > 0:
+                assert type == encoder_type, ValueError("编码网络不一致")
+            xml_path = encoder['xml_path']
+            urdf_path = encoder['urdf_path']
+            if type == 'GNN':
+                from humanoidverse.agents.modules import handle_encoder_GNN as encoderNet
+                robot_graph = encoderNet.parse_mujoco_to_graph(xml_path, urdf_path).to(self.device)
+                self.encoder_datas.append(robot_graph)
+            elif type =='MLP':
+                from humanoidverse.agents.modules import handle_encoder_MLP as encoderNet
+                MLP_data= encoderNet.obtain_data_MLP(xml_path, urdf_path).to(self.device)
+                self.encoder_datas.append(MLP_data)
+
+        if encoder_type == 'GNN':
+            self.encoder_model = encoderNet.RobotGraphEncoder(
+                                node_dim=17, edge_dim=8, hidden_dim=128,
+                                num_heads=4, num_layers=3, out_dim=128
+                            ).to(self.device)
+        elif encoder_type == 'MLP':
+            self.encoder_model = encoderNet.RobustMLLEncoder(
+                        input_dim=1470,
+                        hidden_dims=[512, 256],
+                        output_dim=128,
+                        use_batch_norm=False, # 启用批量归一化
+                        dropout_p=0.05 # 启用Dropout
+                    ).to(self.device)
+        else:
+            print("网络定义错误")
+        
+
+        self.encoder_optimizer = optim.Adam(self.encoder_model.parameters(), lr=self.cfg.actor_learning_rate)
+
     
     @staticmethod
     def flatten_config(config: Dict[str, Any], parent_key: str = '', separator: str = '.') -> Dict[str, Any]:
@@ -84,7 +128,7 @@ class ParallelTrainer:
         return dict(items)
     
     @staticmethod
-    def run_process(config: Dict[str, Any], ipc_queue: multiprocessing.Queue, weight_queue: multiprocessing.Queue ,config_path: str):
+    def run_process(config: Dict[str, Any], ipc_queue: multiprocessing.Queue, weight_queue: multiprocessing.Queue ,config_path: str, encoder_content: dict):
         """
         子进程执行函数
         
@@ -152,7 +196,7 @@ class ParallelTrainer:
             # 创建并启动进程
             p = multiprocessing.Process(
                 target=self.run_process, 
-                args=(task_overrides, q, weight_q, self.config_path)
+                args=(task_overrides, q, weight_q, self.config_path, self.encoder_content[i])
             )
             self.processes.append(p)
             p.start()
@@ -178,9 +222,17 @@ class ParallelTrainer:
                             self._merge_storage(storage, i)
                     except queue.Empty:
                         pass  # 队列为空，正常
+                
                 loss_dict = self._training_step()
+
+                # print("-" * 150)
+                # print(self.storage.rewards[0, :50, 0])
                 for i in range(self.tasks_count):
-                    self.send_weights_to_process(loss_dict, i)
+                    loss_dict_encoder = loss_dict.copy()
+                    encoder = self.encoder_model(self.encoder_datas[i])
+                    encoder = encoder.to(self.device).detach()
+                    loss_dict_encoder['encoder'] = encoder
+                    self.send_weights_to_process(loss_dict_encoder, i)
                 # 清空存储区
                 self.storage.clear()
                 self.current_round += 1
@@ -196,13 +248,15 @@ class ParallelTrainer:
 
     def _merge_storage(self, storage: RolloutStorage, process_idx: int):
         self.all_ready = False
-        
+
         # 获取子进程存储中的键
         keys = storage.stored_keys
+
         
         # 初始化累积数据字典（如果是第一个接收的进程）
         if self.received_count == 0:
             self.accumulated_data = {key: [] for key in keys}
+            self.accumulated_data['encoder_idx'] = []
         
         # 累积当前子进程的数据
         for key in keys:
@@ -211,7 +265,23 @@ class ParallelTrainer:
             # print(f"key: {key}, sub_data_{key}.shape: {sub_data.shape}")
             # 将当前子进程的数据添加到累积列表中
             self.accumulated_data[key].append(sub_data)
-        
+
+
+        # 加入encoder的数据
+        batch, num_envs = self.accumulated_data['actor_obs'][self.received_count].shape[:2]
+        encoder_idx = torch.tensor([process_idx], dtype=torch.float)
+        # 扩展操作
+        encoder_extend = encoder_idx.unsqueeze(0)        # 添加新维度 -> [1, 1, 128]
+        encoder_extend = encoder_extend.repeat(batch, num_envs, 1)  # 重复 -> [24, 2048, 128]
+        # 确保累积的数据不带有梯度
+        if isinstance(encoder_extend, torch.Tensor) and encoder_extend.requires_grad:
+            encoder_extend = encoder_extend.detach()  # 移除梯度信息
+        encoder_extend = encoder_extend.to(self.device)
+        self.accumulated_data['encoder_idx'].append(encoder_extend)
+        # 往keys中加入encoder键名
+        keys.append('encoder_idx')
+
+
         # 增加已接收进程计数
         self.received_count += 1
         
@@ -236,6 +306,7 @@ class ParallelTrainer:
             self.all_ready = True
             
             print(f"✅ 已合并所有 {self.tasks_count} 个进程的数据")
+
 
     def send_weights_to_process(self, loss_dict, process_idx: int):
         """发送当前模型权重给指定子进程"""
@@ -268,7 +339,7 @@ class ParallelTrainer:
             "obs_dim_dict": self.cfg['algo_obs_dim_dict'],
             "module_config_dict": self.cfg['module_dict']['actor'],
             "num_actions": self.cfg['num_actions'],
-            "init_noise_std": self.cfg['init_noise_std']
+            "init_noise_std": self.cfg['init_noise_std'],
         }
         critic_kwargs = {
             "obs_dim_dict": self.cfg['algo_obs_dim_dict'],
@@ -305,6 +376,7 @@ class ParallelTrainer:
         self.storage.register_key('actions_log_prob', shape=(1,), dtype=torch.float)
         self.storage.register_key('action_mean', shape=(self.cfg['num_act'],), dtype=torch.float)
         self.storage.register_key('action_sigma', shape=(self.cfg['num_act'],), dtype=torch.float)
+        self.storage.register_key('encoder_idx', shape=(1,), dtype=torch.float)
 
     def _train_mode(self):
         self.actor.train()
@@ -314,6 +386,7 @@ class ParallelTrainer:
         loss_dict = self._init_loss_dict_at_training_step()
 
         generator = self.storage.mini_batch_generator(self.cfg.num_mini_batches, self.cfg.num_learning_epochs)
+        
 
         for policy_state_dict in generator:
             # Move everything to the device
@@ -335,16 +408,46 @@ class ParallelTrainer:
         loss_dict['L2C2_Value'] = 0
         loss_dict['L2C2_Policy'] = 0
         return loss_dict
-    
+
     def _update_algo_step(self, policy_state_dict, loss_dict):
         loss_dict = self._update_ppo(policy_state_dict, loss_dict)
         return loss_dict
 
     def _actor_act_step(self, obs_dict):
-        return self.actor.act(obs_dict["actor_obs"])
+        # 从obs_dict中获取到encoder_idx，这个指的只是第几个xml和urdf，然后进入网络编码
+        encoder_idx = obs_dict['encoder_idx'].squeeze().int().to(self.device)
+        if encoder_idx.dim() > 1:
+            encoder_idx = encoder_idx.view(-1)
+
+        encoderNet_output = []
+        for i in range(self.tasks_count):
+            encoderNet_output.append(self.encoder_model(self.encoder_datas[i]))
+        
+        combined = torch.cat([x for x in encoderNet_output], dim=0).to(self.device)
+        encoder = combined[encoder_idx.long()]
+
+        result = torch.cat((obs_dict['actor_obs'], encoder), dim=1)
+        # print(encoder.shape)
+        # return self.actor.act(obs_dict["actor_obs"])
+        return self.actor.act(result)
     
     def _critic_eval_step(self, obs_dict):
-        return self.critic.evaluate(obs_dict["critic_obs"])
+        # 从obs_dict中获取到encoder_idx，这个指的只是第几个xml和urdf，然后进入网络编码
+        encoder_idx = obs_dict['encoder_idx'].squeeze().int().to(self.device)
+        if encoder_idx.dim() > 1:
+            encoder_idx = encoder_idx.view(-1)
+
+        encoderNet_output = []
+        for i in range(self.tasks_count):
+            encoderNet_output.append(self.encoder_model(self.encoder_datas[i]))
+        
+        combined = torch.cat([x for x in encoderNet_output], dim=0).to(self.device)
+        encoder = combined[encoder_idx.long()]
+
+        result = torch.cat((obs_dict['critic_obs'], encoder), dim=1)
+
+        # return self.critic.evaluate(obs_dict["critic_obs"])
+        return self.critic.evaluate(result)
     
     def _update_ppo(self, policy_state_dict, loss_dict):
         actions_batch = policy_state_dict['actions']
@@ -354,7 +457,6 @@ class ParallelTrainer:
         old_actions_log_prob_batch = policy_state_dict['actions_log_prob']
         old_mu_batch = policy_state_dict['action_mean']
         old_sigma_batch = policy_state_dict['action_sigma']
-
         self._actor_act_step(policy_state_dict)
         actions_log_prob_batch = self.actor.get_actions_log_prob(actions_batch)
         value_batch = self._critic_eval_step(policy_state_dict)
@@ -429,10 +531,13 @@ class ParallelTrainer:
 
         self.actor_optimizer.zero_grad()
         self.critic_optimizer.zero_grad()
-        
+        self.encoder_optimizer.zero_grad()
+
         # print("skip backward")
-        actor_loss.backward()
-        critic_loss.backward()
+        # actor_loss.backward()
+        # critic_loss.backward()
+        encoder_loss = actor_loss + critic_loss
+        encoder_loss.backward()
 
         # Gradient step
         nn.utils.clip_grad_norm_(self.actor.parameters(), self.cfg.max_grad_norm)
@@ -485,7 +590,20 @@ if __name__ == "__main__":
         },
         # 在这里可以添加更多任务...
     ]
-    
+
+    # 获取编码的内容
+    encoder_content = [
+        {
+            "type": "MLP",
+            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.xml",
+            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.urdf"
+        },
+        {
+            "type": "MLP",
+            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.xml",
+            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.urdf"
+        }
+    ]
     # 创建并行训练器并运行
-    trainer = ParallelTrainer(tasks)
+    trainer = ParallelTrainer(tasks, encoder_content)
     trainer.run()

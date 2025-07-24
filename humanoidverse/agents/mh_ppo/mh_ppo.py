@@ -105,6 +105,7 @@ class MHPPO(BaseAlgo):
 
     def _setup_models_and_optimizer(self):
         self.config.module_dict.critic['output_dim'][-1] = self.num_rew_fn
+
         actor_kwargs = {
             "obs_dim_dict": self.algo_obs_dim_dict,
             "module_config_dict": self.config.module_dict.actor,
@@ -218,6 +219,10 @@ class MHPPO(BaseAlgo):
         
         # do not use track, because it will confict with motion loading bar
         # for it in track(range(self.current_learning_iteration, tot_iter), description="Learning Iterations"):
+
+        # 初始化编码内容
+        self.encoder = torch.zeros(128, dtype=torch.float).to(self.device)
+
         for it in range(self.current_learning_iteration, tot_iter):
             self.start_time = time.time()
 
@@ -253,7 +258,10 @@ class MHPPO(BaseAlgo):
             self.stop_time = time.time()
             self.learn_time = self.stop_time - self.start_time
 
-
+            # 获取编码内容并从loss_dict中删去
+            self.encoder = loss_dict['encoder']
+            self.encoder = self.encoder.to(self.device)
+            loss_dict.pop('encoder', None)
                 
             # Logging
             log_dict = {
@@ -388,7 +396,12 @@ class MHPPO(BaseAlgo):
             - returns (torch.Tensor): The computed returns for each step.
             - advantages (torch.Tensor): The normalized advantages for each step.
         """
-        last_values= self.critic.evaluate(last_obs_dict["critic_obs"]).detach()
+        # last_values= self.critic.evaluate(last_obs_dict["critic_obs"]).detach()
+        # 增加编码的内容
+        num_envs = last_obs_dict['critic_obs'].shape[0]
+        encoder_repeat = self.encoder.repeat(num_envs, 1)
+        result = torch.cat((last_obs_dict['critic_obs'], encoder_repeat), dim=1)
+        last_values= self.critic.evaluate(result).detach()
         
         values = policy_state_dict['values']
         dones = policy_state_dict['dones']
@@ -451,10 +464,19 @@ class MHPPO(BaseAlgo):
         return loss_dict
 
     def _actor_act_step(self, obs_dict):
-        return self.actor.act(obs_dict["actor_obs"])
+        num_envs = obs_dict['actor_obs'].shape[0]
+        encoder_repeat = self.encoder.repeat(num_envs, 1)
+        result = torch.cat((obs_dict['actor_obs'], encoder_repeat), dim=1)
+        # return self.actor.act(obs_dict["actor_obs"])
+        # 更换为加入了encoder的参数
+        return self.actor.act(result)
     
     def _critic_eval_step(self, obs_dict):
-        return self.critic.evaluate(obs_dict["critic_obs"])
+        num_envs = obs_dict['critic_obs'].shape[0]
+        encoder_repeat = self.encoder.repeat(num_envs, 1)
+        result = torch.cat((obs_dict['critic_obs'], encoder_repeat), dim=1)
+        # return self.critic.evaluate(obs_dict["critic_obs"])
+        return self.critic.evaluate(result)
     
     def _update_ppo(self, policy_state_dict, loss_dict):
         actions_batch = policy_state_dict['actions']

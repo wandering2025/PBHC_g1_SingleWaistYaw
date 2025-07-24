@@ -39,10 +39,6 @@ class RolloutStorage(nn.Module):
 
         ### custom ###
 
-    def query_key(self, key: str):
-        """返回数据的视图而不是副本"""
-        assert hasattr(self, key), key
-        return getattr(self, key)
     
         ### custom ###        
     
