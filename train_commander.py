@@ -221,12 +221,14 @@ class ParallelTrainer:
                             storage = data['storage']
                             self._merge_storage(storage, i)
                     except queue.Empty:
-                        pass  # 队列为空，正常
-                
+                        pass  # 队列为空，正常         
+                # print("-" * 150)
+                # print(self.storage.returns[:, :50, :])
+                self.get_subproc_metrics_sums()
+                # print("/" * 150)
+                # print(self.storage.returns[:, :50, :])
                 loss_dict = self._training_step()
 
-                # print("-" * 150)
-                # print(self.storage.rewards[0, :50, 0])
                 for i in range(self.tasks_count):
                     loss_dict_encoder = loss_dict.copy()
                     encoder = self.encoder_model(self.encoder_datas[i])
@@ -307,6 +309,97 @@ class ParallelTrainer:
             
             print(f"✅ 已合并所有 {self.tasks_count} 个进程的数据")
 
+    def get_subproc_metrics_sums(self):
+        # 检查数据是否已合并完成
+        if not self.all_ready:
+            raise RuntimeError("请在_merge_storage完成后调用（需确保all_ready为True）")
+        
+        # 1. 获取每个子进程的环境数量（从tasks配置中提取）
+        env_counts = [task['num_envs'] for task in self.tasks]
+        num_subprocs = len(env_counts)
+        if num_subprocs == 0:
+            raise ValueError("未检测到子进程配置")
+        
+        # 2. 定义需要计算的指标（对应storage中的键）
+        metrics_keys = {
+            'advantage': 'advantages',       # storage中advantage的键名
+            'value': 'values',               # storage中value的键名
+            'return': 'returns'              # storage中return的键名
+        }
+        
+        # 3. 从主进程storage中获取原始数据
+        # 数据形状通常为 (num_steps, total_envs, ...)，其中total_envs是所有子进程env_counts的总和
+        storage_data = {}
+        for metric, key in metrics_keys.items():
+            if not hasattr(self.storage, key):
+                raise KeyError(f"storage中未找到键：{key}，请检查storage注册的键名")
+            storage_data[metric] = self.storage.query_key(key).detach()  # 移除梯度，避免影响训练
+        
+        # 4. 计算环境维度的分割索引（用于区分不同子进程的数据）
+        # 例如：3个子进程env_counts为[2048, 2048, 2048]，则分割索引为[0, 2048, 4096, 6144]
+        split_indices = [0]
+        current = 0
+        for count in env_counts:
+            current += count
+            split_indices.append(current)
+        
+        # 5. 按子进程分割数据并计算总和
+        subproc_sums = {}
+        weight = {}
+        for i in range(num_subprocs):
+            # 当前子进程的环境索引范围（在主进程total_envs中的切片）
+            start = split_indices[i]
+            end = split_indices[i+1]
+            subproc_sums[i] = {}
+            
+            # 对每个指标计算总和
+            for metric, data in storage_data.items():
+                # 数据形状说明：
+                # - advantages: (num_steps, total_envs, 1)
+                # - values: (num_steps, total_envs, num_rew_fn)
+                # - returns: (num_steps, total_envs, num_rew_fn)
+                # 求和时需覆盖时间步（dim=0）和环境（dim=1）维度
+                sub_data = data[:, start:end, ...]  # 提取当前子进程的数据
+                sub_data_y = sub_data * -1
+                if metric == "advantage":
+                    sub_data_y += 0.01
+                elif metric == "return":
+                    sub_data_y += 20
+                elif metric == "value":
+                    sub_data_y += 20
+                total = sub_data_y.sum().item()       # 对所有时间步和环境求和
+                subproc_sums[i][f'{metric}_sum'] = total
+                # print(f"i: {i}, {metric}_sum: {total}")
+        
+        # 6. 新增功能：根据总和比例计算权重并应用到原始数据
+        # 注意：这里会直接修改self.storage中的数据
+        accumulate_data = {metric: [] for metric in metrics_keys}
+        for metric in metrics_keys.keys():
+            # 计算所有子进程该指标的总和
+            all_sums = [subproc_sums[i][f'{metric}_sum'] for i in range(num_subprocs)]
+            total_sum = sum(all_sums)
+            
+            # 对每个子进程应用加权
+            for i in range(num_subprocs):
+                # 计算当前子进程的权重分子：其他所有子进程的总和
+                weight = all_sums[i] / total_sum
+                
+                # 获取当前子进程在主进程storage中的数据切片
+                start = split_indices[i]
+                end = split_indices[i+1]
+                key = metrics_keys[metric]
+                data_slice = self.storage.query_key(key)[:, start:end, ...]
+                
+                # 应用权重（原地修改）
+                data_slice *= weight
+                accumulate_data[metric].append(data_slice)
+                # 更新storage中的数据
+            merged_data = torch.cat(accumulate_data[metric], dim=1)
+            if hasattr(self.storage, 'batch_update_data'):
+                self.storage.batch_update_data(key, merged_data)
+            else:
+                # 否则直接设置属性（可能需要重新获取引用）
+                setattr(self.storage, key, merged_data)
 
     def send_weights_to_process(self, loss_dict, process_idx: int):
         """发送当前模型权重给指定子进程"""
@@ -563,14 +656,14 @@ if __name__ == "__main__":
             "+terrain": "terrain_locomotion_plane",
             "project_name": "MotionTracking",
             "num_envs": 2048,
-            "+obs": "motion_tracking/main",
-            "+robot": "g1/g1_23dof_lock_wrist",
-            "+domain_rand": "main",
+            "+obs": "motion_tracking/main_h1_19dof",
+            "+robot": "h1/h1_19dof",
+            "+domain_rand": "main_h1_19dof",
             "+rewards": "motion_tracking/main",
             "experiment_name": "debug_parallel_1",
             "seed": 1,
             "+device": "cuda:0",
-            "robot.motion.motion_file": "example/motion_data/Horse-stance_pose.pkl",
+            "robot.motion.motion_file": "smpl_retarget/retargeted_motion_data/phc/h1_19dof/swing.pkl",
             "hydra.run.dir": "outputs/debug_parallel_1"
         },
         {
@@ -579,14 +672,14 @@ if __name__ == "__main__":
             "+terrain": "terrain_locomotion_plane",
             "project_name": "MotionTracking",
             "num_envs": 2048,
-            "+obs": "motion_tracking/main",
-            "+robot": "g1/g1_23dof_lock_wrist",
-            "+domain_rand": "main",
+            "+obs": "motion_tracking/main_h1_19dof",
+            "+robot": "h1/h1_19dof",
+            "+domain_rand": "main_h1_19dof",
             "+rewards": "motion_tracking/main",
             "experiment_name": "debug_parallel_2",
             "seed": 2,
             "+device": "cuda:0",
-            "robot.motion.motion_file": "example/motion_data/Horse-stance_pose.pkl",
+            "robot.motion.motion_file": "smpl_retarget/retargeted_motion_data/phc/h1_19dof/swing.pkl",
             "hydra.run.dir": "outputs/debug_parallel_2"
         },
         # 在这里可以添加更多任务...
@@ -596,13 +689,13 @@ if __name__ == "__main__":
     encoder_content = [
         {
             "type": "MLP",
-            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.xml",
-            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.urdf"
+            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/h1/h1_19dof.xml",
+            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/h1/h1_19dof.urdf"
         },
         {
             "type": "MLP",
-            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.xml",
-            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof_lock_wrist.urdf"
+            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/h1/h1_19dof.xml",
+            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/h1/h1_19dof.urdf"
         }
     ]
     # 创建并行训练器并运行
