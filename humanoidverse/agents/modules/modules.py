@@ -27,6 +27,10 @@ class BaseModule(nn.Module):
                 raise ValueError(f"{current_function_name} - Unknown input type: {each_input}")
             
         # 这里直接暴力增加输入网络的维度
+        if self.module_config_dict['input_dim'][0] == 'actor_obs':
+            input_dim = 320
+        else:
+            input_dim = 536
         self.input_dim = input_dim + 128
         # self.input_dim = input_dim
 
@@ -38,6 +42,10 @@ class BaseModule(nn.Module):
             else:
                 current_function_name = inspect.currentframe().f_code.co_name
                 raise ValueError(f"{current_function_name} - Unknown output type: {each_output}")
+        
+        # 这里强行输出维度统一为19
+        if (self.module_config_dict['output_dim'][0] == 23):
+            output_dim = 19
         self.output_dim = output_dim
 
     def _build_network_layer(self, layer_config):

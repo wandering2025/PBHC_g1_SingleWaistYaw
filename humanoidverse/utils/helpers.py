@@ -137,7 +137,6 @@ def parse_observation(cls: Any,
             obs_noise = noise_scales[obs_key] * current_noise_curriculum_value
         
         # print(f"obs_key: {obs_key}, obs_noise: {obs_noise}")
-        
         actor_obs = getattr(cls, f"_get_obs_{obs_key}")().clone()
         obs_scale = obs_scales[obs_key]
         # Yuanhang: use rand_like (uniform 0-1) instead of randn_like (N~[0,1])

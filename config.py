@@ -1,7 +1,7 @@
 def get_config():
     algo_obs_dim_dict = {
-        'actor_obs': 380,
-        'critic_obs': 630,
+        'actor_obs': 320,
+        'critic_obs': 536,
     }
     
     module_dict = {
@@ -24,7 +24,7 @@ def get_config():
             }
         }
     }
-    num_actions = 23
+    num_actions = 19
     init_noise_std = 0.8
     actor_learning_rate = 1.e-3
     critic_learning_rate = 1.e-3
@@ -46,7 +46,7 @@ def get_config():
     # 下面是storage的配置
     # 这个值是根据奖励函数的数量
     num_rew_fn = 21
-    num_act = 23
+    num_act = 19
 
     
     return {

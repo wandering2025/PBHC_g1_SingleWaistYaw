@@ -208,6 +208,7 @@ class MHPPO(BaseAlgo):
             self.env.episode_length_buf = torch.randint_like(self.env.episode_length_buf, high=int(self.env.max_episode_length))
         
         obs_dict = self.env.reset_all()
+
         for obs_key in obs_dict.keys():
             obs_dict[obs_key] = obs_dict[obs_key].to(self.device)
             
@@ -285,6 +286,8 @@ class MHPPO(BaseAlgo):
 
     def _actor_rollout_step(self, obs_dict, policy_state_dict):
         actions = self._actor_act_step(obs_dict)
+        
+
         policy_state_dict["actions"] = actions
         
         action_mean = self.actor.action_mean.detach()
@@ -400,7 +403,11 @@ class MHPPO(BaseAlgo):
         # 增加编码的内容
         num_envs = last_obs_dict['critic_obs'].shape[0]
         encoder_repeat = self.encoder.repeat(num_envs, 1)
-        result = torch.cat((last_obs_dict['critic_obs'], encoder_repeat), dim=1)
+        critic_obs = last_obs_dict['critic_obs']
+        if last_obs_dict['critic_obs'].shape[1] == 628:
+            from exchange_order import vectorized_critic_unpack
+            critic_obs = vectorized_critic_unpack(last_obs_dict['critic_obs'], self.device)
+        result = torch.cat((critic_obs, encoder_repeat), dim=1)
         last_values= self.critic.evaluate(result).detach()
         
         values = policy_state_dict['values']
@@ -464,17 +471,35 @@ class MHPPO(BaseAlgo):
         return loss_dict
 
     def _actor_act_step(self, obs_dict):
-        num_envs = obs_dict['actor_obs'].shape[0]
+        num_envs, actor_obs_input = obs_dict['actor_obs'].shape
+        actor_obs = obs_dict['actor_obs'].to(self.device)
+        if actor_obs_input == 380:
+            g1_to_h1_index = torch.tensor([
+                2, 1, 0, 3, 4,     # 左腿
+                8, 7, 6, 9, 10,    # 右腿
+                12, 13, 14, 15, 16, # 左臂
+                18, 19, 20, 21      # 右臂
+            ], dtype=torch.long, device=self.device)
+            from exchange_order import vectorized_actor_unpack
+            actor_obs = vectorized_actor_unpack(actor_obs, g1_to_h1_index, self.device)
+
+
         encoder_repeat = self.encoder.repeat(num_envs, 1)
-        result = torch.cat((obs_dict['actor_obs'], encoder_repeat), dim=1)
+        result = torch.cat((actor_obs, encoder_repeat), dim=1)
         # return self.actor.act(obs_dict["actor_obs"])
         # 更换为加入了encoder的参数
         return self.actor.act(result)
     
     def _critic_eval_step(self, obs_dict):
+        critic_obs = obs_dict['critic_obs'].to(self.device)
+        critic_obs_input = obs_dict['critic_obs'].shape[1]
+        if critic_obs_input == 628:
+            from exchange_order import vectorized_critic_unpack
+            critic_obs = vectorized_critic_unpack(critic_obs, self.device)
+
         num_envs = obs_dict['critic_obs'].shape[0]
         encoder_repeat = self.encoder.repeat(num_envs, 1)
-        result = torch.cat((obs_dict['critic_obs'], encoder_repeat), dim=1)
+        result = torch.cat((critic_obs, encoder_repeat), dim=1)
         # return self.critic.evaluate(obs_dict["critic_obs"])
         return self.critic.evaluate(result)
     

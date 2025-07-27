@@ -243,6 +243,7 @@ class LeggedRobotBase(BaseTask):
         #         '\t|', 'Stumble:', torch.any(torch.norm(self.simulator.contact_forces[:, self.feet_indices, :2], dim=2) >\
         #      5 *torch.abs(self.simulator.contact_forces[:, self.feet_indices, 2]), dim=1))
         # breakpoint()
+
         return self.obs_buf_dict, self.rew_buf, self.reset_buf, self.extras
 
     def _pre_physics_step(self, actions):
@@ -742,7 +743,6 @@ class LeggedRobotBase(BaseTask):
         # compute Algo observations
         for obs_key, obs_config in self.config.obs.obs_dict.items():
             self.obs_buf_dict_raw[obs_key] = dict()
-
             parse_observation(self, obs_config, self.obs_buf_dict_raw[obs_key], self.config.obs.obs_scales, self.config.obs.noise_scales, noise_extra_scale)
         
         # Compute history observations

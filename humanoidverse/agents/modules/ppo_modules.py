@@ -21,7 +21,12 @@ class PPOActor(nn.Module):
         self.actor_module = BaseModule(obs_dim_dict, module_config_dict)
 
         # Action noise
-        self.std = nn.Parameter(init_noise_std * torch.ones(num_actions))
+        if num_actions == 23:
+            self.humanoid_type = 'g1'
+        else:
+            self.humanoid_type = 'h1'
+        self.std = nn.Parameter(init_noise_std * torch.ones(19))
+
         self.distribution = None
         # disable args validation for speedup
         Normal.set_default_validate_args = False
@@ -50,11 +55,21 @@ class PPOActor(nn.Module):
     
     @property
     def action_mean(self):
-        return self.distribution.mean
+        mean = self.distribution.mean
+        if self.humanoid_type == 'g1':
+            from exchange_order import batch_h1_to_g1
+            num_envs = mean.shape[0]
+            mean = batch_h1_to_g1(mean).to("cuda:0")
+        return mean
 
     @property
     def action_std(self):
-        return self.distribution.stddev
+        stddev = self.distribution.stddev
+        if self.humanoid_type == 'g1':
+            from exchange_order import batch_h1_to_g1
+            num_envs = stddev.shape[0]
+            stddev = batch_h1_to_g1(stddev).to("cuda:0")
+        return stddev
     
     @property
     def entropy(self):
@@ -66,9 +81,18 @@ class PPOActor(nn.Module):
 
     def act(self, actor_obs, **kwargs):
         self.update_distribution(actor_obs)
-        return self.distribution.sample()
+        sample = self.distribution.sample()
+        if self.humanoid_type == 'g1':
+            from exchange_order import batch_h1_to_g1
+            num_envs = sample.shape[0]
+            sample = batch_h1_to_g1(sample).to("cuda:0")
+        return sample
     
     def get_actions_log_prob(self, actions):
+        if self.humanoid_type == 'g1':
+            from exchange_order import vectorized_g1_to_h1
+            actions = vectorized_g1_to_h1(actions).to("cuda:0")
+
         return self.distribution.log_prob(actions).sum(dim=-1)
 
     def act_inference(self, actor_obs):
@@ -95,6 +119,7 @@ class PPOCritic(nn.Module):
         pass
     
     def evaluate(self, critic_obs, **kwargs):
+
         value = self.critic(critic_obs)
         return value
 

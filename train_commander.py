@@ -38,6 +38,16 @@ class ParallelTrainer:
         self.all_ready = False
         self.accumulated_data = {}
 
+        from datetime import datetime
+        current_time = datetime.now()
+        current_path = os.getcwd()
+        format_time = current_time.strftime("%Y%m%d_%H%M%S")
+        self.encoder_path = os.path.join(current_path, 'logs')
+        self.encoder_path = os.path.join(self.encoder_path, 'MotionTracking')
+        self.encoder_path = os.path.join(self.encoder_path, f"{format_time}" + "-encoder")
+        os.makedirs(self.encoder_path, exist_ok=True)
+        
+
         self.cfg = OmegaConf.create(get_config())
         
 
@@ -220,6 +230,12 @@ class ParallelTrainer:
                             print(f"✅ 收到 [任务 {i+1}] 数据, 回合: {data['round']}")
                             storage = data['storage']
                             self._merge_storage(storage, i)
+                            # 记录encoder网络
+                            if data['round'] % 1000 == 0:
+                                path = os.path.join(self.encoder_path, "model_{}.pt".format(data['round']))
+                                torch.save({
+                                    "encoder_model_state_dict": self.encoder_model.state_dict(),
+                                    }, path)
                     except queue.Empty:
                         pass  # 队列为空，正常         
                 # print("-" * 150)
@@ -282,6 +298,63 @@ class ParallelTrainer:
         self.accumulated_data['encoder_idx'].append(encoder_extend)
         # 往keys中加入encoder键名
         keys.append('encoder_idx')
+
+
+        if self.accumulated_data['actor_obs'][self.received_count].shape[2] == 380:
+            from exchange_order import vectorized_actor_unpack
+            g1_to_h1_index = torch.tensor([
+                2, 1, 0, 3, 4,     # 左腿
+                8, 7, 6, 9, 10,    # 右腿
+                12, 13, 14, 15, 16, # 左臂
+                18, 19, 20, 21      # 右臂
+            ], dtype=torch.long, device=self.device)
+            batch = self.accumulated_data['actor_obs'][self.received_count].shape[0]
+            self.accumulated_data['actor_obs'][self.received_count] = torch.stack(
+                [vectorized_actor_unpack(self.accumulated_data['actor_obs'][self.received_count][i], g1_to_h1_index, self.device) for i in range(batch)], dim=0).to(self.device)
+
+        if self.accumulated_data['next_actor_obs'][self.received_count].shape[2] == 380:
+            from exchange_order import vectorized_actor_unpack
+            g1_to_h1_index = torch.tensor([
+                2, 1, 0, 3, 4,     # 左腿
+                8, 7, 6, 9, 10,    # 右腿
+                12, 13, 14, 15, 16, # 左臂
+                18, 19, 20, 21      # 右臂
+            ], dtype=torch.long, device=self.device)
+            batch = self.accumulated_data['next_actor_obs'][self.received_count].shape[0]
+            self.accumulated_data['next_actor_obs'][self.received_count] = torch.stack(
+                [vectorized_actor_unpack(self.accumulated_data['next_actor_obs'][self.received_count][i], g1_to_h1_index, self.device) for i in range(batch)], dim=0).to(self.device)
+
+        if self.accumulated_data['critic_obs'][self.received_count].shape[2] == 628:
+            from exchange_order import vectorized_critic_unpack
+            batch = self.accumulated_data['critic_obs'][self.received_count].shape[0]
+            self.accumulated_data['critic_obs'][self.received_count] = torch.stack(
+                [vectorized_critic_unpack(self.accumulated_data['critic_obs'][self.received_count][i], self.device) for i in range(batch)], dim=0).to(self.device)
+
+
+        if self.accumulated_data['next_critic_obs'][self.received_count].shape[2] == 628:
+            from exchange_order import vectorized_critic_unpack
+            batch = self.accumulated_data['next_critic_obs'][self.received_count].shape[0]
+            self.accumulated_data['next_critic_obs'][self.received_count] = torch.stack(
+                [vectorized_critic_unpack(self.accumulated_data['next_critic_obs'][self.received_count][i], self.device) for i in range(batch)], dim=0).to(self.device)
+
+        if self.accumulated_data['actions'][self.received_count].shape[2] == 23:
+            from exchange_order import vectorized_g1_to_h1
+            batch = self.accumulated_data['actions'][self.received_count].shape[0]
+            self.accumulated_data['actions'][self.received_count] = torch.stack(
+                [vectorized_g1_to_h1(self.accumulated_data['actions'][self.received_count][i]) for i in range(batch)], dim=0).to(self.device)
+
+        if self.accumulated_data['action_mean'][self.received_count].shape[2] == 23:
+            from exchange_order import vectorized_g1_to_h1
+            batch = self.accumulated_data['action_mean'][self.received_count].shape[0]
+            self.accumulated_data['action_mean'][self.received_count] = torch.stack(
+                [vectorized_g1_to_h1(self.accumulated_data['action_mean'][self.received_count][i]) for i in range(batch)], dim=0).to(self.device)
+
+        if self.accumulated_data['action_sigma'][self.received_count].shape[2] == 23:
+            from exchange_order import vectorized_g1_to_h1
+            batch = self.accumulated_data['action_sigma'][self.received_count].shape[0]
+            self.accumulated_data['action_sigma'][self.received_count] = torch.stack(
+                [vectorized_g1_to_h1(self.accumulated_data['action_sigma'][self.received_count][i]) for i in range(batch)], dim=0).to(self.device)
+
 
 
         # 增加已接收进程计数
@@ -656,14 +729,14 @@ if __name__ == "__main__":
             "+terrain": "terrain_locomotion_plane",
             "project_name": "MotionTracking",
             "num_envs": 2048,
-            "+obs": "motion_tracking/main_h1_19dof",
-            "+robot": "h1/h1_19dof",
-            "+domain_rand": "main_h1_19dof",
+            "+obs": "motion_tracking/main",
+            "+robot": "g1/g1_23dof",
+            "+domain_rand": "main",
             "+rewards": "motion_tracking/main",
             "experiment_name": "debug_parallel_1",
             "seed": 1,
             "+device": "cuda:0",
-            "robot.motion.motion_file": "smpl_retarget/retargeted_motion_data/phc/h1_19dof/swing.pkl",
+            "robot.motion.motion_file": "smpl_retarget/retargeted_motion_data/phc/g1_waist1/0-02_04_poses.pkl",
             "hydra.run.dir": "outputs/debug_parallel_1"
         },
         {
@@ -679,7 +752,7 @@ if __name__ == "__main__":
             "experiment_name": "debug_parallel_2",
             "seed": 2,
             "+device": "cuda:0",
-            "robot.motion.motion_file": "smpl_retarget/retargeted_motion_data/phc/h1_19dof/swing.pkl",
+            "robot.motion.motion_file": "smpl_retarget/retargeted_motion_data/phc/h1_19dof/0-02_04_poses.pkl",
             "hydra.run.dir": "outputs/debug_parallel_2"
         },
         # 在这里可以添加更多任务...
@@ -689,8 +762,8 @@ if __name__ == "__main__":
     encoder_content = [
         {
             "type": "MLP",
-            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/h1/h1_19dof.xml",
-            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/h1/h1_19dof.urdf"
+            "xml_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof.xml",
+            "urdf_path": "/root/projects/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof.urdf"
         },
         {
             "type": "MLP",
