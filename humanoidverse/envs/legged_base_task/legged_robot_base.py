@@ -355,7 +355,7 @@ class LeggedRobotBase(BaseTask):
         current_rigid_body_ang_vel = self.simulator._rigid_body_ang_vel
         self.realtime_angular_acceleration = (current_rigid_body_ang_vel - self.last_rigid_body_ang_vel) / self.sim_dt
         self.last_rigid_body_ang_vel[:] = current_rigid_body_ang_vel[:]
-        logger.info("rigid body angular_acceleration have been stored in self.realtime_angular_acceleration")
+        #logger.info("rigid body angular_acceleration have been stored in self.realtime_angular_acceleration")
         
         # print picked body's angular acceleration 
         target_body_name = 'left_hip_pitch_link'
@@ -378,7 +378,7 @@ class LeggedRobotBase(BaseTask):
         current_dof_ang_vel = self.simulator.dof_vel
         self.realtime_dof_ang_acceleration = (current_dof_ang_vel - self.last_dof_ang_vel) / self.sim_dt
         self.last_dof_ang_vel[:] = current_dof_ang_vel[:]
-        logger.info("dof angular_acceleration have been stored in self.realtime_dof_ang_acceleration")
+        #logger.info("dof angular_acceleration have been stored in self.realtime_dof_ang_acceleration")
 
 
         ####dev####
@@ -919,17 +919,20 @@ class LeggedRobotBase(BaseTask):
             target_dof_pos = actions_scaled + self.default_dof_pos  
             
             
-            # left_ankle_roll_idx = 5
-            # right_ankle_roll_idx = 11
-            # ankle_roll_min = -0.15
-            # ankle_roll_max = -0.15
+            left_ankle_roll_idx = 5
+            right_ankle_roll_idx = 11
+            # print('&'*10, 'debug', '&'*10)
+            # print('left_ankle_roll__target_dof_pos',target_dof_pos[:, left_ankle_roll_idx])
+            # print('right_ankle_roll__target_dof_pos',target_dof_pos[:, right_ankle_roll_idx])
+            ankle_roll_min = -0.25
+            ankle_roll_max = 0.25
             # # clip ankle roll target angle
-            # target_dof_pos[:, left_ankle_roll_idx] = torch.clamp(
-            #     target_dof_pos[:, left_ankle_roll_idx], ankle_roll_min, ankle_roll_max
-            # )
-            # target_dof_pos[:, right_ankle_roll_idx] = torch.clamp(
-            #     target_dof_pos[:, right_ankle_roll_idx], ankle_roll_min, ankle_roll_max
-            # )
+            target_dof_pos[:, left_ankle_roll_idx] = torch.clamp(
+                target_dof_pos[:, left_ankle_roll_idx], ankle_roll_min, ankle_roll_max
+            )
+            target_dof_pos[:, right_ankle_roll_idx] = torch.clamp(
+                target_dof_pos[:, right_ankle_roll_idx], ankle_roll_min, ankle_roll_max
+            )
 
             # Disable ankle roll
             #target_dof_pos[:, [5, 11]] = 0.0

@@ -114,6 +114,8 @@ class IsaacGym(BaseSimulator):
                 self.ground_static_friction_val = torch_rand_float(
                     static_friction_range[0], static_friction_range[1], (1,1), device='cpu'
                 ).item()
+                #if env_id<2:
+                #print(f"Randomizing ground static friction: {self.ground_static_friction_val:.2f}")
                 logger.info(f"Randomizing ground static friction: {self.ground_static_friction_val:.2f}")
             plane_params.static_friction = self.ground_static_friction_val
         else:
@@ -126,6 +128,8 @@ class IsaacGym(BaseSimulator):
                 self.ground_dynamic_friction_val = torch_rand_float(
                     dynamic_friction_range[0], dynamic_friction_range[1], (1,1), device='cpu'
                 ).item()
+                #if env_id <2:
+                #print(f"Randomizing ground dynamic friction: {self.ground_dynamic_friction_val:.2f}")
                 logger.info(f"Randomizing ground dynamic friction: {self.ground_dynamic_friction_val:.2f}")
             plane_params.dynamic_friction = self.ground_dynamic_friction_val
         else:
