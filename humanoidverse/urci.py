@@ -347,6 +347,9 @@ def main(override_config: OmegaConf):
         main_cfg.real_ckpt = override_config.checkpoint
     else:
         raise ValueError(f"Invalid checkpoint type: {type(override_config.checkpoint)}")
+
+    # temporarily change for specific robot specific
+    #main_cfg.robot.asset.xml_file = "/home/bbw/PBHC_g1_SingleWaistYaw/description/robots/g1/g1_23dof.xml"
     
     
     RobotCls, pre_process_config, torch= setup_simulator(simulator_type)

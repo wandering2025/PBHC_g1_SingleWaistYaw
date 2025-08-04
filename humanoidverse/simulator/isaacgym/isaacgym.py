@@ -27,6 +27,11 @@ class IsaacGym(BaseSimulator):
 
         self.ground_static_friction_val = None
         self.ground_dynamic_friction_val = None
+        self.exit_requested = False
+        
+        ##### 按键控制渲染
+        self.is_draw = True
+        ##### 按键控制渲染
 
     def set_headless(self, headless):
         # call super
@@ -775,6 +780,10 @@ class IsaacGym(BaseSimulator):
         self.viewer = self.gym.create_viewer(
             self.sim, gymapi.CameraProperties())
         # subscribe to keyboard shortcuts
+        ##### 按键控制渲染
+        self.gym.subscribe_viewer_keyboard_event(
+            self.viewer, gymapi.KEY_C, "DRAW")
+        ##### 按键控制渲染
         self.gym.subscribe_viewer_keyboard_event(
             self.viewer, gymapi.KEY_ESCAPE, "QUIT")
         self.gym.subscribe_viewer_keyboard_event(
@@ -866,13 +875,21 @@ class IsaacGym(BaseSimulator):
     def render(self, sync_frame_time=True, _realtime=True):
         # check for window closed
         if self.gym.query_viewer_has_closed(self.viewer):
-            sys.exit()
+            #sys.exit()
+            self.exit_requested = True # 设置标志位
+            return # 直接返回，不强制退出            
             
         delete_user_viewer_recordings = False
         # check for keyboard events
         for evt in self.gym.query_viewer_action_events(self.viewer):
+            ##### 按键控制渲染
+            if evt.action == "DRAW" and evt.value > 0:
+                self.is_draw = not self.is_draw
+            ##### 按键控制渲染
             if evt.action == "QUIT" and evt.value > 0:
-                sys.exit()
+                #sys.exit()
+                self.exit_requested = True # 设置标志位
+                return # 直接返回，不强制退出                
             elif evt.action == "Pause" and evt.value > 0:
                 pause = True
                 while pause:

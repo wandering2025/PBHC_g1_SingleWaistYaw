@@ -176,6 +176,12 @@ def main(override_config: OmegaConf):
     config.num_envs = 1
     config.env.config.save_rendering_dir = str(checkpoint.parent / "renderings" / f"ckpt_{ckpt_num}")
     config.env.config.ckpt_dir = str(checkpoint.parent) # commented out for now, might need it back to save motion
+    
+    # for metric error data record
+    #config.env.enable_error_logging = True
+    config.env.config.enable_error_logging = True
+    config.env.config.checkpoint_path = config.checkpoint
+    
     env = instantiate(config.env, device=device)
 
     # Start a thread to listen for key press
@@ -210,8 +216,29 @@ def main(override_config: OmegaConf):
         export_policy_as_onnx(algo.inference_model, exported_policy_path, exported_onnx_name, example_obs_dict)
         logger.info(f'Exported policy as onnx to: {os.path.join(exported_policy_path, exported_onnx_name)}')
 
-    algo.evaluate_policy()
+    #algo.evaluate_policy()
+    logger.info("Starting evaluation loop. Close the viewer window to gracefully exit.")
+    
+    env.set_is_evaluating()
 
+    # 获取初始观测值
+    obs_dict = env.obs_buf_dict
+    
+    # 只要没有退出请求，就一直循环
+    while not env.exit_requested:
+        # 1. 算法根据观测值做出决策
+        actor_obs = obs_dict['actor_obs']
+        actor_obs = actor_obs.to(device)
+        actions_tensor = algo.inference_model['actor'].act_inference(actor_obs)
+        actions_dict = {"actions": actions_tensor}
+        
+        # 2. 环境执行一步
+        # env.step() 会在内部调用 _post_physics_step，从而执行我们的保存逻辑
+        obs_dict, _, _, _ = env.step(actions_dict)
+
+    logger.info("Exit requested. Evaluation loop finished.")
+    logger.info("Script will now shut down gracefully.")
+    # 当循环结束后，程序会自然退出，此时所有文件操作都已完成。
 
 if __name__ == "__main__":
     main()

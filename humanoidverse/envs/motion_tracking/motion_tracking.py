@@ -104,6 +104,8 @@ class LeggedRobotMotionTracking(LeggedRobotBase):
         self._init_motion_extend()
         self._init_tracking_config()
 
+        self._init_error_logging()
+
         self.init_done = True
         self.debug_viz = True
 
@@ -133,6 +135,29 @@ class LeggedRobotMotionTracking(LeggedRobotBase):
         if 'enable' in self.config.soft_dynamic_correction and self.config.soft_dynamic_correction.enable:
             self.sdc_alpha = self.config.soft_dynamic_correction.alpha
             logger.info(f"Soft Dynamic Correction alpha: {self.sdc_alpha}")
+
+    def _init_error_logging(self):
+        """Initializes buffers and flags for error logging during evaluation."""
+        # 检查在eval_agent.py中设置的标志位，若不存在则默认为False
+        self.enable_error_logging = getattr(self.config, 'enable_error_logging', False)
+        
+        if self.enable_error_logging:
+            logger.info("Evaluation error logging is ENABLED.")
+            # 初始化一个列表，用于逐帧存储误差数据
+            self.error_data_buffer = []
+            # 初始化一个标志位，确保只保存一次
+            self._has_saved_errors = False
+            self.checkpoint_path_for_logging = getattr(self.config, 'checkpoint_path', None)
+
+            if hasattr(self.config, 'ckpt_dir') and self.config.ckpt_dir:
+                self.error_log_dir = Path(self.config.ckpt_dir) / "errors"
+                self.error_log_dir.mkdir(parents=True, exist_ok=True)
+                logger.info(f"Error logs will be saved to: {self.error_log_dir}")
+            else:
+                self.error_log_dir = None
+                logger.warning("`config.ckpt_dir` not found. Cannot determine save path for error data.")            
+        else:
+            logger.info("Evaluation error logging is DISABLED.")
 
     def teleop_callback(self, msg):
         self.teleop_marker_coords = torch.tensor(msg.data, device=self.device)
@@ -331,23 +356,23 @@ class LeggedRobotMotionTracking(LeggedRobotBase):
         super()._update_reset_buf()
         
         # print(f"DEBUG: motion far = {torch.norm(self.dif_global_body_pos, dim=-1).max()}\t|  threshold={self.terminate_when_motion_far_threshold}")
-        
-        if self.config.termination.terminate_when_motion_far:
-            reset_buf_motion_far = torch.any(torch.norm(self.dif_global_body_pos, dim=-1) > self.terminate_when_motion_far_threshold, dim=-1)
-            self.reset_buf_terminate_by["motion_far"] = reset_buf_motion_far
-            self.reset_buf |= reset_buf_motion_far
-            # log current motion far threshold
-            if self.config.termination_curriculum.terminate_when_motion_far_curriculum:
-                self.log_dict["terminate_when_motion_far_threshold"] = torch.tensor(self.terminate_when_motion_far_threshold, dtype=torch.float)
-                
-                
-        if self.config.termination.terminate_when_dof_far:
-            reset_buf_dof_far = torch.any(torch.norm(self.dif_joint_angles, dim=-1) > self.terminate_when_dof_far_threshold, dim=-1)
-            self.reset_buf_terminate_by["dof_far"] = reset_buf_dof_far
-            self.reset_buf |= reset_buf_dof_far
-            # log current dof far threshold
-            if self.config.termination_curriculum.terminate_when_dof_far_curriculum.enable:
-                self.log_dict["terminate_when_dof_far_threshold"] = torch.tensor(self.terminate_when_dof_far_threshold, dtype=torch.float)
+        if not self.is_evaluating:
+            if self.config.termination.terminate_when_motion_far:
+                reset_buf_motion_far = torch.any(torch.norm(self.dif_global_body_pos, dim=-1) > self.terminate_when_motion_far_threshold, dim=-1)
+                self.reset_buf_terminate_by["motion_far"] = reset_buf_motion_far
+                self.reset_buf |= reset_buf_motion_far
+                # log current motion far threshold
+                if self.config.termination_curriculum.terminate_when_motion_far_curriculum:
+                    self.log_dict["terminate_when_motion_far_threshold"] = torch.tensor(self.terminate_when_motion_far_threshold, dtype=torch.float)
+                    
+                    
+            if self.config.termination.terminate_when_dof_far:
+                reset_buf_dof_far = torch.any(torch.norm(self.dif_joint_angles, dim=-1) > self.terminate_when_dof_far_threshold, dim=-1)
+                self.reset_buf_terminate_by["dof_far"] = reset_buf_dof_far
+                self.reset_buf |= reset_buf_dof_far
+                # log current dof far threshold
+                if self.config.termination_curriculum.terminate_when_dof_far_curriculum.enable:
+                    self.log_dict["terminate_when_dof_far_threshold"] = torch.tensor(self.terminate_when_dof_far_threshold, dtype=torch.float)
 
     def _update_timeout_buf(self):
         super()._update_timeout_buf()
@@ -421,26 +446,28 @@ class LeggedRobotMotionTracking(LeggedRobotBase):
     def _draw_debug_vis(self):
         self.simulator.clear_lines()
         self._refresh_sim_tensors()
+        
+        ##### 按键控制渲染
+        if self.simulator.is_draw:
+            for env_id in range(1):
+            # for env_id in range(self.num_envs):
+                if not self.config.use_teleop_control:
+                    # draw marker joints
+                    for pos_id, pos_joint in enumerate(self.marker_coords[env_id]): # idx 0 torso (duplicate with 11)
+                        if self.config.robot.motion.visualization.customize_color:
+                            color_inner = self.config.robot.motion.visualization.marker_joint_colors[pos_id % len(self.config.robot.motion.visualization.marker_joint_colors)]
+                        else:
+                            color_inner = (0.3, 0.3, 0.3)
+                        color_inner = tuple(color_inner)
 
-        for env_id in range(1):
-        # for env_id in range(self.num_envs):
-            if not self.config.use_teleop_control:
-                # draw marker joints
-                for pos_id, pos_joint in enumerate(self.marker_coords[env_id]): # idx 0 torso (duplicate with 11)
-                    if self.config.robot.motion.visualization.customize_color:
-                        color_inner = self.config.robot.motion.visualization.marker_joint_colors[pos_id % len(self.config.robot.motion.visualization.marker_joint_colors)]
-                    else:
-                        color_inner = (0.3, 0.3, 0.3)
-                    color_inner = tuple(color_inner)
-
-                    # import ipdb; ipdb.set_trace()
-                    self.simulator.draw_sphere(pos_joint, 0.04, color_inner, env_id, pos_id)
+                        # import ipdb; ipdb.set_trace()
+                        self.simulator.draw_sphere(pos_joint, 0.04, color_inner, env_id, pos_id)
 
 
-            else:
-                # draw teleop joints
-                for pos_id, pos_joint in enumerate(self.teleop_marker_coords[env_id]):
-                    self.simulator.draw_sphere(pos_joint, 0.04, (0.851, 0.144, 0.07), env_id, pos_id)
+                else:
+                    # draw teleop joints
+                    for pos_id, pos_joint in enumerate(self.teleop_marker_coords[env_id]):
+                        self.simulator.draw_sphere(pos_joint, 0.04, (0.851, 0.144, 0.07), env_id, pos_id)
 
     def _reset_root_states(self, env_ids):
         # reset root states according to the reference motion
@@ -658,9 +685,11 @@ class LeggedRobotMotionTracking(LeggedRobotBase):
 
 
 
-        
+
         ## diff compute - kinematic joint position
         self.dif_joint_angles = ref_joint_pos - self.simulator.dof_pos
+
+
         ## diff compute - kinematic joint velocity
         self.dif_joint_velocities = ref_joint_vel - self.simulator.dof_vel
 
@@ -859,6 +888,98 @@ class LeggedRobotMotionTracking(LeggedRobotBase):
     # TimePortion: 42.5%
     def _post_physics_step(self):
         super()._post_physics_step()
+
+        if self.enable_error_logging and not self._has_saved_errors:
+            
+            # --- 1. 收集当前帧的三种误差数据 ---
+            # 由于评估时 num_envs=1, 我们直接索引[0]
+            # .clone()确保我们获取的是当前值，而不是后续可能变化的张量引用
+            
+            # 1.1 空间位置误差
+            spatial_error = self.dif_global_body_pos[0].cpu().numpy()
+            spatial_error_L2 = np.linalg.norm(self.dif_global_body_pos[0].cpu().numpy())
+            
+            # 1.2 关节转角误差
+            angle_error = self.dif_joint_angles[0].cpu().numpy()
+            angle_error_L2 = np.linalg.norm(self.dif_joint_angles[0].cpu().numpy())
+            
+            # 1.3 根关节速度误差
+            motion_res = self.kick_motion_res()
+            root_lin_vel_error = (motion_res['root_vel'][0] - self.simulator.robot_root_states[0, 7:10]).cpu().numpy()
+            
+            root_lin_vel_error_vec = (motion_res['root_vel'][0] - self.simulator.robot_root_states[0, 7:10]).cpu().numpy()
+            root_lin_vel_error_L2 = np.linalg.norm(root_lin_vel_error_vec)
+
+            root_ang_vel_error = (motion_res['root_ang_vel'][0] - self.simulator.robot_root_states[0, 10:13]).cpu().numpy()
+
+            root_ang_vel_error_vec = (motion_res['root_ang_vel'][0] - self.simulator.robot_root_states[0, 10:13]).cpu().numpy()
+            root_ang_vel_error_L2 = np.linalg.norm(root_ang_vel_error_vec)
+
+            # 将当前帧的误差存入一个字典
+            # step_errors = {
+            #     'spatial_position_error': spatial_error,
+            #     'joint_angle_error': angle_error,
+            #     'root_linear_velocity_error': root_lin_vel_error,
+            #     'root_angular_velocity_error': root_ang_vel_error
+            # }
+            dt = self.dt
+
+            # 1. 空间位置误差: 米 -> 毫米
+            spatial_error_L2_mm = spatial_error_L2 * 1000.0
+
+            # 2. 根关节线速度误差: 米/秒 -> 毫米/帧
+            root_lin_vel_error_L2_mmframe = root_lin_vel_error_L2 * 1000.0 * dt
+
+            step_errors = {
+            'spatial_position_error_L2': spatial_error_L2_mm, #spatial_error_L2,
+            'joint_angle_error_L2': angle_error_L2,
+            'root_linear_velocity_error_L2': root_lin_vel_error_L2_mmframe,#root_lin_vel_error_L2,
+            'root_angular_velocity_error_L2': root_ang_vel_error_L2
+            }
+            # 追加到总的 buffer 中
+            self.error_data_buffer.append(step_errors)
+
+            # --- 2. 检查是否达到保存条件（运动循环结束） ---
+            if self.reset_buf[0]:
+                logger.info(f"Motion cycle ended. Processing {len(self.error_data_buffer)} frames of error data...")
+
+                # --- 3. 重构数据结构并保存为 .npy 文件 ---
+                # 将 "列表 of 字典" 转换为 "字典 of 列表", 然后再转为Numpy数组
+                final_data_to_save = {key: [] for key in self.error_data_buffer[0].keys()}
+                for step_data in self.error_data_buffer:
+                    for key, value in step_data.items():
+                        final_data_to_save[key].append(value)
+
+                for key, value_list in final_data_to_save.items():
+                    final_data_to_save[key] = np.array(value_list)
+
+                filename = "tracking_errors_unknown_ckpt.npy" # 设置一个默认值
+                if self.checkpoint_path_for_logging:
+                    try:
+                        # 从路径中解析出迭代步数
+                        # 例如: /path/to/model_7000.pt -> 'model_7000.pt'
+                        basename = os.path.basename(self.checkpoint_path_for_logging)
+                        # 'model_7000.pt' -> '7000'
+                        iteration_number = basename.split('_')[-1].split('.')[0]
+                        
+                        if iteration_number.isdigit():
+                            filename = f"whole_tracking_errors_ckpt_{iteration_number}.npy"
+                        else:
+                            logger.warning(f"无法从 '{basename}' 解析出迭代步数，将使用默认文件名。")
+                    except Exception as e:
+                        logger.error(f"解析checkpoint路径时出错: {e}，将使用默认文件名。")
+
+                # 定义保存路径
+                if self.error_log_dir:
+                    save_path = self.error_log_dir / filename
+                    np.save(save_path, final_data_to_save)
+                    logger.success(f"Tracking error data saved to: {save_path}")
+                else:
+                    logger.error("`error_log_dir` was not initialized. Cannot save error data.")
+
+                # --- 4. 设置标志位，停止后续所有记录和保存操作 ---
+                self._has_saved_errors = True
+                self.error_data_buffer.clear() # 清理内存        
         
         if self.save_motion:    
             motion_times = (self.episode_length_buf) * self.dt + self.motion_start_times

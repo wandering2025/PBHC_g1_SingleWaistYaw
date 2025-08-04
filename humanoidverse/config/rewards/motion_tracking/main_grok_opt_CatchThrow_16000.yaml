@@ -1,0 +1,101 @@
+# @package _global_
+
+# defaults:
+#   - reward_base
+
+
+rewards:
+  set_reward: grok_16000
+  set_reward_date: 20250731
+  only_positive_rewards: False
+  reward_scales:
+      teleop_contact_mask: 2.0         # Increased from 0.5 (value: 0.4625 → ~1.0)
+      teleop_max_joint_position: 4.0   # Increased from 1.0 (value: 0.2501 → ~1.0)
+      teleop_body_position_extend: 1.0 # Unchanged (value: 1.1156, already ~1.0)
+      teleop_vr_3point: 1.2            # Reduced from 1.6 (value: 0.8264 → ~1.0)
+      teleop_body_position_feet: 1.2   # Reduced from 1.5 (value: 0.8019 → ~1.0)
+      teleop_body_rotation_extend: 5.0 # Increased from 0.5 (value: 0.1953 → ~1.0)
+      teleop_body_ang_velocity_extend: 8.0 # Increased from 0.5 (value: 0.1171 → ~1.0)
+      teleop_body_velocity_extend: 5.0 # Increased from 0.5 (value: 0.1772 → ~1.0)
+      teleop_joint_position: 4.0       # Increased from 1.0 (value: 0.2361 → ~1.0)
+      teleop_joint_velocity: 6.0       # Increased from 1.0 (value: 0.1703 → ~1.0)
+      penalty_torques: -0.00005        # Increased from -0.000001 (value: -0.0019 → ~ -1.0 unscaled ~1900)
+      penalty_action_rate: -0.5        # Unchanged (value: -1.3107, already ~ -1.0)
+      feet_air_time: 1.0               # Unchanged (assumed ~1.0)
+      penalty_feet_contact_forces: -0.01 # Unchanged (value: -0.8766, ~ -1.0)
+      penalty_stumble: -2.0            # Unchanged (value: -0.0006, small but intentional)
+      penalty_slippage: -1.0           # Unchanged (value: -0.1033, ~ -1.0)
+      limits_dof_pos: -1.0             # Reduced from -10.0 (assumed ~ -1.0)
+      limits_dof_vel: -1.0             # Reduced from -5.0 (assumed ~ -1.0)
+      limits_torque: -1.0              # Reduced from -5.0 (assumed ~ -1.0)
+      termination: -50.0               # Reduced from -200.0 (value: -16.3761 → less dominant)
+      collision: -2.0                  # Reduced from -30.0 (value: -0.9755 → ~ -2.0)
+  
+  teleop_body_pos_lowerbody_weight: 1.0
+  teleop_body_pos_upperbody_weight: 1.0
+  desired_feet_max_height_for_this_air: 0.2
+  reward_tracking_sigma:
+    teleop_max_joint_pos: 1.0
+    teleop_upper_body_pos: 0.015
+    teleop_lower_body_pos: 0.015
+    teleop_vr_3point_pos: 0.015
+    teleop_feet_pos: 0.01
+    teleop_body_rot: 0.1
+    teleop_body_vel: 1.0
+    teleop_body_ang_vel: 15.0
+    teleop_joint_pos: 0.3
+    teleop_joint_vel: 30.0
+  adaptive_tracking_sigma:
+    enable: True
+    alpha: 1e-3
+    type: origin
+    scale: 1.0
+  locomotion_max_contact_force: 400.0
+  desired_feet_air_time: 0.3
+  reward_penalty_curriculum: True
+  reward_initial_penalty_scale: 0.10
+  reward_min_penalty_scale: 0.0
+  reward_max_penalty_scale: 1.0
+  reward_penalty_level_down_threshold: 40
+  reward_penalty_level_up_threshold: 42 
+  reward_penalty_degree: 0.00001
+  num_compute_average_epl: 10000
+  reward_limit:
+    soft_dof_pos_limit: 0.9
+    soft_dof_vel_limit: 0.9
+    soft_torque_limit: 0.825
+    reward_limits_curriculum:
+      soft_dof_pos_curriculum: True
+      soft_dof_pos_initial_limit: 0.95
+      soft_dof_pos_max_limit: 0.95
+      soft_dof_pos_min_limit: 0.95
+      soft_dof_pos_curriculum_degree: 0.00000025
+      soft_dof_pos_curriculum_level_down_threshold: 40
+      soft_dof_pos_curriculum_level_up_threshold: 42
+      soft_dof_vel_curriculum: True
+      soft_dof_vel_initial_limit: 0.95
+      soft_dof_vel_max_limit: 0.95
+      soft_dof_vel_min_limit: 0.95
+      soft_dof_vel_curriculum_degree: 0.00000025
+      soft_dof_vel_curriculum_level_down_threshold: 40
+      soft_dof_vel_curriculum_level_up_threshold: 42
+      soft_torque_curriculum: True
+      soft_torque_initial_limit: 0.85
+      soft_torque_max_limit: 0.85
+      soft_torque_min_limit: 0.85
+      soft_torque_curriculum_degree: 0.00000025
+      soft_torque_curriculum_level_down_threshold: 40
+      soft_torque_curriculum_level_up_threshold: 42
+  reward_penalty_reward_names : [
+    "penalty_torques",
+    "penalty_dof_acc",
+    "penalty_dof_vel",
+    "penalty_action_rate",
+    "limits_dof_pos",
+    "limits_dof_vel",
+    "limits_torque",
+    "feet_heading_alignment",
+    "penalty_feet_ori",
+    "penalty_slippage",
+    "collision"
+    ]

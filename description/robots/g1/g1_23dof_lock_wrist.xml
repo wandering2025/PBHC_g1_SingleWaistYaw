@@ -7,8 +7,8 @@
     <geom solimp="0.95 0.95 0.001" solref="0.005 1"/> 
     <!-- <geom solimp="0.95 0.95 0.001" solref="0.005 1" friction="1.0 0.1 0.1"/>  -->
 
-    <!-- <geom solref='0.01 2'/>
-    <!-- <equality solref='0.01 2'/> --> -->
+    <!-- <geom solref='0.01 2'/>-->
+    <!-- <equality solref='0.01 2'/> --> 
     <!-- <equality solref='0.001 2'/> -->
   </default>
 

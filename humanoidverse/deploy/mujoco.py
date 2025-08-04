@@ -332,6 +332,33 @@ class MujocoRobot(URCIRobot, ViewerPlugin):
     def pd_control(target_q, q, kp, target_dq, dq, kd):
         '''Calculates torques from position commands
         '''
+        # print('############----------------target_q--------------###############')
+        # print('type',type(target_q))
+        # print('shape', target_q.shape)
+
+        left_ankle_roll_idx = 5
+        right_ankle_roll_idx = 11
+
+        ankle_roll_max_target = 0.25
+        ankle_roll_min_target = -0.25
+
+        if type(target_q) == torch.Tensor:
+            target_q[left_ankle_roll_idx] = torch.clamp(
+                target_q[left_ankle_roll_idx], ankle_roll_min_target, ankle_roll_max_target
+            )
+            target_q[right_ankle_roll_idx] = torch.clamp(
+                target_q[right_ankle_roll_idx], ankle_roll_min_target, ankle_roll_max_target
+            )
+        elif type(target_q) == np.ndarray:
+            target_q[left_ankle_roll_idx] = np.clip(
+                target_q[left_ankle_roll_idx], ankle_roll_min_target, ankle_roll_max_target
+            )
+            target_q[right_ankle_roll_idx] = np.clip(
+                target_q[right_ankle_roll_idx], ankle_roll_min_target, ankle_roll_max_target
+            )
+
+
+
         if MujocoRobot.RAND_NOISE:
             kp,kd = MujocoRobot.mk_rand_noise(np.array([kp, kd]), MujocoRobot.noise_ratio)
         return (target_q - q) * kp + (target_dq - dq) * kd
