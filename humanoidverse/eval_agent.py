@@ -1,6 +1,8 @@
 import os
 import sys
 from pathlib import Path
+from datetime import datetime
+import numpy as np 
 
 paths_to_remove = [
     '/home/bbw/ASAPx1',
@@ -181,6 +183,15 @@ def main(override_config: OmegaConf):
     #config.env.enable_error_logging = True
     config.env.config.enable_error_logging = True
     config.env.config.checkpoint_path = config.checkpoint
+
+
+    timestamp = datetime.now().strftime('%Y%m%d-%H%M')
+    csv_filename = f"{timestamp}_isaacgym_deploy_data.csv"
+    experiment_dir = checkpoint.parent
+    save_dir = experiment_dir / "isaacgym_deploy"
+    full_csv_path = save_dir / csv_filename
+    config.env.config.csv_save_path = str(full_csv_path)
+
     
     env = instantiate(config.env, device=device)
 
